@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Repository Purpose
+
+This is a Claude Code user configuration repository (`.claude` directory) that customizes Claude Code's behavior through specialized agent definitions, settings, and project configurations. This is not a traditional software development project but rather a configuration repository that enhances Claude Code's capabilities.
+
 ## Architecture Overview
 
 This repository contains a collection of specialized agent specifications for Claude Code's proactive agent system. Each agent is defined in a markdown file with specific expertise areas and coordination patterns.
@@ -71,6 +75,21 @@ Agents follow a hierarchical coordination model:
 - sr-architect handles complex technical escalations
 - Branch protection enforced through git-helper workflows
 
+## Directory Structure
+
+- `agents/` - Specialized agent definitions (.md files with YAML frontmatter)
+- `docs/` - Documentation and guides  
+- `settings.json` - Claude Code configuration (model preferences, etc.)
+- `projects/` - Project-specific configurations and contexts
+- `todos/` - Task management and agent coordination state
+- `ide/`, `local/`, `shell-snapshots/`, `statsig/` - Claude Code runtime directories
+
+## Configuration
+
+- **Model Selection**: `settings.json` controls default model preferences (`opusplan`, `sonnet`, `haiku`)
+- **Agent Activation**: Agents auto-activate based on project detection patterns
+- **Global Instructions**: This CLAUDE.md file provides context to all Claude Code sessions
+
 ## Agent Specifications Structure
 
 Each agent file follows this format:
@@ -90,14 +109,13 @@ Followed by detailed sections on:
 - Example Workflows
 - Proactive Suggestions
 
-## Development Workflow
+## Working with This Configuration Repository
 
-Since this is an agent specification repository with no build/test commands:
-
-1. **Adding New Agents**: Create new .md files following the established pattern
-2. **Modifying Agents**: Edit existing specifications to refine coordination patterns
-3. **Version Control**: Use git-helper agent for proper commit formatting and PR workflows
-4. **Documentation**: Agent files are self-documenting with examples and coordination patterns
+1. **Modifying Agent Behavior**: Edit agent .md files to refine coordination patterns and triggers
+2. **Adding New Agents**: Create new .md files following the established YAML frontmatter pattern  
+3. **Updating Global Instructions**: Modify this CLAUDE.md file to change how Claude Code behaves
+4. **Configuration Changes**: Update settings.json for model preferences and global settings
+5. **Version Control**: Use standard git workflows to track configuration changes
 
 ## Repository Standards
 
@@ -125,7 +143,7 @@ This document serves as the definitive guide for understanding and coordinating 
 
 ## Available Specialized Agents
 
-The agent ecosystem consists of **22 specialized agents** organized into three performance tiers based on complexity and cost requirements.
+The agent ecosystem consists of **20 specialized agents** organized into three performance tiers based on complexity and cost requirements.
 
 ### Tier 1: Efficiency Agents (Haiku - Fast & Cost-Effective)
 
@@ -621,4 +639,4 @@ After senior agent guidance:
 
 ---
 
-This coordination guide provides the foundation for effective multi-agent development workflows. The 22-agent ecosystem offers comprehensive coverage of modern software development needs while maintaining cost efficiency through intelligent tier selection and coordination patterns.
+This coordination guide provides the foundation for effective multi-agent development workflows. The 20-agent ecosystem offers comprehensive coverage of modern software development needs while maintaining cost efficiency through intelligent tier selection and coordination patterns.
