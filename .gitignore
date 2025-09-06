@@ -1,0 +1,10 @@
+# Claude Directory Structure
+ide
+local
+projects
+shell-snapshots
+statsig
+todos
+
+# Claude Files
+.credentials.json
