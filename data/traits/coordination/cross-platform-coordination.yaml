@@ -1,0 +1,108 @@
+name: cross-platform-coordination
+display_name: "Cross-Platform Coordination"
+category: coordination
+description: "Coordinates development across mobile, web, and desktop platforms for consistency"
+
+coordination_patterns:
+  - name: "platform_consistency_management"
+    trigger: "when developing features across multiple platforms"
+    action: "coordinate with frontend-engineer and mobile developers for consistent user experience"
+    context_required: ["platform_capabilities", "shared_components", "platform_specific_requirements"]
+
+  - name: "shared_code_coordination"
+    trigger: "when implementing business logic that spans platforms"
+    action: "coordinate shared code architecture and platform-specific implementations"
+    context_required: ["business_logic_scope", "platform_differences", "code_sharing_strategy"]
+
+implementation: |
+  ## Cross-Platform Coordination
+
+  **One experience, many platforms - coordinate for consistency and efficiency**
+
+  ### Platform Strategy
+  1. **Platform Assessment**:
+     - **Web**: Progressive web apps, responsive design, browser capabilities
+     - **Mobile**: iOS, Android native apps, cross-platform frameworks
+     - **Desktop**: Native desktop applications, Electron, web-based apps
+     - **Emerging Platforms**: Smart TVs, wearables, IoT devices
+
+  2. **Consistency Framework**:
+     - **Design System**: Shared design tokens, components, and patterns
+     - **Brand Identity**: Consistent visual identity and user experience
+     - **Business Logic**: Shared APIs and business rules
+     - **Data Models**: Consistent data structures across platforms
+
+  ### Cross-Platform Development Approaches
+  ```
+  Cross-Platform Architecture:
+  Shared Business Logic → API layer with consistent contracts
+  ↓
+  Platform Abstraction → Common interfaces for platform-specific features
+  ↓
+  UI Implementation → Platform-native UI with shared design system
+  ↓
+  Testing Strategy → Consistent testing across all platforms
+  ```
+
+  ### Code Sharing Strategies
+  1. **API-First Development**:
+     - **Backend Services**: Shared APIs for all platforms
+     - **GraphQL/REST**: Consistent data fetching patterns
+     - **Business Rules**: Server-side business logic implementation
+     - **Authentication**: Unified authentication and authorization
+
+  2. **Shared Component Libraries**:
+     - **Design System**: Cross-platform component library
+     - **Utility Functions**: Shared business logic and helpers
+     - **Validation**: Common validation rules and schemas
+     - **Internationalization**: Shared translation and localization
+
+  ### Platform-Specific Considerations
+  - **Performance**: Platform-specific optimization strategies
+  - **User Interface**: Platform conventions and design guidelines
+  - **Capabilities**: Platform-specific features and limitations
+  - **Distribution**: App stores, web deployment, desktop installers
+
+  ### Development Coordination
+  1. **Feature Parity Planning**:
+     - Define which features are available on each platform
+     - Plan feature rollout across platforms
+     - Manage platform-specific feature variations
+     - Coordinate release timing across platforms
+
+  2. **Quality Assurance**:
+     - **Cross-Platform Testing**: Consistent behavior validation
+     - **Device Testing**: Physical device and browser testing
+     - **Performance Testing**: Platform-specific performance optimization
+     - **User Acceptance Testing**: Platform-specific user feedback
+
+  ### Technology Stack Coordination
+  - **React Native**: iOS and Android from single codebase
+  - **Flutter**: Multi-platform development with Dart
+  - **Electron**: Desktop apps with web technologies
+  - **Progressive Web Apps**: Web apps with native-like features
+  - **Xamarin**: Cross-platform with C#/.NET
+
+  ### Deployment and Distribution
+  - **Web Deployment**: CDN, hosting, continuous deployment
+  - **Mobile App Stores**: iOS App Store, Google Play Store submission
+  - **Desktop Distribution**: Native installers, package managers
+  - **Update Mechanisms**: Over-the-air updates, app store updates
+
+  ### User Experience Consistency
+  - **Navigation Patterns**: Consistent navigation across platforms
+  - **Information Architecture**: Similar content organization
+  - **Interaction Patterns**: Platform-appropriate gestures and controls
+  - **Visual Consistency**: Shared design system with platform adaptations
+
+  ### Data Synchronization
+  - **Offline Support**: Local storage and sync capabilities
+  - **Real-Time Updates**: WebSockets, push notifications
+  - **Conflict Resolution**: Handling concurrent data modifications
+  - **Performance Optimization**: Efficient data transfer and caching
+
+  ### Coordination Examples
+  - "Cross-platform design system implemented - consistent UI across web and mobile"
+  - "Shared API contracts established - business logic consistency maintained"
+  - "Mobile app parity achieved - 95% feature consistency with web platform"
+  - "Performance optimization complete - similar load times across all platforms"

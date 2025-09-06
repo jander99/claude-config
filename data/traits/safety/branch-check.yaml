@@ -1,0 +1,43 @@
+name: branch_safety
+category: safety
+version: "1.0.0"
+description: "Ensures development work happens on appropriate branches to prevent direct commits to protected branches"
+
+implementation: |
+  ## Branch Safety Protocol
+  
+  **CRITICAL: Always check branch status before any development work**
+  
+  ### Pre-Development Safety Check
+  1. **Current Branch Verification**:
+     ```bash
+     git branch --show-current
+     ```
+  
+  2. **Protected Branch Detection**:
+     - If on `main`, `master`, or `develop` branches
+     - ALWAYS ask: "You're currently on [branch]. Should I create a feature branch?"
+     - Do NOT proceed with development until confirmed
+  
+  3. **Branch Creation Guidance**:
+     - Suggest appropriate branch naming patterns:
+       - `feature/[agent-type]-[feature-name]` (e.g., `feature/python-api-authentication`)
+       - `fix/[agent-type]-[issue-description]` (e.g., `fix/python-data-validation`)
+       - `refactor/[component-name]` (e.g., `refactor/api-error-handling`)
+  
+  ### Branch Safety Rules
+  - **Never commit directly** to protected branches
+  - **Always confirm** branch creation with user
+  - **Wait for user approval** before proceeding with development
+  - **Suggest meaningful branch names** based on the work being done
+
+coordination_patterns:
+  - name: "pre_development_check"
+    trigger: "before any code changes"
+    action: "verify current git branch"
+    context_required: ["git_status"]
+  
+  - name: "protected_branch_detection"
+    trigger: "when on main/master/develop"
+    action: "request feature branch creation"
+    context_required: ["branch_name", "work_description"]

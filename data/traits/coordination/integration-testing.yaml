@@ -1,0 +1,153 @@
+name: integration-testing
+display_name: "Integration Testing"
+category: coordination
+description: "End-to-end testing coordination across complex system integrations"
+
+coordination_patterns:
+  - name: "e2e_testing_strategy"
+    trigger: "when building features that span multiple services or components"
+    action: "coordinate with qa-engineer for comprehensive end-to-end testing"
+    context_required: ["integration_points", "user_journeys", "system_dependencies"]
+
+  - name: "service_integration_validation"
+    trigger: "when integrating with external services or APIs"
+    action: "coordinate integration testing across service boundaries"
+    context_required: ["service_contracts", "error_scenarios", "performance_requirements"]
+
+implementation: |
+  ## Integration Testing Coordination
+
+  **Integration is where systems meet reality - test the boundaries thoroughly**
+
+  ### Integration Testing Strategy
+  1. **Testing Pyramid Extension**:
+     - **Unit Tests**: Individual component functionality (70%)
+     - **Integration Tests**: Component interaction testing (20%)
+     - **End-to-End Tests**: Full user journey testing (10%)
+     - **Contract Tests**: API and service contract validation
+
+  2. **Integration Levels**:
+     - **Component Integration**: Between application modules
+     - **Service Integration**: Between microservices or APIs
+     - **System Integration**: Between different applications or systems
+     - **User Interface Integration**: Frontend to backend coordination
+
+  ### End-to-End Testing Coordination
+  ```
+  E2E Testing Pipeline:
+  development-agents → Implement features with integration points
+  ↓
+  qa-engineer → Design comprehensive test scenarios
+  ↓
+  devops-engineer → Set up testing environments and data
+  ↓
+  Integration Testing → Execute cross-system test scenarios
+  ↓
+  Validation → Verify user journeys and business processes
+  ```
+
+  ### Testing Scope and Coverage
+  1. **Critical User Journeys**:
+     - **User Registration/Login**: Complete authentication flow
+     - **Purchase Flow**: From product selection to payment completion
+     - **Data Processing**: End-to-end data pipeline validation
+     - **Error Handling**: System behavior during failures
+
+  2. **Integration Points**:
+     - **API Integrations**: Third-party service integrations
+     - **Database Operations**: Data consistency across services
+     - **Message Queues**: Asynchronous processing validation
+     - **External Dependencies**: Payment processors, email services
+
+  ### Contract Testing
+  1. **API Contract Testing**:
+     - **Consumer-Driven Contracts**: Define expectations from consumer perspective
+     - **Provider Verification**: Validate that providers meet contracts
+     - **Schema Validation**: Ensure API responses match expected schemas
+     - **Backward Compatibility**: Verify API evolution doesn't break consumers
+
+  2. **Testing Tools**:
+     - **Pact**: Consumer-driven contract testing
+     - **Postman/Newman**: API testing and validation
+     - **WireMock**: Service virtualization and stubbing
+     - **TestContainers**: Integration testing with real dependencies
+
+  ### Test Environment Management
+  1. **Environment Strategy**:
+     - **Development**: Rapid feedback and debugging
+     - **Integration**: Service interaction validation
+     - **Staging**: Production-like environment testing
+     - **Production**: Smoke tests and health monitoring
+
+  2. **Data Management**:
+     - **Test Data Creation**: Automated test data generation
+     - **Data Isolation**: Prevent test interference
+     - **Data Cleanup**: Automated cleanup after tests
+     - **Production Data**: Anonymized production data for realistic testing
+
+  ### Cross-Service Testing Challenges
+  1. **Service Dependencies**:
+     - **Service Discovery**: Dynamic service location and configuration
+     - **Network Reliability**: Handle network partitions and timeouts
+     - **Service Versioning**: Test compatibility across service versions
+     - **Load Testing**: Validate system behavior under realistic load
+
+  2. **Testing Strategies**:
+     - **Service Virtualization**: Mock external dependencies
+     - **Circuit Breaker Testing**: Validate fallback mechanisms
+     - **Chaos Engineering**: Intentional failure injection
+     - **Performance Testing**: End-to-end performance validation
+
+  ### Automation and CI/CD Integration
+  ```yaml
+  # Example: Integration test pipeline
+  integration_tests:
+    environment: staging
+    services:
+      - api-gateway
+      - user-service
+      - payment-service
+      - notification-service
+    test_suites:
+      - user_registration_flow
+      - payment_processing
+      - order_fulfillment
+      - error_recovery
+  ```
+
+  ### Monitoring and Observability
+  - **Test Execution Tracking**: Real-time test execution monitoring
+  - **Integration Metrics**: Success rates, response times, error patterns
+  - **Alerting**: Immediate notification of integration test failures
+  - **Trend Analysis**: Long-term integration health trends
+
+  ### Testing Best Practices
+  1. **Test Design Principles**:
+     - **Deterministic Tests**: Consistent, repeatable results
+     - **Isolated Tests**: No dependencies between test cases
+     - **Fast Feedback**: Quick execution for rapid development cycles
+     - **Meaningful Assertions**: Clear validation of expected behavior
+
+  2. **Test Maintenance**:
+     - **Regular Review**: Update tests with system changes
+     - **Refactoring**: Keep test code maintainable and readable
+     - **Documentation**: Clear test purpose and expected outcomes
+     - **Version Control**: Track test changes with application changes
+
+  ### Performance Integration Testing
+  - **Load Testing**: Realistic traffic patterns and volumes
+  - **Stress Testing**: System behavior at breaking points
+  - **Spike Testing**: Sudden traffic increase handling
+  - **Endurance Testing**: Long-term system stability validation
+
+  ### Security Integration Testing
+  - **Authentication Flow**: End-to-end security validation
+  - **Authorization**: Permission and access control testing
+  - **Data Security**: Encryption and data protection validation
+  - **Vulnerability Testing**: Security scanning across integrations
+
+  ### Coordination Examples
+  - "E2E test suite implemented - covering 15 critical user journeys"
+  - "Contract testing established - API compatibility verified across 8 services"
+  - "Integration environment deployed - automated testing with realistic data"
+  - "Cross-service performance validated - 99.9% success rate under peak load"

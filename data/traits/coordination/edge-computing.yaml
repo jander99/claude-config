@@ -1,0 +1,147 @@
+name: edge-computing
+display_name: "Edge Computing"
+category: coordination
+description: "Edge deployment coordination and distributed systems management"
+
+coordination_patterns:
+  - name: "edge_deployment_strategy"
+    trigger: "when implementing applications requiring low latency or local processing"
+    action: "coordinate with devops-engineer for edge infrastructure and deployment"
+    context_required: ["latency_requirements", "geographic_distribution", "edge_capabilities"]
+
+  - name: "distributed_system_coordination"
+    trigger: "when managing state and data synchronization across edge nodes"
+    action: "coordinate distributed system architecture and data consistency"
+    context_required: ["consistency_requirements", "network_partitioning", "conflict_resolution"]
+
+implementation: |
+  ## Edge Computing Coordination
+
+  **Bring computation closer to users - optimize for speed and resilience**
+
+  ### Edge Computing Strategy
+  1. **Edge Deployment Models**:
+     - **CDN Edge**: Content delivery and static asset caching
+     - **Compute Edge**: Function execution and API processing
+     - **IoT Edge**: Local device processing and gateway functions
+     - **Mobile Edge**: Cellular network edge computing (MEC)
+
+  2. **Use Case Assessment**:
+     - **Low Latency Applications**: Gaming, video streaming, AR/VR
+     - **Bandwidth Optimization**: Large data processing, content filtering
+     - **Privacy/Compliance**: Local data processing for regulatory compliance
+     - **Offline Capability**: Resilient operation during connectivity issues
+
+  ### Architecture Coordination
+  ```
+  Edge Computing Architecture:
+  Central Cloud → Global state management and coordination
+  ↓
+  Regional Edge → Regional processing and caching
+  ↓
+  Local Edge → User-proximity processing and storage
+  ↓
+  Device Edge → On-device processing and intelligence
+  ```
+
+  ### Edge Infrastructure Management
+  1. **Infrastructure Coordination**:
+     - **Multi-Region Deployment**: Geographically distributed edge nodes
+     - **Auto-Scaling**: Dynamic resource allocation based on demand
+     - **Load Balancing**: Intelligent routing to optimal edge nodes
+     - **Health Monitoring**: Edge node health and performance monitoring
+
+  2. **Edge Platforms**:
+     - **AWS CloudFront/Lambda@Edge**: Content delivery with compute
+     - **Cloudflare Workers**: Global serverless edge computing
+     - **Azure Edge Zones**: Microsoft edge computing platform
+     - **Google Cloud CDN**: Content delivery with edge functions
+
+  ### Data Management at the Edge
+  1. **Data Synchronization**:
+     - **Eventually Consistent**: Accept temporary inconsistency for performance
+     - **Conflict Resolution**: Handle concurrent updates across edge nodes
+     - **Data Partitioning**: Distribute data based on geographic or logical boundaries
+     - **Caching Strategy**: Multi-tier caching with intelligent invalidation
+
+  2. **State Management**:
+     - **Local State**: Edge-local processing state and cache
+     - **Shared State**: Cross-edge coordination and synchronization
+     - **Global State**: Centralized state management and authority
+     - **Offline State**: Graceful degradation during network partitions
+
+  ### Performance Optimization
+  1. **Latency Reduction**:
+     - **Geographic Proximity**: Route requests to nearest edge node
+     - **Predictive Caching**: Pre-position data based on usage patterns
+     - **Connection Reuse**: Optimize network connections and protocols
+     - **Request Routing**: Intelligent routing based on performance metrics
+
+  2. **Resource Optimization**:
+     - **Code Splitting**: Deploy only necessary code to edge nodes
+     - **Resource Constraints**: Optimize for limited edge computing resources
+     - **Battery Efficiency**: Power-aware processing for mobile edge devices
+     - **Network Efficiency**: Minimize data transfer and communication overhead
+
+  ### Security at the Edge
+  - **Distributed Security**: Security controls across all edge nodes
+  - **Certificate Management**: Automated certificate provisioning and rotation
+  - **Attack Surface**: Secure distributed attack surface management
+  - **Data Protection**: Encryption and protection across edge infrastructure
+
+  ### Edge Development Patterns
+  1. **Edge Functions**:
+     ```javascript
+     // Example: Cloudflare Worker edge function
+     addEventListener('fetch', event => {
+       event.respondWith(handleRequest(event.request))
+     });
+
+     async function handleRequest(request) {
+       // Process request at the edge
+       const response = await processLocally(request);
+       if (response) {
+         return response;
+       }
+       
+       // Fallback to origin server
+       return fetch(request);
+     }
+     ```
+
+  2. **Edge Storage**:
+     - **Local Databases**: SQLite, embedded databases at edge
+     - **Distributed Caches**: Redis, Memcached across edge nodes
+     - **Object Storage**: Distributed object storage with replication
+     - **Stream Processing**: Real-time data processing at edge points
+
+  ### Monitoring and Observability
+  - **Distributed Tracing**: Track requests across edge and central systems
+  - **Edge Metrics**: Performance, availability, and resource utilization
+  - **Geographic Analytics**: Usage patterns and performance by location
+  - **Anomaly Detection**: Identify issues across distributed edge infrastructure
+
+  ### Development and Deployment
+  1. **CI/CD for Edge**:
+     - **Multi-Target Deployment**: Deploy to multiple edge locations
+     - **Canary Deployment**: Gradual rollout across edge nodes
+     - **Rollback Capability**: Quick rollback of edge deployments
+     - **Testing Strategy**: Test edge-specific scenarios and network conditions
+
+  2. **Development Tools**:
+     - **Edge Simulators**: Local development with edge simulation
+     - **Performance Testing**: Edge-specific performance validation
+     - **Network Simulation**: Test various network conditions and partitions
+     - **Edge Debugging**: Remote debugging and monitoring tools
+
+  ### Cost Optimization
+  - **Resource Efficiency**: Optimize for edge computing cost models
+  - **Intelligent Routing**: Route based on cost and performance trade-offs
+  - **Capacity Planning**: Right-size edge resources based on demand
+  - **Hybrid Strategy**: Balance edge vs. central processing costs
+
+  ### Coordination Examples
+  - "Edge deployment configured - 50ms latency reduction for 90% of users"
+  - "devops-engineer: Multi-region edge infrastructure with auto-scaling deployed"
+  - "Data synchronization implemented - eventual consistency across 12 edge nodes"
+  - "Edge computing optimization complete - 40% bandwidth reduction achieved"

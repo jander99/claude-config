@@ -1,0 +1,79 @@
+# Claude Config Generator Configuration
+# This file defines which agents to build and global settings
+
+name: personal-claude-config
+version: "0.1.0"
+output_dir: dist/
+
+# Agents to build (references to persona files in data/personas/)
+agents:
+  - ai-engineer
+  - python-engineer
+  - java-engineer
+  - frontend-engineer
+  - devops-engineer
+  - data-engineer
+  - blockchain-engineer
+  - git-helper
+  - qa-engineer
+  - technical-writer
+  - security-engineer
+  - database-engineer
+  - ai-researcher
+  - sr-ai-researcher
+  - product-manager
+  - quant-analyst
+  - sr-quant-analyst
+  - sr-architect
+  - prompt-engineer
+  - agent-architect
+
+# Global settings that apply to all agents
+settings:
+  # Model preferences
+  model_preferences:
+    default: sonnet
+    complex: opus
+    simple: haiku
+  
+  # Template settings
+  template_version: "1.0.0"
+  
+  # Output settings
+  include_generation_metadata: true
+  validate_before_build: true
+
+# Global instructions that apply to all agents
+global_instructions: |
+  ## Universal Instructions
+  
+  - Always check branch status before development work
+  - Coordinate with qa-engineer for testing after implementation
+  - Use appropriate escalation patterns when needed
+  - Follow the cost optimization guidelines (prefer Sonnet, escalate to Opus only when necessary)
+  - Maintain consistent coordination patterns across all agents
+
+# MCP server configuration (optional)
+mcp_servers:
+  - github
+  - filesystem
+  - docker
+  - time
+  - context7
+  - augments
+  - sequentialthinking
+
+# Build configuration
+build:
+  # Validation settings
+  validate_personas: true
+  validate_traits: true
+  validate_content: true
+  validate_compositions: true
+  
+  # Output settings
+  create_agent_directory: true
+  copy_global_files: true
+  
+  # Template settings
+  template_strict_mode: true

@@ -1,0 +1,50 @@
+name: dependency-security
+display_name: "Dependency Security"
+category: safety
+description: "Automated dependency scanning, vulnerability management, and supply chain security"
+
+coordination_patterns:
+  - name: "dependency_vulnerability_scan"
+    trigger: "before adding new dependencies or during security reviews"
+    action: "scan dependencies for known vulnerabilities and security issues"
+    context_required: ["dependency_list", "security_requirements", "risk_tolerance"]
+
+  - name: "supply_chain_verification"
+    trigger: "when adding or updating dependencies"
+    action: "verify dependency authenticity and check for supply chain attacks"
+    context_required: ["dependency_sources", "verification_methods", "trust_policies"]
+
+implementation: |
+  ## Dependency Security Protocol
+
+  **CRITICAL: Always verify dependency security before adding to project**
+
+  ### Pre-Dependency Security Checks
+  1. **Vulnerability Scanning**:
+     - Run security scans on all dependencies before adding them
+     - Check CVE databases for known vulnerabilities
+     - Verify dependency versions are up-to-date and patched
+     - Use tools like `npm audit`, `pip-audit`, `bundler-audit`
+
+  2. **Supply Chain Verification**:
+     - Verify package authenticity and digital signatures
+     - Check package source repositories and maintainer reputation
+     - Review dependency licenses for compliance requirements
+     - Monitor for suspicious or unexpected dependency changes
+
+  3. **Dependency Management**:
+     - Pin dependency versions to prevent unexpected updates
+     - Regularly update dependencies with security patches
+     - Remove unused or abandoned dependencies
+     - Document rationale for each dependency
+
+  ### Security Monitoring
+  - Set up automated vulnerability scanning in CI/CD pipelines
+  - Monitor security advisories for used dependencies
+  - Establish process for emergency security updates
+  - Track dependency age and maintenance status
+
+  ### Coordination Examples
+  - "Scanning dependencies for security vulnerabilities before adding to project"
+  - "Dependency security verified - no critical vulnerabilities found"
+  - "Security update required for [dependency] - upgrading to patch version"

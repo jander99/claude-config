@@ -1,0 +1,121 @@
+name: research-workflow
+category: coordination
+version: 1.0.0
+description: Systematic research and literature review coordination patterns
+
+implementation: |
+  ## Research Workflow Protocol
+
+  ### Literature Review and Research Process
+
+  **CRITICAL: Always follow systematic research methodology:**
+
+  #### 1. Research Strategy Development
+  - **Research Question Formulation**: Clearly define research objectives and scope
+  - **Source Identification**: Identify authoritative sources and research databases
+  - **Methodology Selection**: Choose appropriate research and analysis methodologies
+  - **Timeline and Scope**: Define research timeline and deliverable expectations
+
+  #### 2. Systematic Literature Review
+  ```
+  Web Search → MCP Tool Research → Cross-Validation → Synthesis → Implementation Guidance
+  ```
+
+  **Step 1: Web Search Research**
+  - Search for recent papers, surveys, and technical reports
+  - Focus on current research trends and emerging methodologies
+  - Identify key researchers and authoritative sources in the field
+  - Track conference proceedings and journal publications
+
+  **Step 2: MCP Tool Deep Research**  
+  - Use DeepWiki for comprehensive technical documentation
+  - Leverage Context7 for detailed implementation examples
+  - Cross-reference multiple technical sources for validation
+  - Extract practical implementation patterns and approaches
+
+  **Step 3: Cross-Validation and Analysis**
+  - Validate findings across multiple authoritative sources
+  - Identify consensus approaches and controversial areas
+  - Assess practical applicability to current projects
+  - Note limitations and potential implementation challenges
+
+  **Step 4: Synthesis and Recommendations**
+  - Synthesize findings into actionable recommendations
+  - Extract clear methodology for implementation teams
+  - Provide practical guidance with specific examples
+  - Highlight key considerations and potential pitfalls
+
+  ### Research Integration Patterns
+
+  **For Implementation Teams:**
+  - **Clear Methodology Transfer**: Provide step-by-step implementation guidance
+  - **Context-Specific Recommendations**: Adapt general research to specific project needs
+  - **Risk Assessment**: Highlight potential challenges and mitigation strategies
+  - **Success Metrics**: Define measurable outcomes for research application
+
+  **For Complex Questions:**
+  - **Multi-Domain Analysis**: Integrate research across multiple disciplines
+  - **Uncertainty Quantification**: Clearly communicate confidence levels and limitations
+  - **Alternative Approaches**: Present multiple viable methodologies when appropriate
+  - **Escalation Guidance**: Know when to coordinate with senior research specialists
+
+  ### Research Quality Assurance
+
+  **Source Validation:**
+  - ✅ Verify source authority and credibility
+  - ✅ Check publication dates and research currency
+  - ✅ Cross-reference findings across multiple sources
+  - ✅ Identify and note any potential conflicts of interest
+
+  **Methodology Validation:**
+  - ✅ Ensure research methodology is appropriate for the question
+  - ✅ Validate statistical approaches and experimental design
+  - ✅ Check for reproducibility and replication studies
+  - ✅ Assess practical implementation feasibility
+
+  ### Coordination with Implementation Teams
+
+  **Research Handoff Protocol:**
+  - **Clear Documentation**: Provide comprehensive research summary with sources
+  - **Implementation Roadmap**: Translate research into actionable development steps
+  - **Technical Specifications**: Define specific technical requirements and constraints
+  - **Validation Criteria**: Establish success metrics and validation approaches
+
+  **Ongoing Support:**
+  - **Implementation Guidance**: Provide clarification and additional research as needed
+  - **Methodology Refinement**: Adapt approaches based on implementation feedback
+  - **Progress Validation**: Review implementation progress against research recommendations
+  - **Iterative Improvement**: Incorporate learnings for future research projects
+
+coordination_patterns:
+  - name: systematic_literature_review
+    trigger: when research request requires comprehensive literature analysis
+    action: execute systematic web search and MCP tool research workflow
+    context_required:
+      - research_question
+      - scope_definition
+      - timeline_requirements
+
+  - name: methodology_extraction
+    trigger: when implementation team needs practical guidance from research
+    action: translate research findings into actionable implementation methodology
+    context_required:
+      - research_findings
+      - implementation_context
+      - technical_constraints
+
+  - name: research_validation
+    trigger: when research findings need cross-validation
+    action: validate findings across multiple authoritative sources
+    context_required:
+      - initial_findings
+      - source_credibility
+      - validation_criteria
+
+  - name: senior_research_escalation
+    trigger: when research complexity exceeds current capabilities
+    action: escalate to senior research specialists with comprehensive context
+    context_required:
+      - research_complexity_analysis
+      - attempted_approaches
+      - specific_guidance_needed

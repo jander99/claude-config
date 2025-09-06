@@ -1,0 +1,96 @@
+name: code-quality-metrics
+display_name: "Code Quality Metrics"
+category: enhancement
+description: "Technical debt tracking, code quality measurement, and continuous improvement"
+
+coordination_patterns:
+  - name: "code_quality_assessment"
+    trigger: "during code reviews and before major releases"
+    action: "assess code quality metrics and identify improvement opportunities"
+    context_required: ["quality_standards", "metric_thresholds", "technical_debt_budget"]
+
+  - name: "refactoring_prioritization"
+    trigger: "when technical debt reaches concerning levels"
+    action: "coordinate refactoring efforts across development teams"
+    context_required: ["debt_impact", "refactoring_priorities", "business_value"]
+
+implementation: |
+  ## Code Quality Metrics Enhancement
+
+  **Quality is not an accident - measure, monitor, and improve continuously**
+
+  ### Code Quality Dimensions
+  1. **Maintainability**:
+     - **Cyclomatic Complexity**: Measure code complexity and decision paths
+     - **Code Duplication**: Identify and eliminate repeated code patterns
+     - **Method/Function Length**: Keep functions focused and manageable
+     - **Class Coupling**: Measure dependencies between components
+
+  2. **Reliability**:
+     - **Test Coverage**: Unit, integration, and end-to-end test coverage
+     - **Bug Density**: Defects per lines of code or function points
+     - **Error Handling**: Comprehensive error handling and recovery
+     - **Performance Metrics**: Response time and resource usage patterns
+
+  3. **Security**:
+     - **Vulnerability Scanning**: Static and dynamic security analysis
+     - **Code Security Patterns**: Secure coding practice compliance
+     - **Dependency Security**: Third-party library vulnerability assessment
+     - **Authentication/Authorization**: Security control implementation quality
+
+  ### Technical Debt Management
+  ```
+  Technical Debt Workflow:
+  Code Analysis → Identify technical debt hotspots
+  ↓
+  Impact Assessment → Business and development impact evaluation
+  ↓
+  Prioritization → Balance new features with debt reduction
+  ↓
+  Refactoring Planning → Coordinate refactoring across teams
+  ↓
+  Progress Tracking → Monitor debt reduction and quality improvement
+  ```
+
+  ### Quality Metrics Collection
+  - **Static Analysis**: SonarQube, ESLint, Pylint, SpotBugs
+  - **Code Coverage**: Istanbul, Coverage.py, JaCoCo
+  - **Dependency Analysis**: OWASP Dependency Check, Snyk
+  - **Performance Profiling**: Application performance monitoring tools
+
+  ### Quality Gates and Standards
+  1. **Pre-Commit Quality Gates**:
+     - Code formatting and linting checks
+     - Unit test execution and coverage thresholds
+     - Security vulnerability scanning
+     - Code complexity analysis
+
+  2. **Continuous Integration Quality Gates**:
+     - Integration test execution
+     - Code quality metric thresholds
+     - Performance regression testing
+     - Documentation completeness checks
+
+  ### Technical Debt Tracking
+  - **Debt Identification**: Automated detection of code smells and anti-patterns
+  - **Debt Quantification**: Time estimation for remediation efforts
+  - **Debt Prioritization**: Business impact vs. technical impact matrix
+  - **Debt Visualization**: Technical debt dashboards and reports
+
+  ### Refactoring Coordination
+  - **Safe Refactoring**: Comprehensive test coverage before refactoring
+  - **Incremental Improvement**: Small, frequent improvements over large rewrites
+  - **Cross-Team Communication**: Coordinate changes affecting multiple teams
+  - **Documentation Updates**: Keep architecture and API documentation current
+
+  ### Quality Improvement Strategies
+  - **Code Review Standards**: Consistent review criteria and checklists
+  - **Pair Programming**: Knowledge sharing and real-time quality improvement
+  - **Clean Code Training**: Team education on clean coding principles
+  - **Architecture Reviews**: Regular assessment of system design quality
+
+  ### Coordination Examples
+  - "Code quality analysis complete - 85% test coverage achieved"
+  - "Technical debt hotspots identified - prioritizing authentication module refactor"
+  - "Quality gates passed - code complexity within acceptable thresholds"
+  - "Refactoring coordination complete - improved maintainability by 25%"

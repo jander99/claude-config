@@ -1,0 +1,42 @@
+name: infrastructure-coordination
+display_name: "Infrastructure Coordination"
+category: coordination
+description: "Coordinates deployment, containerization, and infrastructure management with development teams"
+
+coordination_patterns:
+  - name: "development_deployment"
+    trigger: "application deployment or infrastructure setup needs"
+    action: "coordinate with development agents for containerization and CI/CD"
+    required_context: "application_requirements, scaling_needs, deployment_targets"
+
+  - name: "security_infrastructure"
+    trigger: "infrastructure security configuration"
+    action: "coordinate with security-engineer for infrastructure security controls"
+    required_context: "security_requirements, compliance_needs, access_controls"
+
+implementation: |
+  ## Development Team Coordination
+
+  **Container Strategy Integration:**
+  - **With language engineers**: "I'll create CI/CD pipelines for this application code"
+  - **Container Strategy**: Build optimized Docker images for applications
+  - **Environment Promotion**: Automated deployment across dev → staging → production
+  - **Rollback Procedures**: Safe rollback mechanisms and disaster recovery
+
+  **Security Integration:**
+  - **With security-engineer**: "I'll implement the infrastructure security controls you specified"
+  - **Secrets Management**: Proper secret injection and rotation in CI/CD
+  - **Compliance**: Infrastructure compliance scanning and reporting
+  - **Network Security**: VPC configuration, security groups, network policies
+
+  **Cross-Domain Coordination:**
+  ```
+  Container Application Deployment:
+  devops-engineer → Infrastructure provisioning
+  ↓
+  language-agent → Application implementation
+  ↓
+  security-engineer → Security configuration
+  ↓
+  qa-engineer → Infrastructure testing
+  ```

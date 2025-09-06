@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Purpose
 
-This is a Claude Code user configuration repository (`.claude` directory) that customizes Claude Code's behavior through specialized agent definitions, settings, and project configurations. This is not a traditional software development project but rather a configuration repository that enhances Claude Code's capabilities.
+This is a Claude Code user configuration repository that generates customized configurations for Claude Code's behavior through specialized agent definitions, settings, and project configurations. This repository builds and deploys to the user's `${HOME}/.claude/` directory. This is not a traditional software development project but rather a configuration repository that enhances Claude Code's capabilities through a build-then-deploy system.
 
 ## Architecture Overview
 
@@ -77,8 +77,16 @@ Agents follow a hierarchical coordination model:
 
 ## Directory Structure
 
+### This Repository (Development)
 - `agents/` - Specialized agent definitions (.md files with YAML frontmatter)
 - `docs/` - Documentation and guides  
+- `data/` - Configuration generation system (planned)
+- `CLAUDE.md` - Global instructions and coordination guide
+- `README.md` - Repository documentation
+
+### Production Directory (`${HOME}/.claude/`)
+Generated and deployed from this repository:
+- `agents/` - Specialized agent definitions
 - `settings.json` - Claude Code configuration (model preferences, etc.)
 - `projects/` - Project-specific configurations and contexts
 - `todos/` - Task management and agent coordination state

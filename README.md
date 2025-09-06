@@ -38,7 +38,7 @@ We are implementing a **composable system** that transforms how agents are built
 
 ### File Structure
 ```
-/home/jeff/.claude/
+${HOME}/.claude/
 ├── agents/                 # Specialized agent definitions
 │   ├── ai-engineer.md          # ML/AI development specialist
 │   ├── python-engineer.md      # Web frameworks & data processing
@@ -60,9 +60,6 @@ We are implementing a **composable system** that transforms how agents are built
 │   ├── sr-quant-analyst.md     # Advanced quantitative analysis
 │   ├── prompt-engineer.md      # EXPERIMENTAL: Request enhancement
 │   └── agent-architect.md      # Meta-level agent system design
-├── settings.json           # Claude Code configuration settings
-├── CLAUDE.md              # Global instructions & coordination guide
-└── README.md              # This documentation file
 ```
 
 ### Current Agent Format
@@ -94,10 +91,10 @@ You are a Python development specialist focused on web frameworks...
 
 The agent composition system introduces four core component types:
 
-#### 1. Personas (`config-gen/personas/`)
+#### 1. Personas (`data/personas/`)
 Domain-specific expertise definitions:
 ```yaml
-# config-gen/personas/python-engineer.yaml
+# data/personas/python-engineer.yaml
 name: python_developer
 display_name: "Python Developer"
 expertise:
@@ -109,10 +106,10 @@ proactive_triggers:
   project_indicators: ["Flask", "Django", "FastAPI"]
 ```
 
-#### 2. Traits (`config-gen/traits/`)
+#### 2. Traits (`data/traits/`)
 Reusable behaviors and capabilities:
 ```yaml
-# config-gen/traits/safety/branch-check.yaml
+# data/traits/safety/branch-check.yaml
 name: branch_safety
 category: safety
 implementation: |
@@ -124,10 +121,10 @@ implementation: |
      - Suggest: `{{branch_type}}/{{feature_name}}`
 ```
 
-#### 3. Compositions (`config-gen/personas/`)
+#### 3. Compositions (`data/personas/`)
 Agent definitions built from personas and traits:
 ```yaml
-# config-gen/personas/python-engineer.yaml
+# data/personas/python-engineer.yaml
 name: python-engineer
 model: sonnet
 persona: python_developer
@@ -140,10 +137,10 @@ custom_instructions: |
   Focus on modern Python practices and performance optimization.
 ```
 
-#### 4. Scripts (`config-gen/scripts/`)
+#### 4. Scripts (`data/scripts/`)
 Automation and composition tools:
 ```python
-# config-gen/scripts/build.py
+# data/scripts/build.py
 def compose_agent(composition_file):
     """Build complete agent from composition definition"""
     composition = load_yaml(composition_file)
@@ -159,9 +156,9 @@ The configuration system uses a single, simple configuration file with clean fil
 
 **Single config.yaml example**:
 ```yaml
-# config-gen/config.yaml
+# data/config.yaml
 name: personal-claude-config
-output_dir: build/
+output_dir: dist/
 
 # Agent selection
 agents:
@@ -207,45 +204,88 @@ traits:
 ```
 
 ### Directory Structure
+
+#### This Repository (claude-config)
 ```
-/home/jeff/
-├── .claude/                    # Claude Code configuration directory
-└── config-gen/                # Configuration generation system
-    ├── config.yaml                # Single configuration file
-    ├── personas/                  # Agent definitions (YAML only)
-    │   ├── ai-engineer.yaml
-    │   ├── python-engineer.yaml
-    │   └── git-helper.yaml
-    ├── traits/                    # Reusable behaviors (YAML only)  
-    │   ├── safety/
-    │   │   ├── branch-check.yaml
-    │   │   └── project-verification.yaml
-    │   └── coordination/
-    │       ├── qa-handoff.yaml
-    │       └── escalation.yaml
-    ├── content/                   # All markdown content
-    │   ├── personas/
-    │   │   ├── ai-engineer/
-    │   │   │   ├── core.md
-    │   │   │   ├── coordination.md
-    │   │   │   └── examples.md
-    │   │   └── python-engineer/
-    │   │       ├── core.md
-    │   │       └── coordination.md
-    │   ├── traits/
-    │   │   ├── safety/
-    │   │   │   └── branch-check.md
-    │   │   └── coordination/
-    │   │       └── qa-handoff.md
-    │   └── shared/                # Reusable content chunks
-    │       ├── cost-optimization.md
-    │       └── common-workflows.md
-    ├── templates/                 # Jinja2 templates
-    │   ├── agent.md.j2
-    │   └── claude-config.json.j2
-    └── build/                    # Generated outputs (gitignored)
-        ├── agents/
-        └── .claude.json
+claude-config/                 # This repository
+├── README.md                      # This documentation
+├── CLAUDE.md                      # Global instructions & coordination guide
+├── agents/                        # Current agent definitions (.md files)
+│   ├── ai-engineer.md
+│   ├── python-engineer.md
+│   ├── java-engineer.md
+│   ├── frontend-engineer.md
+│   ├── devops-engineer.md
+│   ├── data-engineer.md
+│   ├── blockchain-engineer.md
+│   ├── sr-architect.md
+│   ├── qa-engineer.md
+│   ├── technical-writer.md
+│   ├── git-helper.md
+│   ├── security-engineer.md
+│   ├── database-engineer.md
+│   ├── ai-researcher.md
+│   ├── sr-ai-researcher.md
+│   ├── product-manager.md
+│   ├── quant-analyst.md
+│   ├── sr-quant-analyst.md
+│   ├── prompt-engineer.md
+│   └── agent-architect.md
+├── settings.json                  # Claude Code configuration settings
+├── data/                          # Configuration generation system (planned)
+│   ├── config.yaml                    # Single configuration file
+│   ├── personas/                      # Agent definitions (YAML only)
+│   │   ├── ai-engineer.yaml
+│   │   ├── python-engineer.yaml
+│   │   └── git-helper.yaml
+│   ├── traits/                        # Reusable behaviors (YAML only)  
+│   │   ├── safety/
+│   │   │   ├── branch-check.yaml
+│   │   │   └── project-verification.yaml
+│   │   └── coordination/
+│   │       ├── qa-handoff.yaml
+│   │       └── escalation.yaml
+│   ├── content/                       # All markdown content
+│   │   ├── personas/
+│   │   │   ├── ai-engineer/
+│   │   │   │   ├── core.md
+│   │   │   │   ├── coordination.md
+│   │   │   │   └── examples.md
+│   │   │   └── python-engineer/
+│   │   │       ├── core.md
+│   │   │       └── coordination.md
+│   │   ├── traits/
+│   │   │   ├── safety/
+│   │   │   │   └── branch-check.md
+│   │   │   └── coordination/
+│   │   │       └── qa-handoff.md
+│   │   └── shared/                    # Reusable content chunks
+│   │       ├── cost-optimization.md
+│   │       └── common-workflows.md
+│   ├── templates/                     # Jinja2 templates
+│   │   ├── agent.md.j2
+│   │   └── claude-config.json.j2
+│   └── scripts/                       # Build and automation scripts
+│       ├── build.py
+│       ├── validate.py
+│       └── watch.py
+└── dist/                          # Generated outputs (gitignored)
+    ├── agents/
+    ├── settings.json
+    └── CLAUDE.md
+
+```
+
+#### Production Directory (${HOME}/.claude/)
+Generated and deployed from this repository:
+```
+${HOME}/.claude/
+├── agents/                        # Specialized agent definitions
+├── settings.json                  # Claude Code configuration
+├── CLAUDE.md                      # Global instructions
+├── projects/                      # Project-specific configurations
+├── todos/                         # Task management state
+└── ide/, local/, shell-snapshots/, statsig/  # Runtime directories
 ```
 
 ## Implementation Phases
@@ -314,7 +354,7 @@ The configuration system uses a single config.yaml file with optional .env for s
 ```yaml
 # config.yaml
 name: personal-claude-config
-output_dir: build/
+output_dir: dist/
 
 # Agent selection
 agents:
@@ -363,26 +403,33 @@ ANTHROPIC_API_KEY=sk-ant-your-key-here
 
 ### Development Setup
 ```bash
-# Install uv
+# Install uv (modern Python package manager)
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Clone and setup
-cd config-gen/
-uv sync
+git clone <repository-url> claude-config
+cd claude-config/
+
+# Install in development mode with all dependencies
+make dev
+
+# Build and install configurations
 make build
-make install
+make install-to-claude
 ```
 
 ### Quick Start Example
 ```bash
-# One command: build and install
-make deploy
+# Development workflow
+make dev          # Setup development environment
+make build        # Build all agents
+make test         # Run tests
+make install-to-claude  # Install to ~/.claude/
 
-# Development mode with watch
-make dev
-
-# Validate configurations
-make validate
+# Continuous development
+make watch        # Watch for changes and rebuild
+make validate     # Validate all configurations
+make lint         # Check code quality
 ```
 
 ## Technical Architecture
@@ -478,7 +525,7 @@ compatibility:
 Define domain expertise in YAML format:
 
 ```yaml
-# config-gen/personas/rust-engineer.yaml
+# data/personas/rust-engineer.yaml
 name: rust_developer
 display_name: "Rust Developer"
 version: "1.0.0"
@@ -510,7 +557,7 @@ tools_integration:
 Create modular behaviors:
 
 ```yaml
-# config-gen/traits/performance/optimization.yaml
+# data/traits/performance/optimization.yaml
 name: performance_optimization
 category: enhancement
 version: "1.0.0"
@@ -548,7 +595,7 @@ coordination_patterns:
 Combine personas and traits to create specialized agents:
 
 ```yaml
-# config-gen/personas/rust-performance-engineer.yaml
+# data/personas/rust-performance-engineer.yaml
 name: rust-performance-engineer
 version: "1.0.0"
 model: sonnet
@@ -602,71 +649,73 @@ def test_rust_performance_composition():
 
 ## Scripts and Tools
 
-The composable system includes simplified Make targets:
+The Python project includes comprehensive Make targets and a CLI:
 
+### Command Line Interface
+```bash
+# Core commands
+claude-config build              # Build all agent configurations
+claude-config build --agent ai-engineer  # Build specific agent
+claude-config validate          # Validate all configurations
+claude-config list-agents       # List available personas
+claude-config list-traits       # List available traits
+claude-config install          # Install to ~/.claude/
+
+# Development commands
+claude-config build --watch     # Watch for changes and rebuild
+claude-config build --validate  # Build with validation
+```
+
+### Make Targets
 ```makefile
-.PHONY: build install clean dev validate
+# Setup & Installation
+make dev                        # Install in development mode
+make install                    # Install package
+make install-to-claude          # Install generated config to ~/.claude/
 
-# Generate all configurations
-build:
-	python scripts/build.py
+# Development
+make build                      # Build all agent configurations
+make validate                   # Validate all configurations
+make test                       # Run test suite
+make lint                       # Run code linting
+make format                     # Auto-format code
+make watch                      # Watch for changes and rebuild
 
-# Install to ~/.claude/
-install: build
-	cp -r build/* ~/.claude/
-
-# Clean generated files  
-clean:
-	rm -rf build/*
-
-# Development mode with watch
-dev:
-	python scripts/watch.py
-
-# Validate configurations
-validate:
-	python scripts/validate.py
-
-# One command: build and install
-deploy: build install
+# Maintenance
+make clean                      # Clean build artifacts
+make list                       # List available agents and traits
 ```
 
-### Build Tools
+### Development Workflow
 
-#### `make build`
-Generate all configurations:
+#### Setup New Environment
 ```bash
-# Build all agents and configurations
-make build
+git clone <repository-url> claude-config
+cd claude-config/
+make dev                        # Install dev dependencies and setup
 ```
 
-#### `make install`
-Install to ~/.claude/:
+#### Daily Development
 ```bash
-# Install generated files
-make install
+make build                      # Build all configurations
+make test                       # Run test suite  
+make validate                   # Check configuration validity
+make install-to-claude          # Deploy to ~/.claude/
 ```
 
-#### `make validate`
-Validate compositions and generated agents:
+#### Code Quality
 ```bash
-# Validate all compositions
-make validate
+make format                     # Auto-format Python code
+make lint                       # Run linters (black, isort, mypy)
+make clean                      # Clean build artifacts
 ```
 
-#### `make dev`
-Development mode with file watching:
+#### Continuous Development
 ```bash
-# Watch for changes and rebuild
-make dev
+make watch                      # Watch files and rebuild automatically
+make test-watch                 # Run tests on file changes
 ```
 
-#### `make clean`
-Clean build artifacts:
-```bash
-# Clean all generated files
-make clean
-```
 
 ## Contributing
 

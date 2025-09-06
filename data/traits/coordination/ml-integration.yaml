@@ -1,0 +1,119 @@
+name: ml-integration
+category: coordination  
+version: 1.0.0
+description: Standardized coordination patterns for agents working with AI/ML components
+
+implementation: |
+  ## ML Integration and Coordination Protocol
+
+  ### AI Engineer Coordination Boundaries
+
+  **Clear Handoff Protocols:**
+
+  #### To ai-engineer (Hand Off):
+  - Neural networks, PyTorch, TensorFlow implementations
+  - Model training, loss functions, backpropagation
+  - ML algorithms and statistical modeling  
+  - Feature engineering for machine learning
+  - Model evaluation and hyperparameter tuning
+  - Advanced ML research and methodology
+
+  #### From ai-engineer (Receive):
+  - Trained models ready for deployment
+  - Model inference requirements and specifications
+  - Performance metrics and validation results
+  - Integration interfaces and API contracts
+
+  ### Development Agent Responsibilities
+
+  **Focus Areas (retain responsibility):**
+  - Model serving infrastructure and API endpoints
+  - Data preparation and validation pipelines
+  - Authentication and security for ML services
+  - Monitoring and logging for production ML systems
+  - Integration with existing application architecture
+  - User interface and experience around ML features
+
+  ### Coordination Workflow Patterns
+
+  **ML Request Assessment:**
+  ```
+  ML Request → Assess Complexity → If Model Implementation → ai-engineer
+             ↘ If Infrastructure/Serving → continue development
+  ```
+
+  **Data Pipeline Coordination:**
+  - Handle data ingestion, cleaning, and validation
+  - Prepare data in format specified by ai-engineer
+  - Coordinate on data schema and validation requirements
+  - Handle data pipeline monitoring and error recovery
+
+  **Model Serving Integration:**
+  - Create API endpoints that serve ai-engineer's trained models
+  - Implement proper error handling and fallback mechanisms
+  - Add caching, rate limiting, and performance optimizations
+  - Monitor model performance and integration health
+
+  ### Integration Code Patterns
+
+  **Example Serving Layer (Development Agent):**
+  ```python
+  @app.post("/predict")
+  async def predict(request: PredictionRequest):
+      # Validate input, handle errors
+      validated_data = validate_input(request)
+      
+      # Hand off to ai-engineer's model
+      prediction = await model_service.predict(validated_data)
+      
+      # Format response, add metadata
+      return PredictionResponse(
+          prediction=prediction,
+          confidence=prediction.confidence,
+          timestamp=datetime.utcnow()
+      )
+  ```
+
+  **Model Service Interface (AI Engineer Territory):**
+  ```python
+  class ModelService:
+      def __init__(self, model_path: str):
+          self.model = load_model(model_path)  # AI Engineer implements
+      
+      async def predict(self, data):
+          # ML model inference logic - AI Engineer handles
+          return self.model.predict(data)
+  ```
+
+coordination_patterns:
+  - name: ml_complexity_assessment
+    trigger: when request involves potential ML components
+    action: assess whether task requires ai-engineer coordination
+    context_required:
+      - request_description
+      - technical_requirements
+      - existing_ml_components
+
+  - name: model_serving_handoff
+    trigger: when ai-engineer provides trained model
+    action: create serving infrastructure and API integration
+    context_required:
+      - model_specifications
+      - performance_requirements  
+      - integration_interfaces
+
+  - name: data_pipeline_coordination
+    trigger: when ML workflow requires data preparation
+    action: coordinate data pipeline development with ai-engineer requirements
+    context_required:
+      - data_sources
+      - ml_data_requirements
+      - validation_schemas
+
+  - name: ml_infrastructure_integration
+    trigger: when deploying ML models to production
+    action: handle monitoring, scaling, and production concerns
+    context_required:
+      - model_performance_requirements
+      - scaling_needs
+      - monitoring_requirements
