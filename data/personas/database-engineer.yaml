@@ -41,14 +41,6 @@ content_sections:
   query_optimization: personas/database-engineer/query-optimization.md
   migrations: personas/database-engineer/migrations.md
   performance: personas/database-engineer/performance.md
-traits:
-- safety/branch-check
-- safety/environment-verification
-- safety/data-protection
-- coordination/testing-handoff
-- coordination/database-optimization
-- coordination/documentation-handoff
-- enhancement/mcp-integration
 custom_instructions: '## Database Context Detection
 
 

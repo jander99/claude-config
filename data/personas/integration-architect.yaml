@@ -41,10 +41,6 @@ content_sections:
   api_strategy: personas/integration-architect/api-strategy.md
   legacy_modernization: personas/integration-architect/legacy-modernization.md
   security_compliance: personas/integration-architect/security-compliance.md
-traits:
-- safety/branch-check
-- coordination/testing-handoff
-- enhancement/mcp-integration
 custom_instructions: |
   ## Integration Architecture Context Verification
 

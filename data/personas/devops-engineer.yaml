@@ -43,13 +43,6 @@ content_sections:
   container_orchestration: personas/devops-engineer/container-orchestration.md
   cicd_pipelines: personas/devops-engineer/cicd-pipelines.md
   cloud_platforms: personas/devops-engineer/cloud-platforms.md
-traits:
-- safety/branch-check
-- safety/environment-verification
-- coordination/testing-handoff
-- coordination/infrastructure-coordination
-- coordination/documentation-handoff
-- enhancement/mcp-integration
 custom_instructions: '## DevOps Context Detection
 
 

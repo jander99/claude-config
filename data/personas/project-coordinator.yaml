@@ -40,10 +40,6 @@ content_sections:
   dependency_tracking: personas/project-coordinator/dependency-tracking.md
   communication_strategies: personas/project-coordinator/communication-strategies.md
   risk_management: personas/project-coordinator/risk-management.md
-traits:
-- safety/branch-check
-- coordination/testing-handoff
-- enhancement/mcp-integration
 custom_instructions: |
   ## Project Coordination Context Verification
 

@@ -38,9 +38,6 @@ content_sections:
   frameworks: personas/python-engineer/frameworks.md
   best_practices: personas/python-engineer/best-practices.md
   coordination: personas/python-engineer/coordination.md
-traits:
-- safety/branch-check
-- coordination/testing-handoff
 custom_instructions: "## Context Detection & Safety\n**CRITICAL: Always check these\
   \ before starting work:**\n\n1. **Python Project Verification**: Confirm this is\
   \ a Python project by checking for:\n   - `pyproject.toml` (Poetry projects) or\

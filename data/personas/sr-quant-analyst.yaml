@@ -36,11 +36,6 @@ content_sections:
   regulatory_compliance: personas/sr-quant-analyst/regulatory-compliance.md
   risk_management: personas/sr-quant-analyst/risk-management.md
   institutional_reporting: personas/sr-quant-analyst/institutional-reporting.md
-traits:
-- safety/branch-check
-- coordination/financial-analysis
-- coordination/documentation-handoff
-- enhancement/mcp-integration
 custom_instructions: '## Senior Quantitative Context Verification
 
 

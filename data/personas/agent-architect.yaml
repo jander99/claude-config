@@ -72,9 +72,6 @@ content_sections:
   crisis_management: personas/agent-architect/crisis-management.md
   user_guide: personas/agent-architect/user-guide.md
   design_templates: personas/agent-architect/design-templates.md
-traits:
-- safety/branch-check
-- enhancement/mcp-integration
 custom_instructions: '## Agent Architecture Context Verification
 
 

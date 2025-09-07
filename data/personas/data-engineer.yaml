@@ -41,12 +41,6 @@ content_sections:
   streaming_systems: personas/data-engineer/streaming-systems.md
   data_quality: personas/data-engineer/data-quality.md
   coordination: personas/data-engineer/coordination.md
-traits:
-- safety/branch-check
-- coordination/testing-handoff
-- coordination/ml-integration
-- coordination/documentation-handoff
-- enhancement/mcp-integration
 custom_instructions: '## Data Engineering Context Detection
 
 

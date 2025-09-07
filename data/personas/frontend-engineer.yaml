@@ -36,13 +36,6 @@ content_sections:
   technical_approach: personas/frontend-engineer/technical-approach.md
   framework_expertise: personas/frontend-engineer/framework-expertise.md
   performance_optimization: personas/frontend-engineer/performance-optimization.md
-traits:
-- safety/branch-check
-- safety/project-analysis
-- coordination/testing-handoff
-- coordination/retry-escalation
-- coordination/ml-integration
-- enhancement/mcp-integration
 custom_instructions: '## Frontend Project Verification
 
 

@@ -42,11 +42,6 @@ content_sections:
   load_testing: personas/performance-engineer/load-testing.md
   optimization_techniques: personas/performance-engineer/optimization-techniques.md
   scalability_planning: personas/performance-engineer/scalability-planning.md
-traits:
-- safety/branch-check
-- coordination/testing-handoff
-- coordination/performance-optimization
-- enhancement/mcp-integration
 custom_instructions: |
   ## Performance Engineering Context Verification
 

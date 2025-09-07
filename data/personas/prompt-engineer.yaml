@@ -34,8 +34,6 @@ content_sections:
   context_analysis: personas/prompt-engineer/context-analysis.md
   user_experience: personas/prompt-engineer/user-experience.md
   experimental_features: personas/prompt-engineer/experimental-features.md
-traits:
-- enhancement/mcp-integration
 custom_instructions: '## Enhancement Suitability Verification
 
 
