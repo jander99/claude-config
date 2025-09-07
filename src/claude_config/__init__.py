@@ -1,14 +1,15 @@
 """
-Claude Code Configuration Generator
+Claude Config Generator.
 
-A composable system for generating Claude Code agent configurations
-through personas, traits, and content composition.
+This package provides a system for generating Claude agent configurations.
 """
-
-__version__ = "0.1.0"
-__author__ = "Claude Config Team"
 
 from .composer import AgentComposer
 from .validator import ConfigValidator
 
-__all__ = ["AgentComposer", "ConfigValidator"]
+__version__ = "0.1.0"
+
+__all__ = [
+    'AgentComposer',
+    'ConfigValidator'
+]

@@ -35,12 +35,6 @@ content_sections:
   spring_expertise: personas/java-engineer/spring-expertise.md
   testing_strategy: personas/java-engineer/testing-strategy.md
   example_workflows: personas/java-engineer/example-workflows.md
-traits:
-- safety/branch-check
-- safety/project-analysis
-- coordination/testing-handoff
-- coordination/retry-escalation
-- enhancement/mcp-integration
 custom_instructions: '## Java Project Verification
 
 

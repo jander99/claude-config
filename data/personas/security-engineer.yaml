@@ -39,13 +39,6 @@ content_sections:
   infrastructure_security: personas/security-engineer/infrastructure-security.md
   security_automation: personas/security-engineer/security-automation.md
   compliance: personas/security-engineer/compliance.md
-traits:
-- safety/branch-check
-- safety/data-protection
-- coordination/testing-handoff
-- coordination/security-automation
-- coordination/documentation-handoff
-- enhancement/mcp-integration
 custom_instructions: '## Security Context Detection
 
 

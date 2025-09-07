@@ -33,9 +33,6 @@ content_sections:
   project_detection: personas/qa-engineer/project-detection.md
   test_execution: personas/qa-engineer/test-execution.md
   result_analysis: personas/qa-engineer/result-analysis.md
-traits:
-- safety/branch-check
-- safety/project-analysis
 custom_instructions: "## Safety & Branch Checks\n\n**CRITICAL: Always check before\
   \ running tests:**\n1. **Branch Safety Check**:\n   - Run `git branch --show-current`\
   \ to check current branch\n   - If on `main`, `master`, or `develop`, warn: \"Running\

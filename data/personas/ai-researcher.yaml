@@ -31,10 +31,6 @@ content_sections:
   research_approach: personas/ai-researcher/research-approach.md
   prompt_engineering: personas/ai-researcher/prompt-engineering.md
   coordination_patterns: personas/ai-researcher/coordination-patterns.md
-traits:
-- safety/branch-check
-- coordination/research-workflow
-- enhancement/mcp-integration
 custom_instructions: '## Research Context Verification
 
 

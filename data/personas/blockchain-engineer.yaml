@@ -41,14 +41,6 @@ content_sections:
   defi_protocols: personas/blockchain-engineer/defi-protocols.md
   web3_integration: personas/blockchain-engineer/web3-integration.md
   security: personas/blockchain-engineer/security.md
-traits:
-- safety/branch-check
-- safety/data-protection
-- coordination/testing-handoff
-- coordination/blockchain-integration
-- coordination/security-automation
-- coordination/documentation-handoff
-- enhancement/mcp-integration
 custom_instructions: '## Blockchain Context Detection
 
 

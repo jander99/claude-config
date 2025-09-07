@@ -41,10 +41,6 @@ content_sections:
   retention_analysis: personas/customer-success/retention-analysis.md
   support_optimization: personas/customer-success/support-optimization.md
   success_metrics: personas/customer-success/success-metrics.md
-traits:
-- safety/branch-check
-- coordination/testing-handoff
-- enhancement/mcp-integration
 custom_instructions: |
   ## Customer Success Context Verification
 

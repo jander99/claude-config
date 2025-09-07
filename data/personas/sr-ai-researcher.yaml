@@ -38,10 +38,6 @@ content_sections:
   enterprise_strategy: personas/sr-ai-researcher/enterprise-strategy.md
   prompt_engineering: personas/sr-ai-researcher/prompt-engineering.md
   coordination: personas/sr-ai-researcher/coordination.md
-traits:
-- safety/branch-check
-- coordination/research-workflow
-- enhancement/mcp-integration
 custom_instructions: '## Senior Research Context Verification
 
 

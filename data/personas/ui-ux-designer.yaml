@@ -43,11 +43,6 @@ content_sections:
   accessibility_standards: personas/ui-ux-designer/accessibility-standards.md
   design_systems: personas/ui-ux-designer/design-systems.md
   user_research: personas/ui-ux-designer/user-research.md
-traits:
-- safety/branch-check
-- coordination/testing-handoff
-- coordination/user-experience-coordination
-- enhancement/mcp-integration
 custom_instructions: |
   ## Design Context Verification
 

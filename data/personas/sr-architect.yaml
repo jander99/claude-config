@@ -36,9 +36,6 @@ content_sections:
   architectural_decisions: personas/sr-architect/architectural-decisions.md
   multi_domain_expertise: personas/sr-architect/multi-domain-expertise.md
   technical_leadership: personas/sr-architect/technical-leadership.md
-traits:
-- coordination/retry-escalation
-- enhancement/mcp-integration
 custom_instructions: '## Escalation Context Verification
 
 

@@ -38,14 +38,6 @@ content_sections:
   coordination_patterns: personas/ai-engineer/coordination-patterns.md
   model_performance: personas/ai-engineer/model-performance.md
   example_workflows: personas/ai-engineer/example-workflows.md
-traits:
-- safety/branch-check
-- safety/project-analysis
-- coordination/testing-handoff
-- coordination/retry-escalation
-- coordination/ml-integration
-- coordination/research-workflow
-- enhancement/mcp-integration
 custom_instructions: '## AI/ML Project Verification
 
 

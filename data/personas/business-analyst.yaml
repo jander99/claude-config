@@ -39,10 +39,6 @@ content_sections:
   market_analysis: personas/business-analyst/market-analysis.md
   roi_frameworks: personas/business-analyst/roi-frameworks.md
   stakeholder_management: personas/business-analyst/stakeholder-management.md
-traits:
-- safety/branch-check
-- coordination/testing-handoff
-- enhancement/mcp-integration
 custom_instructions: |
   ## Business Context Verification
 

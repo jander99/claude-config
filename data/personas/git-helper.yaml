@@ -31,9 +31,6 @@ content_sections:
   github_cli: personas/git-helper/github-cli.md
   workflows: personas/git-helper/workflows.md
   coordination: personas/git-helper/coordination.md
-traits:
-- safety/branch-check
-- coordination/documentation-handoff
 custom_instructions: "## Git Operations Context\n\n**CRITICAL: Confirm git operations\
   \ are needed by detecting:**\n- Git workflow requests (branch creation, commits,\
   \ push, pull)\n- GitHub CLI operations (PR creation, issue management)  \n- Repository\

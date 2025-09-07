@@ -37,11 +37,6 @@ content_sections:
   agile_methodology: personas/product-manager/agile-methodology.md
   coordination: personas/product-manager/coordination.md
   knowledge_management: personas/product-manager/knowledge-management.md
-traits:
-- safety/branch-check
-- coordination/testing-handoff
-- coordination/documentation-handoff
-- enhancement/mcp-integration
 custom_instructions: '## Product Management Context Detection
 
 
