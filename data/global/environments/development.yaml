@@ -1,0 +1,33 @@
+environment: development
+display_name: "Development Environment"
+description: "Relaxed rules for experimentation and learning"
+
+# Override base enforcement for development flexibility
+enforcement_overrides:
+  branch_protection: "advisory"     # warn instead of block
+  context_verification: "standard"  # less strict verification
+  cost_monitoring: "relaxed"        # higher budgets for experimentation
+
+# Development-specific detection adjustments
+detection_adjustments:
+  experimental_patterns: "enabled"   # Allow experimental framework detection
+  prototype_patterns: "enabled"      # Detect prototype and POC work
+  learning_patterns: "enabled"       # Educational and tutorial detection
+
+# Cost limits adjusted for development work
+cost_overrides:
+  daily_budget_multiplier: 1.5       # 50% higher budget for dev work
+  session_budget_multiplier: 2.0     # Double session budget
+  escalation_threshold: 5            # More attempts before escalation
+  
+# Development workflow preferences  
+workflow_overrides:
+  testing_requirement: "standard"    # Less strict testing in dev
+  documentation_requirement: "minimal" # Focus on code over docs
+  git_safety_checks: "warning"       # Warn but don't block
+  
+# Allow more experimental agent usage
+experimental_features:
+  prompt_engineer: "enabled"         # Allow experimental prompt enhancement
+  agent_combinations: "flexible"     # Allow non-standard agent combinations
+  cost_tier_relaxation: "enabled"    # Allow tier jumping for experiments

@@ -1,0 +1,73 @@
+name: context-verification
+display_name: "Context Verification"
+category: safety
+description: "Verifies project context and agent specialization match before implementation"
+
+coordination_patterns:
+  - name: "project_context_check"
+    trigger: "before starting any development work"
+    action: "verify project type matches agent specialization"
+    required_context: "project_type, framework_requirements, agent_expertise"
+
+  - name: "dependency_verification"
+    trigger: "before implementation begins"
+    action: "confirm required frameworks and tools are available"
+    required_context: "required_dependencies, available_tools, version_requirements"
+
+  - name: "pattern_analysis"
+    trigger: "when working with existing codebase"
+    action: "check existing code patterns and conventions"
+    required_context: "existing_patterns, code_conventions, project_structure"
+
+implementation: |
+  ## Context Verification Protocol
+
+  ### Pre-Implementation Verification
+
+  **REQUIRED: Every agent must verify context before starting work:**
+
+  #### 1. Project Type Verification
+  - **Confirm**: Project type matches agent specialization
+  - **Check**: Required frameworks and dependencies exist
+  - **Validate**: Agent expertise aligns with project requirements
+  - **Action**: Ask for clarification if context is unclear
+
+  #### 2. Framework and Tool Verification  
+  - **Dependency Check**: Verify required frameworks are available
+  - **Version Compatibility**: Check for compatible versions and dependencies
+  - **Tool Availability**: Confirm necessary development tools are present
+  - **Configuration**: Validate project configuration matches requirements
+
+  #### 3. Code Convention Analysis
+  - **Pattern Detection**: Identify existing code patterns and conventions
+  - **Style Consistency**: Check formatting and naming conventions
+  - **Architecture Alignment**: Understand project architecture and structure
+  - **Integration Points**: Identify how new code should integrate
+
+  ### Verification Checklist:
+
+  **Before Starting Work:**
+  - ✅ Project type matches my specialization
+  - ✅ Required frameworks and dependencies are available
+  - ✅ Existing code patterns and conventions identified
+  - ✅ Integration points and architecture understood
+  - ✅ Any unclear requirements clarified with user
+
+  ### Context Verification Examples:
+  - "Verifying this is a Python FastAPI project before implementing API endpoints"
+  - "Checking that React and TypeScript dependencies are properly configured"
+  - "Confirming database schema matches the ORM models before migration"
+  - "Validating that Kubernetes manifests align with deployment requirements"
+
+  ### Clarification Triggers:
+  **Ask for clarification when:**
+  - Project type doesn't clearly match agent expertise
+  - Required dependencies are missing or misconfigured
+  - Existing code patterns are inconsistent or unclear
+  - Architecture decisions need user input
+  - Requirements are ambiguous or incomplete
+
+  ### Verification Flow:
+  ```
+  Task Request → Context Analysis → Framework Check → Pattern Review → Clarification (if needed) → Implementation
+  ```

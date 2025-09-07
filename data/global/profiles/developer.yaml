@@ -1,0 +1,66 @@
+profile: developer
+display_name: "Full-Stack Developer"
+description: "Optimized for web application development with Python, JavaScript, and database work"
+
+# Agent priority levels affect detection sensitivity and cost optimization
+agent_priorities:
+  critical:
+    - python-engineer
+    - frontend-engineer  
+    - database-engineer
+    - git-helper
+    - qa-engineer
+  standard:
+    - devops-engineer
+    - security-engineer
+    - technical-writer
+    - ai-engineer
+  minimal:
+    - blockchain-engineer
+    - quant-analyst
+    - business-analyst
+    - customer-success
+
+# Detection sensitivity for different pattern categories  
+detection_sensitivity:
+  development_patterns: strict     # Aggressive detection for core dev work
+  research_patterns: relaxed       # Less aggressive for research tasks
+  financial_patterns: minimal      # Only explicit financial work
+  infrastructure_patterns: standard # Moderate detection for DevOps
+
+# Cost management preferences
+cost_preferences:
+  daily_budget: 75.0
+  session_budget: 25.0
+  tier_preference: "balanced"      # conservative, balanced, performance
+  escalation_threshold: 3
+  cost_alerts: true
+
+# Workflow preferences that extend base rules
+workflow_preferences:
+  testing_requirement: "comprehensive"  # comprehensive, standard, minimal
+  documentation_level: "api_focused"    # comprehensive, api_focused, minimal  
+  git_workflow: "feature_branches"      # feature_branches, direct_commits
+  deployment_strategy: "containerized"  # containerized, traditional, manual
+  code_review_level: "standard"         # strict, standard, relaxed
+
+# Communication style preferences
+communication:
+  response_length: "concise"       # concise, moderate, detailed
+  technical_depth: "practical"     # theoretical, practical, basic
+  explanation_style: "direct"      # direct, educational, verbose
+
+# Tool and framework preferences (affects agent selection)
+preferred_tools:
+  python_frameworks: ["fastapi", "django", "flask"]
+  js_frameworks: ["react", "vue"]
+  databases: ["postgresql", "redis"]
+  cloud_providers: ["aws", "gcp"]
+  ci_cd: ["github-actions", "gitlab-ci"]
+
+# Personal customizations that don't affect core enforcement
+personal_preferences:
+  code_style: "follow_existing"    # strict_pep8, follow_existing, flexible
+  error_handling: "comprehensive"  # comprehensive, standard, minimal
+  logging_level: "info"            # debug, info, warn, error
+  performance_focus: "balanced"    # speed, memory, balanced
