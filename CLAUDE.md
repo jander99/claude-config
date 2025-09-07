@@ -2,6 +2,20 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## CLAUDE CODE OPERATIONAL REQUIREMENTS
+
+**CRITICAL**: This configuration repository defines a mandatory agent delegation system. Claude Code MUST use specialized agents via the Task tool for development, research, and operational work as specified in this document.
+
+### Core Enforcement Principles
+
+1. **Mandatory Delegation**: Development work REQUIRES agent delegation via Task tool
+2. **Pattern-Based Activation**: Automatic agent invocation based on detected conditions  
+3. **No Direct Implementation**: Prohibited from direct coding without agent coordination
+4. **Escalation Protocol**: Required escalation paths for complex issues
+5. **Quality Assurance**: Mandatory testing coordination for all development work
+
+**Violation of these protocols compromises system integrity and specialized agent effectiveness.**
+
 ## Repository Purpose
 
 This is a Claude Code user configuration repository that generates customized configurations for Claude Code's behavior through specialized agent definitions, settings, and project configurations. This repository builds and deploys to the user's `${HOME}/.claude/` directory. This is not a traditional software development project but rather a configuration repository that enhances Claude Code's capabilities through a build-then-deploy system.
@@ -47,6 +61,62 @@ Agents follow a hierarchical coordination model:
 4. **Testing Handoffs** - Development agents coordinate with qa-engineer for validation
 5. **Escalation Chains** - Complex issues escalate to senior agents after 3 failed attempts
 6. **Cross-Domain Coordination** - AI work flows between ai-researcher → ai-engineer → qa-engineer
+
+## MANDATORY AGENT INVOCATION REQUIREMENTS
+
+### Enforcement Protocol
+Claude Code MUST delegate to specialized agents via the Task tool when specific conditions are detected. Direct implementation without agent delegation violates operational protocols and SHALL be avoided.
+
+### Required Agent Invocation Triggers
+
+**Development Work - MANDATORY DELEGATION:**
+- **Python Development**: MUST use `python-engineer` via Task tool for any .py files, requirements.txt, or Python frameworks
+- **Java Development**: MUST use `java-engineer` via Task tool for .java files, Maven/Gradle configs, Spring projects  
+- **Frontend Development**: MUST use `frontend-engineer` via Task tool for package.json, JSX/TSX, React/Vue/Angular
+- **AI/ML Work**: MUST use `ai-engineer` via Task tool for ML libraries, model training, Jupyter notebooks
+- **Database Operations**: MUST use `database-engineer` via Task tool for schema design, SQL files, migrations
+- **Blockchain Development**: MUST use `blockchain-engineer` via Task tool for .sol files, Web3 configs, DeFi protocols
+- **DevOps Operations**: MUST use `devops-engineer` via Task tool for Docker, Kubernetes, CI/CD pipelines
+- **Security Implementation**: MUST use `security-engineer` via Task tool for auth systems, security configs
+- **Data Pipeline Work**: MUST use `data-engineer` via Task tool for ETL, streaming, data processing
+
+**Version Control - MANDATORY DELEGATION:**
+- **Git Operations**: MUST use `git-helper` via Task tool for branch creation, commits, PRs, merge operations
+- **Branch Safety**: MANDATORY git-helper check before any development agent activation
+
+**Quality Assurance - MANDATORY COORDINATION:**
+- **Testing Requirements**: All development work MUST coordinate with `qa-engineer` via Task tool
+- **Test Failures**: After 3 failed testing attempts, MUST escalate to `sr-architect` via Task tool
+
+**Research Work - MANDATORY DELEGATION:**
+- **AI/ML Research**: MUST use `ai-researcher` via Task tool for methodology, literature review
+- **Financial Analysis**: MUST use `quant-analyst` via Task tool for financial metrics, trading algorithms
+- **Advanced Research**: Complex multi-domain questions MUST escalate to `sr-ai-researcher` via Task tool
+
+### Task Tool Invocation Syntax
+
+When delegating to agents, Claude MUST use this format:
+
+```
+Task: "[Specific work description]"
+Agent: [agent-name]  
+Context: [File patterns, project type, requirements, constraints]
+```
+
+**Example Invocations:**
+```
+Task: "Implement FastAPI authentication system with JWT tokens"
+Agent: python-engineer
+Context: Python web application, FastAPI framework, authentication requirements
+
+Task: "Create React user dashboard component with state management"  
+Agent: frontend-engineer
+Context: React application, TypeScript, Redux state management
+
+Task: "Design PostgreSQL schema for e-commerce platform"
+Agent: database-engineer  
+Context: E-commerce domain, PostgreSQL, performance requirements
+```
 
 ### Key Integration Points
 
@@ -98,6 +168,40 @@ Generated and deployed from this repository:
 - **Agent Activation**: Agents auto-activate based on project detection patterns
 - **Global Instructions**: This CLAUDE.md file provides context to all Claude Code sessions
 
+## DETECTION PATTERN ENFORCEMENT MATRIX
+
+Claude Code SHALL monitor for these patterns and AUTOMATICALLY invoke the specified agent via Task tool:
+
+| Pattern Detected | Required Agent | Invocation Trigger |
+|------------------|----------------|-------------------|
+| `.py` files or Python imports | `python-engineer` | Any Python development request |
+| `.java`, `pom.xml`, `build.gradle` | `java-engineer` | Java development or Spring framework |
+| `package.json`, `.jsx`, `.tsx` | `frontend-engineer` | Frontend development work |
+| ML libraries (torch, tensorflow, sklearn) | `ai-engineer` | Machine learning implementation |
+| `.sol` files, Web3 dependencies | `blockchain-engineer` | Smart contract or DeFi work |
+| `Dockerfile`, `docker-compose.yml` | `devops-engineer` | Container or infrastructure work |
+| Database schemas, `.sql` files | `database-engineer` | Database design or optimization |
+| Git operations requested | `git-helper` | Any version control operation |
+| Security, auth, vulnerability keywords | `security-engineer` | Security-related implementation |
+| Data pipeline, ETL, streaming configs | `data-engineer` | Data processing workflows |
+| Testing, QA, quality keywords | `qa-engineer` | Quality assurance needs |
+| Research, methodology, analysis | `ai-researcher` | Research methodology guidance |
+| Documentation, API docs, guides | `technical-writer` | Documentation creation needs |
+| Market research, business intelligence | `business-analyst` | Business analysis and ROI optimization |
+| Customer success, user onboarding | `customer-success` | Customer lifecycle and retention strategies |
+| API integration, enterprise patterns | `integration-architect` | Third-party integrations and legacy modernization |
+| Performance testing, optimization | `performance-engineer` | Application performance and scalability |
+| Project coordination, timeline tracking | `project-coordinator` | Multi-agent workflow orchestration |
+| UI/UX design, accessibility requirements | `ui-ux-designer` | Interface design and user experience optimization |
+
+### Automatic Detection Rules
+
+**CRITICAL**: Upon detecting any pattern above, Claude Code:
+1. SHALL NOT proceed with direct implementation
+2. MUST invoke the specified agent via Task tool  
+3. SHALL provide appropriate context to the agent
+4. MUST coordinate handoffs between agents as required
+
 ## Agent Specifications Structure
 
 Each agent file follows this format:
@@ -125,6 +229,48 @@ Followed by detailed sections on:
 4. **Configuration Changes**: Update settings.json for model preferences and global settings
 5. **Version Control**: Use standard git workflows to track configuration changes
 
+## DIRECT WORK RESTRICTIONS
+
+### Prohibited Direct Implementation
+
+Claude Code SHALL NOT directly implement the following without agent delegation:
+
+**Development Work:**
+- Writing production code in Python, Java, JavaScript/TypeScript, Solidity
+- Creating database schemas or writing SQL queries
+- Implementing authentication or security systems
+- Building Docker containers or Kubernetes configurations
+- Creating CI/CD pipelines or deployment scripts
+- Designing data pipelines or ETL processes
+
+**Operations:**
+- Git branch creation, commits, or pull request management
+- Code testing or quality assurance validation
+- Security audits or vulnerability assessments
+- Performance optimization or system architecture decisions
+
+**Research & Analysis:**
+- Literature reviews or methodology design
+- Financial modeling or quantitative analysis
+- Market research or competitive analysis
+
+### Allowed Direct Work
+
+Claude Code MAY work directly only for:
+- **Informational Queries**: Answering questions about concepts, syntax, or general knowledge
+- **Code Explanation**: Explaining existing code without modification
+- **Simple File Operations**: Reading files, basic directory navigation
+- **Planning & Discussion**: High-level planning conversations without implementation
+- **Emergency Debugging**: Critical production issues requiring immediate attention (with subsequent agent handoff)
+
+### Override Conditions
+
+Direct work is permitted ONLY when:
+1. **Agent Unavailable**: Specific agent cannot be accessed due to technical issues
+2. **Trivial Operations**: Single-line changes or configuration tweaks explicitly requested
+3. **Emergency Response**: Critical production issues requiring immediate intervention
+4. **User Override**: User explicitly requests direct work with acknowledgment of protocol deviation
+
 ## Repository Standards
 
 - Agent specifications use YAML frontmatter for metadata
@@ -151,7 +297,7 @@ This document serves as the definitive guide for understanding and coordinating 
 
 ## Available Specialized Agents
 
-The agent ecosystem consists of **20 specialized agents** organized into three performance tiers based on complexity and cost requirements.
+The agent ecosystem consists of **25 specialized agents** organized into three performance tiers based on complexity and cost requirements.
 
 ### Tier 1: Efficiency Agents (Haiku - Fast & Cost-Effective)
 
@@ -164,6 +310,11 @@ The agent ecosystem consists of **20 specialized agents** organized into three p
 - API documentation, user guides, and developer tutorials
 - Documentation generation after development completion
 - Proactive on: Documentation requests, API changes
+
+**project-coordinator** `model: haiku`
+- Cross-agent task orchestration and workflow management
+- Timeline tracking, dependency management, and stakeholder communication
+- Proactive on: Project planning, timeline tracking, milestone management
 
 ### Tier 2: Specialist Agents (Sonnet - Balanced Performance)
 
@@ -219,6 +370,11 @@ The agent ecosystem consists of **20 specialized agents** organized into three p
 - Academic paper analysis and experimental design
 - Proactive on: Research requests, methodology questions
 
+**business-analyst** `model: sonnet`
+- Market research, competitive analysis, and business intelligence
+- ROI optimization and product development strategy
+- Proactive on: Market research, business intelligence, ROI analysis
+
 **product-manager** `model: sonnet`
 - Agile methodology, user story creation, and product requirements
 - Feature planning and stakeholder coordination
@@ -230,10 +386,25 @@ The agent ecosystem consists of **20 specialized agents** organized into three p
 - Proactive on: Financial data, trading strategies, risk models
 
 #### Quality & Enhancement Agents
+**customer-success** `model: sonnet`
+- User onboarding, retention strategies, and customer lifecycle management
+- Support optimization and customer feedback analysis
+- Proactive on: Customer success, user onboarding, retention analysis
+
+**performance-engineer** `model: sonnet`
+- Application performance monitoring, load testing, and scalability planning
+- Cost optimization and resource rightsizing for high-performance systems
+- Proactive on: Performance testing, optimization, monitoring, scalability
+
 **qa-engineer** `model: sonnet`
 - Test automation across multiple languages and frameworks
 - Quality assurance workflows and testing strategies
 - Proactive on: Test files, quality assurance requests
+
+**ui-ux-designer** `model: sonnet`
+- Interface optimization, accessibility, design systems, and conversion optimization
+- User research and usability testing for digital products
+- Proactive on: UI design, user experience, accessibility, design systems
 
 **prompt-engineer** `model: sonnet`
 - EXPERIMENTAL: Prompt preprocessing and context enhancement
@@ -257,6 +428,11 @@ The agent ecosystem consists of **20 specialized agents** organized into three p
 - Complex financial engineering and institutional-grade analysis
 - Escalation target: For sophisticated financial modeling
 
+**integration-architect** `model: opus`
+- Third-party API strategy, enterprise integration patterns, and legacy system modernization
+- Vendor evaluation and microservices communication patterns
+- Proactive on: API integration, enterprise integration, legacy modernization
+
 **agent-architect** `model: opus`
 - Meta-level agent system design and coordination protocol development
 - Agent ecosystem optimization and capability gap analysis
@@ -265,6 +441,22 @@ The agent ecosystem consists of **20 specialized agents** organized into three p
 ---
 
 ## Agent Coordination Patterns
+
+**OPERATIONAL REQUIREMENT**: Claude Code operates through a mandatory agent delegation system. Direct implementation without appropriate agent coordination violates operational protocols.
+
+### Mandatory Coordination Protocol
+
+All work MUST follow this delegation chain:
+```
+Request → Pattern Detection → Agent Invocation → Implementation → Validation → Documentation
+```
+
+**Enforcement Rules:**
+- Pattern Detection: AUTOMATIC - Claude monitors for trigger conditions
+- Agent Invocation: MANDATORY - Must use Task tool with appropriate agent
+- Implementation: DELEGATED - Agents perform specialized work
+- Validation: REQUIRED - qa-engineer validates all development work  
+- Documentation: CONDITIONAL - technical-writer documents user-facing features
 
 ### Hierarchical Coordination Model
 
@@ -577,6 +769,51 @@ Agents suggest consistent branch naming patterns:
   - `architecture/data-pipeline`
 
 ---
+
+## MANDATORY ESCALATION ENFORCEMENT
+
+### Non-Negotiable Escalation Triggers
+
+Claude Code MUST escalate via Task tool when:
+
+**Development Failures (3-Strike Rule):**
+- After 3 failed implementation attempts by development agents → `sr-architect`
+- After 3 failed test attempts by qa-engineer → `sr-architect`
+- After 3 failed deployment attempts by devops-engineer → `sr-architect`
+
+**Complexity Thresholds:**
+- Cross-system integration problems → `sr-architect`
+- Advanced research requiring multi-domain synthesis → `sr-ai-researcher`
+- Complex financial modeling beyond standard metrics → `sr-quant-analyst`
+- Agent ecosystem design or coordination problems → `agent-architect`
+
+**Architecture Decisions:**
+- System design affecting multiple services → `sr-architect`
+- Technology selection for enterprise applications → `sr-architect`
+- Performance optimization requiring architectural changes → `sr-architect`
+
+### Escalation Context Requirements
+
+When escalating, Claude MUST provide via Task tool:
+```
+Task: "[Escalation description with failed attempts]"
+Agent: [senior-agent-name]
+Context: {
+  "original_request": "What user originally asked for",
+  "agents_attempted": ["list", "of", "agents", "tried"],
+  "failure_reasons": ["why", "each", "attempt", "failed"],
+  "current_state": "System state and constraints",
+  "specific_guidance_needed": "What decisions are required"
+}
+```
+
+### Post-Escalation Protocol
+
+After senior agent provides guidance:
+1. MUST delegate implementation to appropriate specialist agent
+2. MUST coordinate with qa-engineer for validation
+3. MUST ensure technical-writer documents the solution
+4. MUST update agent knowledge with learned patterns
 
 ## Escalation Protocols
 
