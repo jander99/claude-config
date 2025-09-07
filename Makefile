@@ -1,4 +1,4 @@
-.PHONY: help install dev build clean test lint format validate install-to-claude watch docs
+.PHONY: help install dev build clean test lint format validate install-to-claude watch docs build-global install-global
 
 # Default target
 help:
@@ -16,6 +16,11 @@ help:
 	@echo "  lint             Run linting (black, isort, mypy)"
 	@echo "  format           Auto-format code with black and isort"
 	@echo "  watch            Watch for changes and rebuild automatically"
+	@echo ""
+	@echo "Global Configuration:"
+	@echo "  build-global     Build universal global CLAUDE.md with agent delegation"
+	@echo "  install-global   Build and install global configuration to ~/.claude/"
+	@echo "  verify-global    Check if global configuration is installed"
 	@echo ""
 	@echo "Maintenance:"
 	@echo "  clean            Clean build artifacts and cache files"
@@ -110,3 +115,35 @@ list:
 setup: dev
 	@echo "🎉 Development environment setup complete!"
 	@echo "Run 'make build' to generate your first configuration."
+# Global Configuration Build System
+PROFILE ?= developer
+ENV ?= development
+
+build-global:
+	@echo "🌍 Building trait-aware global Claude Code configuration..."
+	uv run python src/build_trait_aware_global.py
+
+install-global: build-global
+	@echo "📦 Installing universal global configuration to ~/.claude/..."
+	@mkdir -p ~/.claude
+	@if [ -f ~/.claude/CLAUDE.md ]; then \
+		echo "💾 Backing up existing ~/.claude/CLAUDE.md to ~/.claude/CLAUDE.md.backup"; \
+		cp ~/.claude/CLAUDE.md ~/.claude/CLAUDE.md.backup; \
+	fi
+	cp dist/global/CLAUDE.md ~/.claude/CLAUDE.md
+	@echo "✅ Universal global configuration installed!"
+	@echo "🔄 Restart Claude Code to apply mandatory agent delegation"
+
+verify-global:
+	@if [ -f ~/.claude/CLAUDE.md ]; then \
+		echo "✅ Global configuration installed at ~/.claude/CLAUDE.md"; \
+		echo "📊 Configuration size: $(wc -l ~/.claude/CLAUDE.md | cut -d' ' -f1) lines"; \
+	else \
+		echo "❌ No global configuration found at ~/.claude/CLAUDE.md"; \
+		echo "💡 Run 'make install-global' to install"; \
+	fi
+
+clean-global:
+	@echo "🧹 Cleaning global configuration artifacts..."
+	rm -rf dist/global/
+	@echo "✅ Global clean complete"
