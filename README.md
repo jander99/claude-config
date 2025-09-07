@@ -1,779 +1,364 @@
-# Claude Code Agent Configuration Repository
+# Claude Config Generator
 
-A composable system for Claude Code that enables efficient, specialized AI assistance through intelligent agent compositions for personal development workflows.
+A composable system for generating Claude Code agent configurations through YAML-based composition. This project transforms how Claude Code agents are built and maintained by enabling component reuse, consistent coordination patterns, and rapid agent development through composition rather than duplication.
 
 ## Table of Contents
 - [Project Overview](#project-overview)
-- [Current Architecture](#current-architecture)
-- [Proposed Composable System](#proposed-composable-system)
-- [Implementation Phases](#implementation-phases)
+- [Features](#features)
+- [Architecture](#architecture)
 - [Getting Started](#getting-started)
-- [Technical Architecture](#technical-architecture)
-- [Developer Guide](#developer-guide)
-- [Scripts and Tools](#scripts-and-tools)
+- [Development](#development)
+- [CLI Usage](#cli-usage)
+- [Configuration](#configuration)
 - [Contributing](#contributing)
 
 ## Project Overview
 
-This repository contains a comprehensive composition system for Claude Code, featuring **20 specialized agents** and **configuration composition capabilities** that provide expert assistance across software development domains. The system enables proactive, context-aware development workflows with intelligent agent coordination and flexible, secure configuration management.
+This repository implements a **composable agent system** for Claude Code that eliminates duplication and enables rapid agent development through component reuse. Instead of maintaining 20+ individual agent files with repeated patterns, the system uses:
 
-### Current Capabilities
-- **Core Development**: AI/ML, Python, Java, Frontend, DevOps, Data Engineering, Blockchain
-- **Research & Strategy**: AI Research, Product Management, Quantitative Analysis  
-- **Quality & Architecture**: QA Engineering, System Architecture, Technical Writing
-- **Support**: Git Operations, Security, Database Engineering, Prompt Enhancement
+- **Personas**: Domain expertise definitions (YAML)
+- **Traits**: Reusable behaviors and coordination patterns (YAML)
+- **Templates**: Jinja2 templates for generating complete agent markdown
+- **Compositions**: Agent definitions built by combining personas and traits
+- **CLI Tools**: Python-based build system for generation and validation
 
-### The Composable Vision
+## Features
 
-We are implementing a **composable system** that transforms how agents are built and maintained:
+### Core Capabilities
+- **Composable Architecture**: Build agents from reusable personas and traits
+- **Template-Based Generation**: Jinja2 templates generate complete agent markdown
+- **YAML Configuration**: Clean, maintainable configuration files
+- **CLI Tools**: Full command-line interface for building and validation
+- **Testing Framework**: Automated validation of generated agents
+- **Development Workflow**: Watch mode, linting, and quality checks
 
-**Agent Composition:**
-- **Eliminate Duplication**: 60%+ code reuse through shared components
-- **Consistent Coordination**: Standardized communication patterns across all agents
-- **Rapid Innovation**: Build new agents by composing existing personas and traits
-- **Maintainable Architecture**: Template-based generation with version control
-- **Personal Customization**: Clean configuration system for individual workflows
+### Agent System
+- **20+ Specialized Agents**: Comprehensive coverage of development domains
+- **Consistent Coordination**: Standardized patterns across all agents
+- **Branch Safety**: Mandatory safety checks before development work
+- **Quality Assurance**: Integrated testing and documentation workflows
+- **Escalation Protocols**: Senior agent routing for complex issues
 
-## Current Architecture
+## Architecture
 
-### File Structure
-```
-${HOME}/.claude/
-├── agents/                 # Specialized agent definitions
-│   ├── ai-engineer.md          # ML/AI development specialist
-│   ├── python-engineer.md      # Web frameworks & data processing
-│   ├── java-engineer.md        # Spring Boot & enterprise Java
-│   ├── frontend-engineer.md    # React, Vue, Angular development
-│   ├── devops-engineer.md      # Kubernetes, Docker, CI/CD
-│   ├── data-engineer.md        # Data pipelines & ETL processes
-│   ├── blockchain-engineer.md  # Smart contracts & DeFi protocols
-│   ├── sr-architect.md         # System design & escalation resolution
-│   ├── qa-engineer.md          # Test automation & quality assurance
-│   ├── technical-writer.md     # API docs & user guides
-│   ├── git-helper.md           # Version control operations
-│   ├── security-engineer.md    # Application security & compliance
-│   ├── database-engineer.md    # Database design & optimization
-│   ├── ai-researcher.md        # Literature review & methodology
-│   ├── sr-ai-researcher.md     # Advanced research synthesis
-│   ├── product-manager.md      # Agile methodology & user stories
-│   ├── quant-analyst.md        # Financial metrics & modeling
-│   ├── sr-quant-analyst.md     # Advanced quantitative analysis
-│   ├── prompt-engineer.md      # EXPERIMENTAL: Request enhancement
-│   └── agent-architect.md      # Meta-level agent system design
-```
+### Component System
 
-### Current Agent Format
-Each agent uses YAML frontmatter with markdown content:
-
-```yaml
----
-name: python-engineer
-description: Web frameworks, data processing, and general Python development
-model: sonnet
----
-
-# Python Engineer Agent
-
-You are a Python development specialist focused on web frameworks...
-```
-
-### Current Limitations
-
-1. **High Duplication**: Branch safety checks, coordination patterns, and boilerplate repeated across agents
-2. **Inconsistent Coordination**: Agent handoff patterns vary in implementation
-3. **Maintenance Overhead**: Updates require manual changes across multiple files
-4. **Limited Extensibility**: No plugin architecture for custom agent development
-5. **Version Fragmentation**: Different agents may use incompatible patterns
-
-## Proposed Composable System
-
-### Agent Component Architecture
-
-The agent composition system introduces four core component types:
+The composable architecture uses four main component types:
 
 #### 1. Personas (`data/personas/`)
-Domain-specific expertise definitions:
+Domain expertise definitions in YAML:
 ```yaml
 # data/personas/python-engineer.yaml
 name: python_developer
-display_name: "Python Developer"
+display_name: "Python Developer" 
 expertise:
   - "Web frameworks (Django, FastAPI, Flask)"
-  - "Data processing with pandas, numpy"
-  - "API development and testing"
+  - "Data processing and automation"
 proactive_triggers:
-  file_patterns: ["*.py", "requirements.txt", "pyproject.toml"]
-  project_indicators: ["Flask", "Django", "FastAPI"]
+  file_patterns: ["*.py", "requirements.txt"]
+  project_indicators: ["Flask", "Django"]
 ```
 
 #### 2. Traits (`data/traits/`)
-Reusable behaviors and capabilities:
+Reusable behaviors and coordination patterns:
 ```yaml
 # data/traits/safety/branch-check.yaml
 name: branch_safety
 category: safety
 implementation: |
   ## Branch Safety Protocol
-  Before any development work:
-  1. Check current branch: `git branch --show-current`
-  2. If on protected branch (main/master/develop):
-     - Ask: "You're on {{branch}}. Create feature branch?"
-     - Suggest: `{{branch_type}}/{{feature_name}}`
+  Before development work:
+  1. Check current branch with `git branch --show-current`
+  2. Create feature branch if on protected branch
 ```
 
-#### 3. Compositions (`data/personas/`)
-Agent definitions built from personas and traits:
-```yaml
-# data/personas/python-engineer.yaml
-name: python-engineer
-model: sonnet
-persona: python_developer
-traits:
-  - branch_safety
-  - testing_coordination
-  - documentation_handoff
-  - proactive_detection
-custom_instructions: |
-  Focus on modern Python practices and performance optimization.
+#### 3. Templates (`src/claude_config/templates/`)
+Jinja2 templates for agent generation:
+```jinja2
+---
+name: {{ composition.name }}
+model: {{ composition.model }}
+---
+
+# {{ persona.display_name }}
+
+{{ persona.description }}
+
+{% for trait in traits %}
+{{ trait.implementation }}
+{% endfor %}
 ```
 
-#### 4. Scripts (`data/scripts/`)
-Automation and composition tools:
-```python
-# data/scripts/build.py
-def compose_agent(composition_file):
-    """Build complete agent from composition definition"""
-    composition = load_yaml(composition_file)
-    persona = load_persona(composition.persona)
-    traits = [load_trait(t) for t in composition.traits]
-    
-    return render_agent_template(persona, traits, composition)
+#### 4. Build System
+Python-based CLI with validation and generation tools.
+
+### Repository Structure
+
 ```
-
-### Configuration System
-
-The configuration system uses a single, simple configuration file with clean file inclusion:
-
-**Single config.yaml example**:
-```yaml
-# data/config.yaml
-name: personal-claude-config
-output_dir: dist/
-
-# Agent selection
-agents:
-  - ai-engineer
-  - python-engineer  
-  - git-helper
-  - qa-engineer
-
-# MCP server configuration
-mcp_servers:
-  - github
-  - filesystem
-  - docker
-  - time
-
-# Global settings
-settings:
-  secrets_file: .env
-  model_preferences:
-    default: sonnet
-    complex: opus
-    simple: haiku
-
-# Custom instructions
-global_instructions: |
-  Personal preferences and instructions
-  that apply to all agents.
-```
-
-**Persona Definition Example**:
-```yaml
-# personas/ai-engineer.yaml  
-name: ai-engineer
-model: sonnet
-content:
-  sections:
-    core: "content/personas/ai-engineer/core.md"
-    coordination: "content/personas/ai-engineer/coordination.md"
-    examples: "content/personas/ai-engineer/examples.md"
-traits:
-  - safety/branch-check
-  - coordination/qa-handoff
-```
-
-### Directory Structure
-
-#### This Repository (claude-config)
-```
-claude-config/                 # This repository
+claude-config/                     # This repository
 ├── README.md                      # This documentation
 ├── CLAUDE.md                      # Global instructions & coordination guide
-├── agents/                        # Current agent definitions (.md files)
+├── pyproject.toml                 # Python project configuration
+├── uv.lock                       # Dependency lock file
+├── Makefile                      # Development automation
+├── src/
+│   └── claude_config/
+│       ├── __init__.py
+│       ├── cli.py                # Command-line interface
+│       ├── composer.py           # Agent composition engine
+│       ├── validator.py          # Configuration validation
+│       ├── exceptions.py         # Custom exceptions
+│       └── templates/            # Jinja2 templates
+├── data/                         # Configuration source (planned)
+│   ├── config.yaml              # Main configuration
+│   ├── personas/                # Agent expertise definitions
+│   ├── traits/                  # Reusable behaviors
+│   └── content/                 # Markdown content
+├── agents/                       # Current agent definitions
 │   ├── ai-engineer.md
 │   ├── python-engineer.md
-│   ├── java-engineer.md
-│   ├── frontend-engineer.md
-│   ├── devops-engineer.md
-│   ├── data-engineer.md
-│   ├── blockchain-engineer.md
-│   ├── sr-architect.md
-│   ├── qa-engineer.md
-│   ├── technical-writer.md
-│   ├── git-helper.md
-│   ├── security-engineer.md
-│   ├── database-engineer.md
-│   ├── ai-researcher.md
-│   ├── sr-ai-researcher.md
-│   ├── product-manager.md
-│   ├── quant-analyst.md
-│   ├── sr-quant-analyst.md
-│   ├── prompt-engineer.md
+│   ├── [18 more agents...]
 │   └── agent-architect.md
-├── settings.json                  # Claude Code configuration settings
-├── data/                          # Configuration generation system (planned)
-│   ├── config.yaml                    # Single configuration file
-│   ├── personas/                      # Agent definitions (YAML only)
-│   │   ├── ai-engineer.yaml
-│   │   ├── python-engineer.yaml
-│   │   └── git-helper.yaml
-│   ├── traits/                        # Reusable behaviors (YAML only)  
-│   │   ├── safety/
-│   │   │   ├── branch-check.yaml
-│   │   │   └── project-verification.yaml
-│   │   └── coordination/
-│   │       ├── qa-handoff.yaml
-│   │       └── escalation.yaml
-│   ├── content/                       # All markdown content
-│   │   ├── personas/
-│   │   │   ├── ai-engineer/
-│   │   │   │   ├── core.md
-│   │   │   │   ├── coordination.md
-│   │   │   │   └── examples.md
-│   │   │   └── python-engineer/
-│   │   │       ├── core.md
-│   │   │       └── coordination.md
-│   │   ├── traits/
-│   │   │   ├── safety/
-│   │   │   │   └── branch-check.md
-│   │   │   └── coordination/
-│   │   │       └── qa-handoff.md
-│   │   └── shared/                    # Reusable content chunks
-│   │       ├── cost-optimization.md
-│   │       └── common-workflows.md
-│   ├── templates/                     # Jinja2 templates
-│   │   ├── agent.md.j2
-│   │   └── claude-config.json.j2
-│   └── scripts/                       # Build and automation scripts
-│       ├── build.py
-│       ├── validate.py
-│       └── watch.py
-└── dist/                          # Generated outputs (gitignored)
-    ├── agents/
-    ├── settings.json
-    └── CLAUDE.md
-
+├── settings.json                 # Claude Code settings
+├── tests/                        # Test suite
+├── docs/                         # Documentation
+├── dist/                         # Generated outputs (gitignored)
+└── .claude/                      # Local development target
 ```
 
-#### Production Directory (${HOME}/.claude/)
-Generated and deployed from this repository:
+### Deployment Structure
+
+Generated configurations are installed to `${HOME}/.claude/`:
 ```
 ${HOME}/.claude/
-├── agents/                        # Specialized agent definitions
-├── settings.json                  # Claude Code configuration
-├── CLAUDE.md                      # Global instructions
-├── projects/                      # Project-specific configurations
-├── todos/                         # Task management state
-└── ide/, local/, shell-snapshots/, statsig/  # Runtime directories
+├── agents/                       # Generated agent definitions
+├── settings.json                 # Claude Code configuration
+├── CLAUDE.md                     # Global instructions
+└── [runtime directories...]
 ```
 
-## Implementation Phases
+## Development Status
 
-### Phase 1: Proof of Concept (4-6 weeks)
-**Agent Composition Deliverables:**
-- [ ] Python composition engine with Jinja2 templates
-- [ ] 3 core personas (Python, AI, Git Helper)
-- [ ] 5 essential traits (branch safety, testing, documentation, proactive detection, coordination)
-- [ ] 2 complete agent compositions demonstrating the system
-- [ ] Makefile-based build system (`make build`)
+This is an active development project implementing a composable agent system:
 
-**Success Criteria:**
-- Generated agents functionally equivalent to hand-written versions
-- 50%+ reduction in boilerplate code
-- Successful composition of new agent variants
-- Simple configuration generation without multi-environment complexity
+- **✅ Core Infrastructure**: Python package with CLI, composition engine, and validation
+- **✅ Build System**: Make-based development workflow with testing and linting
+- **✅ Agent Library**: 20+ specialized agents for comprehensive development coverage
+- **🔄 Template System**: Implementing Jinja2-based generation (in progress)
+- **📋 Data Layer**: YAML-based personas and traits system (planned)
+- **📋 Migration**: Converting existing agents to composable system (planned)
 
-### Phase 2: Core Migration (6-8 weeks)
-**Agent Migration Deliverables:**
-- [ ] All existing agents migrated to composable system
-- [ ] Full trait library covering all current patterns
-- [ ] Validation framework ensuring backward compatibility
-- [ ] Make-based documentation generation and diff tools
-- [ ] Simple configuration system for personal use
+### Next Steps
 
-**Success Criteria:**
-- 100% feature parity with existing agents
-- All coordination patterns standardized
-- Automated testing validates agent behavior
-- Simple, maintainable configuration system
-
-### Phase 3: Advanced Features (4-6 weeks)
-**Deliverables:**
-- [ ] Agent versioning and dependency management
-- [ ] Communication protocol implementation
-- [ ] Plugin architecture for custom traits
-- [ ] Performance optimization and caching
-- [ ] Advanced composition patterns
-
-**Success Criteria:**
-- Multiple agent versions supported simultaneously
-- Third-party trait integration working
-- Sub-second agent composition performance
-
-### Phase 4: Community & Extensibility (2-4 weeks)
-**Deliverables:**
-- [ ] Comprehensive developer documentation
-- [ ] Trait contribution guidelines and templates
-- [ ] Community agent registry
-- [ ] Integration examples and tutorials
-- [ ] Migration tools for legacy patterns
-
-**Success Criteria:**
-- External developers can create custom agents
-- Community contributions integrated successfully
-- Knowledge transfer complete for ongoing maintenance
-
-## Configuration Management
-
-### Simple Configuration System
-
-The configuration system uses a single config.yaml file with optional .env for secrets:
-
-#### Configuration Structure
-```yaml
-# config.yaml
-name: personal-claude-config
-output_dir: dist/
-
-# Agent selection
-agents:
-  - ai-engineer
-  - python-engineer  
-  - git-helper
-  - qa-engineer
-
-# MCP server configuration
-mcp_servers:
-  - github
-  - filesystem
-  - docker
-  - time
-
-# Global settings
-settings:
-  secrets_file: .env
-  model_preferences:
-    default: sonnet
-    complex: opus
-    simple: haiku
-
-# Custom instructions
-global_instructions: |
-  Personal preferences and instructions
-  that apply to all agents.
-```
-
-#### Environment Variables
-```bash
-# .env (optional, not committed)
-GITHUB_TOKEN=ghp_your_token_here
-OPENAI_API_KEY=sk-your-key-here
-ANTHROPIC_API_KEY=sk-ant-your-key-here
-```
+1. **Template Implementation**: Complete Jinja2 template system for agent generation
+2. **Data Layer Setup**: Create YAML personas and traits structure
+3. **Agent Migration**: Convert existing agents to composable format
+4. **Testing Framework**: Expand test coverage for generated agents
+5. **Documentation**: Complete developer guides and examples
 
 
 ## Getting Started
 
 ### Prerequisites
-- Python 3.8+ 
-- uv (Python package manager)
+- Python 3.8+
+- [uv](https://docs.astral.sh/uv/) (recommended Python package manager)
 - Git for version control
-- Claude Code CLI access
 
-### Development Setup
+### Installation
+
+#### Development Setup
 ```bash
-# Install uv (modern Python package manager)
+# Install uv if not already installed
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# Clone and setup
+# Clone repository
 git clone <repository-url> claude-config
 cd claude-config/
 
-# Install in development mode with all dependencies
+# Setup development environment
 make dev
+```
 
-# Build and install configurations
+#### Quick Start
+```bash
+# Build agent configurations
 make build
+
+# Install to Claude Code directory
 make install-to-claude
+
+# Run tests
+make test
 ```
 
-### Quick Start Example
-```bash
-# Development workflow
-make dev          # Setup development environment
-make build        # Build all agents
-make test         # Run tests
-make install-to-claude  # Install to ~/.claude/
-
-# Continuous development
-make watch        # Watch for changes and rebuild
-make validate     # Validate all configurations
-make lint         # Check code quality
-```
-
-## Technical Architecture
-
-### Composition Engine
-
-The composition engine uses Python with Jinja2 templates to generate complete agent markdown files:
-
-```python
-class AgentComposer:
-    def __init__(self, template_dir: Path):
-        self.env = Environment(loader=FileSystemLoader(template_dir))
-    
-    def compose_agent(self, composition: AgentComposition) -> str:
-        """Generate complete agent markdown from composition"""
-        persona = self.load_persona(composition.persona)
-        traits = [self.load_trait(t) for t in composition.traits]
-        
-        template = self.env.get_template('base_agent.md.j2')
-        return template.render(
-            persona=persona,
-            traits=traits,
-            composition=composition
-        )
-```
-
-### Template System
-
-Jinja2 templates provide flexible agent generation:
-
-```jinja2
-{# base_agent.md.j2 #}
----
-name: {{ composition.name }}
-description: {{ persona.display_name }} with {{ traits|length }} specialized traits
-model: {{ composition.model }}
----
-
-# {{ persona.display_name }} Agent
-
-{{ persona.description }}
-
-## Core Responsibilities
-{% for responsibility in persona.responsibilities %}
-- {{ responsibility }}
-{% endfor %}
-
-{% for trait in traits %}
-{% include 'traits/' + trait.name + '.md.j2' %}
-{% endfor %}
-
-{{ composition.custom_instructions }}
-```
-
-### Communication Protocol
-
-Standardized agent communication uses structured messaging:
-
-```yaml
-# Communication protocol example
-agent_message:
-  sender: python-engineer
-  recipient: qa-engineer
-  message_type: handoff
-  context:
-    task: "API endpoint testing"
-    artifacts: ["tests/test_api.py", "src/api/endpoints.py"]
-    requirements: ["integration_tests", "performance_validation"]
-  priority: normal
-```
-
-### Versioning Strategy
-
-Version management supports multiple agent versions:
-
-```yaml
-# Version configuration
-agent_version: "2.1.0"
-dependencies:
-  persona: python_developer >= 1.2.0
-  traits:
-    - branch_safety >= 1.0.0
-    - testing_coordination >= 2.0.0
-compatibility:
-  claude_code: ">= 1.0.0"
-  min_model: sonnet
-```
-
-## Developer Guide
-
-### Creating New Personas
-
-Define domain expertise in YAML format:
-
-```yaml
-# data/personas/rust-engineer.yaml
-name: rust_developer
-display_name: "Rust Developer"
-version: "1.0.0"
-description: "Systems programming specialist focused on memory safety and performance"
-
-expertise:
-  - "Memory-safe systems programming"
-  - "Concurrent and parallel computing"
-  - "WebAssembly development"
-  - "Performance optimization"
-
-responsibilities:
-  - "Implement high-performance Rust applications"
-  - "Ensure memory safety and thread safety"
-  - "Optimize for zero-cost abstractions"
-
-proactive_triggers:
-  file_patterns: ["*.rs", "Cargo.toml", "Cargo.lock"]
-  project_indicators: ["Rust", "Cargo", "rustc"]
-  
-tools_integration:
-  - cargo
-  - rustfmt
-  - clippy
-```
-
-### Developing Reusable Traits
-
-Create modular behaviors:
-
-```yaml
-# data/traits/performance/optimization.yaml
-name: performance_optimization
-category: enhancement
-version: "1.0.0"
-dependencies: []
-
-description: "Performance analysis and optimization capabilities"
-
-implementation: |
-  ## Performance Optimization Protocol
-  
-  ### Before Implementation
-  1. Profile current performance baseline
-  2. Identify bottlenecks and critical paths
-  3. Set performance targets and metrics
-  
-  ### During Development  
-  1. Use appropriate profiling tools for the language
-  2. Implement optimizations incrementally
-  3. Measure impact of each optimization
-  
-  ### Validation
-  1. Run performance benchmarks
-  2. Compare against baseline metrics
-  3. Document optimization decisions and tradeoffs
-
-coordination_patterns:
-  - name: performance_handoff
-    trigger: "performance issues identified"
-    action: "coordinate with appropriate specialist"
-    context_required: ["profiling_data", "performance_requirements"]
-```
-
-### Composing Agents
-
-Combine personas and traits to create specialized agents:
-
-```yaml
-# data/personas/rust-performance-engineer.yaml
-name: rust-performance-engineer
-version: "1.0.0"
-model: sonnet
-
-persona: rust_developer
-traits:
-  - branch_safety
-  - performance_optimization
-  - testing_coordination
-  - documentation_handoff
-  - proactive_detection
-
-custom_instructions: |
-  Focus on zero-cost abstractions and compile-time optimizations.
-  Prioritize memory safety while achieving C-level performance.
-  
-  ## Specialized Workflows
-  - Use `cargo bench` for performance regression testing
-  - Integrate `valgrind` and `perf` for profiling
-  - Coordinate with devops-engineer for deployment optimization
-
-coordination_overrides:
-  testing_framework: "cargo test with criterion.rs benchmarks"
-  documentation_style: "rustdoc with performance notes"
-```
-
-
-### Testing and Validation
-
-Ensure composition correctness:
-
-```python
-# tests/test_rust_performance_engineer.py
-def test_rust_performance_composition():
-    """Validate Rust performance engineer composition"""
-    composition = load_composition("rust-performance-engineer.yaml")
-    agent = compose_agent(composition)
-    
-    # Verify persona integration
-    assert "memory safety" in agent.content
-    assert "performance optimization" in agent.content
-    
-    # Verify trait inclusion
-    assert "Branch Safety Protocol" in agent.content
-    assert "Performance Optimization Protocol" in agent.content
-    
-    # Verify coordination patterns
-    assert "cargo bench" in agent.content
-    assert "devops-engineer" in agent.coordination_patterns
-```
-
-## Scripts and Tools
-
-The Python project includes comprehensive Make targets and a CLI:
-
-### Command Line Interface
-```bash
-# Core commands
-claude-config build              # Build all agent configurations
-claude-config build --agent ai-engineer  # Build specific agent
-claude-config validate          # Validate all configurations
-claude-config list-agents       # List available personas
-claude-config list-traits       # List available traits
-claude-config install          # Install to ~/.claude/
-
-# Development commands
-claude-config build --watch     # Watch for changes and rebuild
-claude-config build --validate  # Build with validation
-```
-
-### Make Targets
-```makefile
-# Setup & Installation
-make dev                        # Install in development mode
-make install                    # Install package
-make install-to-claude          # Install generated config to ~/.claude/
-
-# Development
-make build                      # Build all agent configurations
-make validate                   # Validate all configurations
-make test                       # Run test suite
-make lint                       # Run code linting
-make format                     # Auto-format code
-make watch                      # Watch for changes and rebuild
-
-# Maintenance
-make clean                      # Clean build artifacts
-make list                       # List available agents and traits
-```
+## Development
 
 ### Development Workflow
 
-#### Setup New Environment
 ```bash
-git clone <repository-url> claude-config
-cd claude-config/
-make dev                        # Install dev dependencies and setup
+# Setup development environment
+make dev                       # Install dependencies and setup pre-commit
+
+# Daily development
+make build                     # Build all configurations
+make test                      # Run test suite
+make validate                  # Validate configurations
+make install-to-claude         # Install to ~/.claude/
+
+# Code quality
+make format                    # Format Python code
+make lint                      # Run linters (black, isort, mypy)
+
+# Continuous development
+make watch                     # Watch for changes and rebuild
+make clean                     # Clean build artifacts
 ```
 
-#### Daily Development
+### Architecture Overview
+
+The system is built with:
+
+- **Python Package**: Structured as a proper Python project with `pyproject.toml`
+- **CLI Interface**: Rich command-line tools built with Click and Rich
+- **Composition Engine**: Jinja2-based template system for agent generation
+- **Validation Framework**: Pydantic models and validation rules
+- **Testing**: Pytest-based test suite with coverage reporting
+- **Development Tools**: Pre-commit hooks, linting, and formatting
+
+### Key Components
+
+#### CLI (`src/claude_config/cli.py`)
 ```bash
-make build                      # Build all configurations
-make test                       # Run test suite  
-make validate                   # Check configuration validity
-make install-to-claude          # Deploy to ~/.claude/
+claude-config build                    # Build agent configurations
+claude-config validate                 # Validate configurations
+claude-config list-agents              # List available agents
+claude-config install                  # Install to ~/.claude/
 ```
 
-#### Code Quality
+#### Composer (`src/claude_config/composer.py`)
+Handles agent composition and generation from YAML configurations.
+
+#### Validator (`src/claude_config/validator.py`)
+Validates YAML configurations and ensures consistency.
+
+#### Templates (`src/claude_config/templates/`)
+Jinja2 templates for generating agent markdown files.
+
+
+## CLI Usage
+
+### Building Configurations
 ```bash
-make format                     # Auto-format Python code
-make lint                       # Run linters (black, isort, mypy)
-make clean                      # Clean build artifacts
+# Build all agents
+claude-config build
+
+# Build specific agent
+claude-config build --agent python-engineer
+
+# Build with validation
+claude-config build --validate
 ```
 
-#### Continuous Development
+### Validation and Testing
 ```bash
-make watch                      # Watch files and rebuild automatically
-make test-watch                 # Run tests on file changes
+# Validate all configurations
+claude-config validate
+
+# List available agents
+claude-config list-agents
+
+# List available traits
+claude-config list-traits
 ```
 
+### Installation
+```bash
+# Install to default Claude Code directory
+claude-config install
+
+# Install to custom location
+claude-config install --target /custom/path
+
+# Dry run to see what would be installed
+claude-config install --dry-run
+```
+
+## Configuration
+
+### Current Configuration Files
+
+- **`CLAUDE.md`**: Global instructions and coordination guide for all agents
+- **`settings.json`**: Claude Code configuration (model preferences, MCP servers)
+- **`agents/*.md`**: Individual agent definitions with YAML frontmatter
+
+### Future Configuration System
+
+Planned YAML-based configuration system:
+
+```yaml
+# data/config.yaml
+name: personal-claude-config
+output_dir: dist/
+
+agents:
+  - ai-engineer
+  - python-engineer
+  - git-helper
+
+settings:
+  model_preferences:
+    default: sonnet
+    complex: opus
+    simple: haiku
+```
 
 ## Contributing
 
-### Contribution Areas
+### Development Process
 
-**Agent Composition:**
-- **Persona Development**: Create expertise definitions for new domains
-- **Trait Libraries**: Develop reusable behaviors and coordination patterns  
-- **Template Enhancement**: Improve agent generation templates
-- **Agent Testing**: Validate compositions and ensure backward compatibility
+1. **Setup**: Clone repository and run `make dev`
+2. **Feature Branch**: Create feature branches for new work
+3. **Testing**: Run `make test` and `make validate` before committing
+4. **Quality**: Use `make lint` and `make format` for code quality
+5. **Submit**: Create PR with clear description of changes
 
-**Infrastructure & Tooling:**
-- **CLI Tool Development**: Build utilities for composition and validation
-- **Testing Frameworks**: Develop automated testing for compositions
-- **Documentation**: Expand guides, examples, and best practices
-- **Configuration System**: Maintain simple, personal configuration management
+### Areas for Contribution
 
-### Development Workflow
-
-1. **Fork Repository**: Create personal fork for development
-2. **Feature Branch**: Use `feature/` prefix for new capabilities
-3. **Composition First**: Build agents using the composable system
-4. **Test Thoroughly**: Validate generated agents match expected behavior
-5. **Document Changes**: Update relevant documentation and examples
-6. **Submit PR**: Include before/after comparisons and test results
+- **Agent Development**: Create new specialized agents
+- **Template System**: Improve Jinja2 templates and generation
+- **Testing**: Expand test coverage and validation rules
+- **Documentation**: Improve guides and examples
+- **Tooling**: Enhance CLI and development workflows
 
 ### Quality Standards
 
-- **Backward Compatibility**: Existing agent behavior must be preserved
-- **Performance**: Agent composition should complete in <1 second
-- **Documentation**: All new traits and personas require documentation
-- **Testing**: Include automated tests for all new components
-- **Validation**: Generated agents must pass all existing validation tests
-
-### Getting Help
-
-- **Issues**: Report bugs and request features via GitHub issues
-- **Discussions**: Join architectural discussions and planning
-- **Documentation**: Refer to `docs/` directory for detailed guides
-- **Examples**: Check `docs/examples/` for implementation patterns
+- All code must pass linting (`make lint`)
+- Tests must pass (`make test`) 
+- Configurations must validate (`make validate`)
+- Documentation should be updated for user-facing changes
+- Follow existing code style and patterns
 
 ---
 
-## Next Steps
+## Project Status
 
-This composable system represents a significant evolution in how AI development assistance is structured and delivered. The implementation will:
+**Current State**: Active development of composable agent system
 
-**Agent Composition Benefits:**
-1. **Reduce Maintenance Overhead** by centralizing common patterns
-2. **Enable Rapid Innovation** through component reuse and composition  
-3. **Improve Consistency** across all agent interactions
-4. **Support Extensibility** for custom domain requirements
-5. **Simplify Configuration** with clean, personal workflow management
+**Completed**:
+- ✅ Python package structure with CLI
+- ✅ Build system and development workflow
+- ✅ 20+ specialized agent definitions
+- ✅ Configuration validation framework
 
-The phased approach ensures stability while enabling continuous improvement. Each phase builds upon previous work, creating a robust foundation for agent development in AI-assisted workflows.
+**In Progress**:
+- 🔄 Template-based agent generation
+- 🔄 YAML persona and trait system
+- 🔄 Migration from static to composable agents
 
-**Current Status**: Planning and Architecture Complete  
-**Next Milestone**: Phase 1 Proof of Concept Development  
-**Timeline**: 10-14 weeks total implementation
+**Planned**:
+- 📋 Complete composable architecture
+- 📋 Comprehensive testing framework
+- 📋 Advanced coordination patterns
+- 📋 Plugin system for custom agents
 
-Ready to transform how AI agents are built and maintained in personal development workflows.
+This system aims to eliminate duplication in agent definitions while maintaining the comprehensive coverage and intelligent coordination that makes Claude Code effective for software development workflows.
