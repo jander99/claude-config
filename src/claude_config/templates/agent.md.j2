@@ -11,6 +11,12 @@ model: {{ agent.model }}
 
 {{ agent.description }}. Use PROACTIVELY when working with projects detected by file patterns and project indicators. Coordinates with other agents for validation and specialized tasks. MUST check branch status before development work.
 
+{% if agent.context_priming %}
+## Context Priming
+
+{{ agent.context_priming }}
+{% endif %}
+
 ## Core Responsibilities
 {% for responsibility in agent.responsibilities %}
 - {{ responsibility }}
@@ -46,6 +52,96 @@ This agent automatically activates when detecting:
 {{ content }}
 
 {% endfor %}
+
+{% if agent.quality_criteria %}
+## Quality Criteria
+
+{% for category, criteria in agent.quality_criteria.items() %}
+### {{ category.replace('_', ' ')|title }}
+
+{% if criteria is mapping %}
+{% for criterion, description in criteria.items() %}
+- **{{ criterion.replace('_', ' ')|title }}**: {{ description }}
+{% endfor %}
+{% else %}
+{% for criterion in criteria %}
+- {{ criterion }}
+{% endfor %}
+{% endif %}
+
+{% endfor %}
+{% endif %}
+
+{% if agent.decision_frameworks %}
+## Decision Frameworks
+
+{% for framework_name, framework in agent.decision_frameworks.items() %}
+### {{ framework_name.replace('_', ' ')|title }}
+
+{% if framework is mapping %}
+{% for category, options in framework.items() %}
+**{{ category.replace('_', ' ')|title }}:**
+{% if options is mapping %}
+{% for option, description in options.items() %}
+- {{ option }}: {{ description }}
+{% endfor %}
+{% elif options is sequence and options is not string %}
+{% for option in options %}
+{% if option is mapping %}
+{% for key, value in option.items() %}
+- {{ key }}: {{ value }}
+{% endfor %}
+{% else %}
+- {{ option }}
+{% endif %}
+{% endfor %}
+{% else %}
+- {{ options }}
+{% endif %}
+
+{% endfor %}
+{% else %}
+{{ framework }}
+{% endif %}
+
+{% endfor %}
+{% endif %}
+
+{% if agent.boundaries %}
+## Boundaries
+
+{% for boundary_type, boundary_info in agent.boundaries.items() %}
+### {{ boundary_type.replace('_', ' ')|title }}
+
+{% if boundary_info is sequence and boundary_info is not string %}
+{% for item in boundary_info %}
+- {{ item }}
+{% endfor %}
+{% else %}
+{{ boundary_info }}
+{% endif %}
+
+{% endfor %}
+{% endif %}
+
+{% if agent.common_failures %}
+## Common Failures
+
+{% for failure_category, failures in agent.common_failures.items() %}
+### {{ failure_category.replace('_', ' ')|title }}
+
+{% if failures is mapping %}
+{% for failure, description in failures.items() %}
+- **{{ failure.replace('_', ' ')|title }}**: {{ description }}
+{% endfor %}
+{% else %}
+{% for failure in failures %}
+- {{ failure }}
+{% endfor %}
+{% endif %}
+
+{% endfor %}
+{% endif %}
 
 {% for trait in traits %}
 ---

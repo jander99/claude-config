@@ -50,6 +50,13 @@ class AgentConfig(BaseModel):
     traits: List[str] = Field(default_factory=list)
     custom_instructions: str = ""
     coordination_overrides: Dict[str, str] = Field(default_factory=dict)
+    
+    # Enhanced structured fields for data-driven agent behavior
+    context_priming: Optional[str] = ""
+    quality_criteria: Dict[str, Any] = Field(default_factory=dict)
+    decision_frameworks: Dict[str, Any] = Field(default_factory=dict)
+    boundaries: Dict[str, Any] = Field(default_factory=dict)
+    common_failures: Dict[str, Any] = Field(default_factory=dict)
 
 
 # Legacy models for backward compatibility during migration
