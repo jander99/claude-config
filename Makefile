@@ -18,7 +18,8 @@ help:
 	@echo "  watch            Watch for changes and rebuild automatically"
 	@echo ""
 	@echo "Global Configuration:"
-	@echo "  build-global     Build universal global CLAUDE.md with agent delegation"
+	@echo "  build-global     Build data-driven global CLAUDE.md using agent composer"
+	@echo "  build-global-fallback Build global CLAUDE.md using legacy hardcoded method"
 	@echo "  install-global   Build and install global configuration to ~/.claude/"
 	@echo "  verify-global    Check if global configuration is installed"
 	@echo ""
@@ -120,7 +121,11 @@ PROFILE ?= developer
 ENV ?= development
 
 build-global:
-	@echo "🌍 Building trait-aware global Claude Code configuration..."
+	@echo "🌍 Building data-driven global Claude Code configuration..."
+	uv run python src/build_composer_global.py
+
+build-global-fallback:
+	@echo "🌍 Building global Claude Code configuration (legacy hardcoded method)..."
 	uv run python src/build_trait_aware_global.py
 
 install-global: build-global

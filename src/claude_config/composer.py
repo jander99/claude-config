@@ -407,3 +407,41 @@ class AgentComposer:
                         print(f"Error building {agent_name}: {e}")
         
         return built_agents
+    
+    def load_all_agents(self) -> List[AgentConfig]:
+        """Load all agent configurations from the personas directory."""
+        personas_dir = self.data_dir / "personas"
+        if not personas_dir.exists():
+            return []
+        
+        agents = []
+        for persona_file in personas_dir.glob("*.yaml"):
+            if persona_file.stem not in ["config"] and not persona_file.stem.endswith("-composition"):
+                try:
+                    agent = self.load_agent(persona_file.stem)
+                    agents.append(agent)
+                except Exception as e:
+                    logger.warning(f"Failed to load agent {persona_file.stem}: {e}")
+        
+        return agents
+    
+    def compose_global_claude_md(self) -> str:
+        """Generate global CLAUDE.md from all agent configurations."""
+        from datetime import datetime
+        
+        # Load all agents
+        agents = self.load_all_agents()
+        
+        # Sort agents by tier and name for consistent output
+        tier_order = {"haiku": 1, "sonnet": 2, "opus": 3}
+        agents.sort(key=lambda a: (tier_order.get(a.model, 2), a.name))
+        
+        # Get the global template
+        template = self.jinja_env.get_template('global-claude.md.j2')
+        
+        # Render the global configuration
+        return template.render(
+            agents=agents,
+            timestamp=datetime.now(),
+            agent_count=len(agents)
+        )

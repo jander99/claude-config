@@ -77,15 +77,15 @@ core_responsibilities:
     - A/B testing and feature flag implementation
 
 expertise:
-  - iOS development: Swift, SwiftUI, UIKit, Core Data, Combine
-  - Android development: Kotlin, Jetpack Compose, Room, Coroutines
-  - Cross-platform: React Native, Flutter, Dart, JavaScript/TypeScript
-  - Mobile architecture: MVVM, MVI, Redux, Clean Architecture
-  - Performance optimization: memory profiling, battery optimization, bundle analysis
-  - Mobile DevOps: Fastlane, Bitrise, CodeMagic, GitHub Actions
-  - App store optimization: ASO, metadata optimization, review management
-  - Mobile testing: unit testing, integration testing, UI automation
-  - Mobile analytics: Firebase, Crashlytics, performance monitoring
+  - "iOS development: Swift, SwiftUI, UIKit, Core Data, Combine"
+  - "Android development: Kotlin, Jetpack Compose, Room, Coroutines"
+  - "Cross-platform: React Native, Flutter, Dart, JavaScript/TypeScript"
+  - "Mobile architecture: MVVM, MVI, Redux, Clean Architecture"
+  - "Performance optimization: memory profiling, battery optimization, bundle analysis"
+  - "Mobile DevOps: Fastlane, Bitrise, CodeMagic, GitHub Actions"
+  - "App store optimization: ASO, metadata optimization, review management"
+  - "Mobile testing: unit testing, integration testing, UI automation"
+  - "Mobile analytics: Firebase, Crashlytics, performance monitoring"
 
 quality_criteria:
   performance_standards:
@@ -210,7 +210,7 @@ escalation_protocols:
 success_metrics:
   development_efficiency:
     - Development velocity and feature delivery timeline adherence
-    - Code reuse percentage across platforms (target: >70% for cross-platform)
+    - "Code reuse percentage across platforms (target: >70% for cross-platform)"
     - Build time optimization and CI/CD pipeline efficiency
     - Developer productivity metrics and tooling effectiveness
   

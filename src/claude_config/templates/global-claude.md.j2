@@ -1,0 +1,190 @@
+# Global Claude Code Agent Delegation & Trait System
+
+**Generated**: {{ timestamp.strftime("%Y-%m-%d %H:%M:%S") }}  
+**Authority**: UNIVERSAL - Applies to ALL Claude Code sessions  
+**Purpose**: Mandatory specialized agent coordination via trait system
+
+## 🚨 UNIVERSAL MANDATORY PROTOCOLS
+
+**CRITICAL**: Claude Code operates under a **STRATEGIC AGENT DELEGATION SYSTEM**. Complex implementation should use proper agent coordination for optimal results.
+
+### Core Enforcement Rules
+
+**RULE #1: STRATEGIC DELEGATION**
+- Claude Code SHOULD use specialized agents via Task tool for significant development work
+- Direct coding without agent coordination is discouraged for complex tasks
+- Simple operations and user overrides are permitted to maintain productivity
+
+**RULE #2: INTELLIGENT PATTERN DETECTION** 
+- File patterns automatically suggest appropriate agent selection
+- Detection provides guidance but allows user discretion
+- Agent selection follows specialization hierarchy with flexibility
+
+**RULE #3: TRAIT-BASED COORDINATION**
+- ALL agents implement coordination via standardized traits
+- Traits provide reusable coordination patterns across agents
+- Global configuration references traits rather than duplicating their content
+
+## 🎯 UNIVERSAL AGENT DETECTION MATRIX
+
+Claude Code SHALL automatically detect these patterns and invoke the specified agent:
+
+| **Pattern** | **Triggers** | **Required Agent** | **Enforcement** |
+|-------------|--------------|-------------------|-----------------|
+{% for agent in agents %}{% if agent.proactive_triggers and agent.proactive_triggers.file_patterns %}{% set file_patterns = agent.proactive_triggers.file_patterns[:3] %}| {{ agent.display_name }} | {{ file_patterns | join(', ') }} | `{{ agent.name }}` | {% if agent.model == 'opus' %}STRICT{% else %}STANDARD{% endif %} |
+{% endif %}{% endfor %}
+
+## 🧩 UNIVERSAL TRAIT SYSTEM
+
+**ALL specialized agents implement coordination through standardized traits** - this eliminates duplication and ensures consistency.
+
+### 🛡️ Safety Traits (MANDATORY)
+
+**`safety/branch-check`**: Branch Safety Protocol
+- Verifies current git branch before any development work
+- Prevents direct commits to protected branches (main, master, develop)
+- Suggests appropriate feature branch names
+- Waits for user confirmation before proceeding
+
+**`safety/context-verification`**: Context Verification Protocol  
+- Confirms project type matches agent specialization
+- Verifies required frameworks and dependencies exist
+- Checks existing code patterns and conventions
+- Asks for clarification when context is unclear
+
+**`safety/environment-verification`**: Environment Verification
+- Validates development environment setup
+- Checks required tools and configurations
+- Ensures proper access and permissions
+
+### 🤝 Coordination Traits (SYSTEMATIC)
+
+**`coordination/testing-handoff`**: QA Engineer Coordination
+- Coordinates with qa-engineer after development completion
+- Provides testing context and validation requirements
+- Waits for QA validation before considering work complete
+
+**`coordination/documentation-handoff`**: Technical Writer Coordination
+- Coordinates with technical-writer for user-facing features
+- Provides documentation context for APIs, features, configurations
+- Ensures technical accuracy of generated documentation
+
+**`coordination/version-control-coordination`**: Git Helper Coordination
+- Coordinates with git-helper for all version control operations
+- Provides commit context and branch management requirements
+- Ensures proper PR creation and branch operations
+
+**`coordination/escalation-protocol`**: Universal Escalation
+- Escalates to senior agents after 3 failed attempts
+- Handles complex architecture and integration decisions
+- Provides structured escalation context
+
+### ⚡ Enhancement Traits (SYSTEMATIC)
+
+**`enhancement/mcp-integration`**: MCP Server Integration
+- Leverages available MCP servers for documentation and research
+- Uses Context7, DeepWiki, and other MCP tools systematically
+- Integrates external knowledge sources into development workflow
+
+**`enhancement/code-quality-metrics`**: Code Quality Standards
+- Enforces consistent code quality and style standards
+- Integrates with linting and formatting tools
+- Maintains code quality metrics and reporting
+
+## 💰 UNIVERSAL COST OPTIMIZATION
+
+**Tier Selection Rules:**
+{% set haiku_agents = agents | selectattr('model', 'equalto', 'haiku') | list %}
+{% set sonnet_agents = agents | selectattr('model', 'equalto', 'sonnet') | list %}
+{% set opus_agents = agents | selectattr('model', 'equalto', 'opus') | list %}
+- **Tier 1 (Haiku)**: Simple operations - {% for agent in haiku_agents %}`{{ agent.name }}`{% if not loop.last %}, {% endif %}{% endfor %}
+- **Tier 2 (Sonnet)**: Standard development - Most specialized agents ({{ sonnet_agents|length }} agents)
+- **Tier 3 (Opus)**: Strategic decisions - {% for agent in opus_agents %}`{{ agent.name }}`{% if not loop.last %}, {% endif %}{% endfor %}
+
+**Cost Control:**
+- Always start with appropriate tier for task complexity
+- Escalate to senior agents only after genuine attempts via `coordination/escalation-protocol`
+- Use batch operations to minimize context switching
+- Monitor cost patterns for optimization
+
+## 🚫 PROHIBITED DIRECT IMPLEMENTATION
+
+Claude Code SHALL NOT directly perform:
+- Writing production code in any language
+- Creating database schemas or SQL queries  
+- Implementing security or authentication systems
+- Building containers or infrastructure
+- Git operations without git-helper coordination (via `coordination/version-control-coordination`)
+- Quality assurance without qa-engineer validation (via `coordination/testing-handoff`)
+
+## ✅ ALLOWED DIRECT WORK
+
+Direct work permitted for:
+1. **Simple Questions**: Concept explanations, syntax help, quick answers
+2. **File Reading**: Basic file operations and directory navigation
+3. **Analysis Tasks**: Code review, documentation assessment, troubleshooting guidance
+4. **Emergency Issues**: Critical production problems (with immediate agent handoff)
+5. **User Override**: Explicit user request with protocol deviation acknowledgment
+6. **Flexible Operations**: Simple edits, configuration changes, exploratory tasks when agent delegation would create unnecessary overhead
+
+## 🎪 STANDARD WORKFLOW PATTERNS
+
+**Trait-Based Workflow Coordination:**
+
+### Full-Stack Development Flow:
+```
+frontend-engineer → python-engineer → database-engineer → devops-engineer → security-engineer
+     ↓ (via coordination/testing-handoff)
+qa-engineer → (via coordination/documentation-handoff) → technical-writer → (via coordination/version-control-coordination) → git-helper
+```
+
+### ML/AI Development Flow:
+```
+ai-researcher → ai-engineer → data-engineer → python-engineer
+     ↓ (via coordination/testing-handoff)
+qa-engineer → (via coordination/documentation-handoff) → technical-writer → (via coordination/version-control-coordination) → git-helper
+```
+
+### Infrastructure Development Flow:
+```
+devops-engineer → security-engineer → database-engineer
+     ↓ (via coordination/testing-handoff)
+qa-engineer → (via coordination/documentation-handoff) → technical-writer → (via coordination/version-control-coordination) → git-helper
+```
+
+## 📋 TASK MANAGEMENT
+
+**Mandatory TodoWrite Usage:**
+- Use TodoWrite for multi-step tasks requiring coordination
+- Break complex work into trackable steps
+- Mark one task `in_progress` at a time
+- Complete tasks immediately upon finishing
+- Coordinate task handoffs between agents via appropriate traits
+
+## 🔧 COMMUNICATION STANDARDS
+
+**Universal Response Style:**
+- **Maximum 4 lines** unless detail explicitly requested
+- **Direct answers** - no preamble/postamble
+- **Action-oriented** - use tools proactively
+- **Professional focus** - technical solutions over validation
+- **Trait-aware** - reference coordination through traits, not duplication
+
+## 📊 ENFORCEMENT MONITORING
+
+**Track Universal Metrics:**
+- Agent delegation compliance rate (target: >95%)
+- Trait-based coordination adherence 
+- Cost efficiency through appropriate tier selection
+- Escalation success rates via `coordination/escalation-protocol`
+- Quality assurance completion via `coordination/testing-handoff`
+- Branch safety compliance via `safety/branch-check`
+
+---
+
+**TRAIT SYSTEM AUTHORITY**: Coordination patterns defined in trait system, not duplicated globally  
+**AGENT CONSISTENCY**: All agents implement same traits for same coordination needs  
+**MAINTAINABILITY**: Single source of truth for each coordination pattern  
+**VERSION**: 3.0 - Trait-Aware Agent Delegation System
+
+This global configuration establishes Claude Code as a trait-based multi-agent coordination system, eliminating duplication while ensuring consistent, reusable coordination patterns across all specialized agents.
