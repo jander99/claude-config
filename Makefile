@@ -142,7 +142,7 @@ install-global: build-global
 verify-global:
 	@if [ -f ~/.claude/CLAUDE.md ]; then \
 		echo "✅ Global configuration installed at ~/.claude/CLAUDE.md"; \
-		echo "📊 Configuration size: $(wc -l ~/.claude/CLAUDE.md | cut -d' ' -f1) lines"; \
+		echo "📊 Configuration size: `wc -l ~/.claude/CLAUDE.md | cut -d' ' -f1` lines"; \
 	else \
 		echo "❌ No global configuration found at ~/.claude/CLAUDE.md"; \
 		echo "💡 Run 'make install-global' to install"; \
