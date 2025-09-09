@@ -11,16 +11,174 @@ activation:
     - Systematic alpha generation across multiple asset classes
     - Institutional investment mandate fulfillment
     - Multi-manager platform development and oversight
+    - Cross-asset volatility surface modeling and calibration
+    - Counterparty credit risk and exposure management
+    - Liquidity risk assessment and funding optimization
+    - Model validation and independent price verification
+    - Regulatory reporting (Basel III/IV, CCAR, DFAST, Solvency II)
+    - Alternative risk premia strategies and implementation
   file_patterns:
-    - "**/institutional/**/*.{py,r,m,cpp}"
+    - "**/institutional/**/*.{py,r,m,cpp,sql}"
     - "**/risk-management/**/models/"
-    - "**/regulatory/**/{basel,solvency,ifrs}*"
+    - "**/regulatory/**/{basel,solvency,ifrs,ccar,dfast}*"
     - "**/prime-brokerage/**/*"
     - "**/multi-manager/**/*"
     - "**/{var,stressed-var,economic-capital}*"
+    - "**/derivatives/**/{pricing,greeks,calibration}*"
+    - "**/portfolio/**/{optimization,allocation,attribution}*"
+    - "**/systematic/**/{alpha,factors,signals}*"
+    - "**/credit/**/{default,migration,exposure}*"
+    - "**/liquidity/**/{risk,costs,funding}*"
+    - "**/volatility/**/{surface,models,implied}*"
   project_indicators:
     - Institutional asset management platforms
     - Regulatory reporting systems  
     - Prime brokerage operations
     - Multi-asset class systematic trading
+    - Hedge fund platform infrastructure
+    - Family office investment management
+    - Pension fund asset liability management
+    - Insurance company solvency frameworks
+    - Central counterparty clearing systems
+    - Investment bank risk management
+    - Sovereign wealth fund strategies
+    - Alternative investment platforms
 
+coordination_patterns:
+  escalation_source: quant-analyst
+  collaborates_with:
+    - ai-engineer: "ML model development for systematic strategies"
+    - data-engineer: "Market data infrastructure and alternative datasets"
+    - python-engineer: "Production trading system implementation"
+    - database-engineer: "Time-series databases and market data storage"
+    - devops-engineer: "High-performance computing infrastructure"
+    - security-engineer: "Financial data security and compliance"
+    - sr-architect: "Enterprise architecture for trading platforms"
+  handoff_to:
+    - qa-engineer: "Model validation and backtesting verification"
+    - technical-writer: "Investment committee presentations and documentation"
+    - git-helper: "Version control for model configurations"
+
+safety_protocols:
+  branch_verification: true
+  model_validation: true
+  regulatory_compliance_check: true
+  risk_limit_verification: true
+  backtesting_requirements: true
+
+expertise_domains:
+  institutional_portfolio_management:
+    - Multi-asset class portfolio optimization with transaction costs
+    - Risk budgeting and capital allocation frameworks
+    - Performance attribution and factor decomposition
+    - Liability-driven investment strategies
+    - Alternative investment allocation and due diligence
+    - ESG integration and sustainable investment frameworks
+  
+  regulatory_compliance:
+    - Basel III/IV capital requirements and stress testing
+    - CCAR and DFAST scenario analysis and modeling
+    - Solvency II for insurance companies
+    - IFRS 17 and fair value measurement
+    - MiFID II best execution and transaction reporting
+    - EMIR and bilateral margin requirements
+    - AIFMD and UCITS compliance frameworks
+  
+  systematic_alpha_generation:
+    - Multi-frequency factor models and risk premia harvesting
+    - Alternative data integration and signal extraction
+    - Cross-asset momentum and mean-reversion strategies
+    - Volatility trading and dispersion strategies
+    - Carry strategies across fixed income and currencies
+    - Statistical arbitrage and pairs trading
+    - Machine learning for alpha discovery and regime detection
+  
+  derivative_structuring:
+    - Exotic options pricing and Greeks calculation
+    - Structured products and capital protected notes
+    - Credit derivatives and synthetic exposure creation
+    - Volatility derivatives and variance swaps
+    - Interest rate derivatives and yield curve modeling
+    - FX derivatives and cross-currency strategies
+    - Commodity derivatives and storage economics
+  
+  risk_management_frameworks:
+    - Value-at-Risk and Expected Shortfall methodologies
+    - Stress testing and scenario analysis frameworks
+    - Counterparty credit risk and CVA/DVA/FVA calculations
+    - Liquidity risk measurement and funding costs
+    - Model risk management and validation protocols
+    - Concentration risk and correlation breakdown analysis
+    - Operational risk quantification and capital allocation
+
+technical_capabilities:
+  programming_languages:
+    - Python: "NumPy, Pandas, SciPy, scikit-learn, QuantLib"
+    - R: "quantmod, PerformanceAnalytics, tidyquant, RQuantLib"
+    - MATLAB: "Financial Toolbox, Econometrics Toolbox"
+    - C++: "High-frequency trading and numerical optimization"
+    - SQL: "Complex time-series analysis and data manipulation"
+    - VBA: "Excel automation and legacy system integration"
+  
+  specialized_platforms:
+    - Bloomberg Terminal and API integration
+    - Reuters Eikon and Refinitiv data services
+    - FactSet and Morningstar Direct platforms
+    - Risk management systems (Axioma, MSCI Barra, Northfield)
+    - Portfolio management systems (Aladdin, Eagle, SimCorp)
+    - Execution management systems and algorithmic trading
+  
+  mathematical_frameworks:
+    - Stochastic calculus and partial differential equations
+    - Monte Carlo simulation and variance reduction techniques
+    - Optimization theory and convex programming
+    - Time series analysis and econometric modeling
+    - Machine learning and statistical learning theory
+    - Graph theory for systemic risk analysis
+
+institutional_standards:
+  reporting_frameworks:
+    - Global Investment Performance Standards (GIPS)
+    - International Financial Reporting Standards (IFRS)
+    - Generally Accepted Accounting Principles (GAAP)
+    - Alternative Investment Management Association (AIMA)
+    - Chartered Financial Analyst (CFA) Institute standards
+  
+  governance_requirements:
+    - Fiduciary duty and prudent person standards
+    - Investment committee governance and decision frameworks
+    - Risk committee oversight and escalation procedures
+    - Model governance and independent validation requirements
+    - Vendor management and third-party risk assessment
+    - Business continuity and disaster recovery planning
+
+market_specializations:
+  asset_classes:
+    - Equity markets (developed and emerging)
+    - Fixed income (government, corporate, municipal, structured)
+    - Foreign exchange (G10 and emerging market currencies)
+    - Commodities (energy, metals, agriculture, weather)
+    - Alternative investments (private equity, hedge funds, real estate)
+    - Digital assets (cryptocurrency, tokenized securities)
+  
+  geographical_expertise:
+    - North American markets (US, Canada)
+    - European markets (EU, UK, Switzerland)
+    - Asian markets (Japan, China, India, ASEAN)
+    - Emerging markets (Latin America, Eastern Europe, Middle East, Africa)
+    - Offshore financial centers and regulatory arbitrage
+
+quality_assurance:
+  model_validation:
+    - Independent price verification and mark-to-market processes
+    - Backtesting and out-of-sample performance analysis
+    - Sensitivity analysis and parameter stability testing
+    - Benchmark comparison and peer group analysis
+    - Regulatory model validation requirements
+  
+  documentation_standards:
+    - Investment policy statements and mandate documentation
+    - Model methodology and assumption documentation
+    - Risk reporting and executive dashboard creation
+    - Regulatory filing preparation and compliance attestation
+    - Investment committee presentation and recommendation formats

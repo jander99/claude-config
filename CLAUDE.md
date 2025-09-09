@@ -20,6 +20,7 @@ The agent system is organized around several specialized roles:
 - `java-engineer.md` - Spring Boot/Framework and JUnit/Mockito testing
 - `data-engineer.md` - Data pipelines, ETL processes, and streaming systems
 - `blockchain-engineer.md` - Smart contracts, DeFi protocols, and Web3 development
+- `mobile-engineer.md` - iOS, Android, React Native, Flutter mobile development
 - `git-helper.md` - Version control operations and GitHub CLI workflows
 
 **Research & Strategy:**
@@ -34,15 +35,15 @@ The agent system is organized around several specialized roles:
 - `sr-architect.md` - System design and technical escalation resolution
 - `technical-writer.md` - API documentation, user guides, and developer tutorials
 
-**Experimental & Enhancement:**
-- `prompt-engineer.md` - EXPERIMENTAL prompt preprocessing and context enhancement
+**AI & Integration Specialists:**
+- `prompt-engineer.md` - LLM integration, prompt optimization, and AI workflow design
 
 ### Agent Coordination Patterns
 
 Agents follow a hierarchical coordination model:
 
 1. **Proactive Activation** - Agents auto-activate based on project detection (file patterns, dependencies)
-2. **Prompt Enhancement** - prompt-engineer preprocesses vague requests to add context and clarity
+2. **LLM Integration** - prompt-engineer provides LLM API integration and optimization expertise
 3. **Branch Safety Checks** - All development agents must check branch status before work
 4. **Testing Handoffs** - Development agents coordinate with qa-engineer for validation
 5. **Escalation Chains** - Complex issues escalate to senior agents after 3 failed attempts
@@ -59,10 +60,10 @@ Agents follow a hierarchical coordination model:
 - qa-engineer validates across the pipeline
 - technical-writer documents ML models and API usage
 
-**Prompt Enhancement Workflow:**
-- prompt-engineer analyzes vague/incomplete user requests
-- Adds codebase context, error details, and routing suggestions
-- Maintains transparency with bypass options for users
+**LLM Integration Workflow:**
+- prompt-engineer optimizes LLM API integrations and prompt templates
+- Provides cost optimization and model selection guidance
+- Coordinates with ai-engineer for ML pipeline integration
 
 **Data & Blockchain Workflows:**
 - data-engineer builds scalable data pipelines and ETL processes
@@ -79,9 +80,9 @@ Agents follow a hierarchical coordination model:
 ## Directory Structure
 
 ### This Repository (Development)
-- `agents/` - Specialized agent definitions (.md files with YAML frontmatter)
+- `data/personas/` - Specialized agent definitions (.yaml files with YAML frontmatter)
 - `docs/` - Documentation and guides  
-- `data/` - Configuration generation system (planned)
+- `data/` - Configuration generation system
 - `CLAUDE.md` - Global instructions and coordination guide
 - `README.md` - Repository documentation
 
@@ -121,8 +122,8 @@ Followed by detailed sections on:
 
 ## Working with This Configuration Repository
 
-1. **Modifying Agent Behavior**: Edit agent .md files to refine coordination patterns and triggers
-2. **Adding New Agents**: Create new .md files following the established YAML frontmatter pattern  
+1. **Modifying Agent Behavior**: Edit agent .yaml files in `data/personas/` to refine coordination patterns and triggers
+2. **Adding New Agents**: Create new .yaml files in `data/personas/` following the established YAML format  
 3. **Updating Global Instructions**: Modify this CLAUDE.md file to change how Claude Code behaves
 4. **Configuration Changes**: Update settings.json for model preferences and global settings
 5. **Version Control**: Use standard git workflows to track configuration changes
@@ -154,7 +155,7 @@ This document serves as the definitive guide for understanding and coordinating 
 
 ## Available Specialized Agents
 
-The agent ecosystem consists of **25 specialized agents** organized into three performance tiers based on complexity and cost requirements.
+The agent ecosystem consists of **24 specialized agents** organized into three performance tiers based on complexity and cost requirements.
 
 ### Tier 1: Efficiency Agents (Haiku - Fast & Cost-Effective)
 
@@ -168,10 +169,6 @@ The agent ecosystem consists of **25 specialized agents** organized into three p
 - Documentation generation after development completion
 - Proactive on: Documentation requests, API changes
 
-**project-coordinator** `model: haiku`
-- Cross-agent task orchestration and workflow management
-- Timeline tracking, dependency management, and stakeholder communication
-- Proactive on: Project planning, timeline tracking, milestone management
 
 ### Tier 2: Specialist Agents (Sonnet - Balanced Performance)
 
@@ -200,6 +197,11 @@ The agent ecosystem consists of **25 specialized agents** organized into three p
 - Smart contracts, DeFi protocols, and Web3 development
 - Solidity, Web3.js, and blockchain integrations
 - Proactive on: Solidity files, Web3 projects, DeFi protocols
+
+**mobile-engineer** `model: sonnet`
+- iOS (Swift/SwiftUI), Android (Kotlin/Jetpack Compose), React Native, Flutter
+- Mobile architecture patterns, app store optimization, offline-first design
+- Proactive on: Mobile project files, device-specific optimizations, app deployment
 
 **frontend-engineer** `model: sonnet`
 - React, Vue, Angular, and modern JavaScript/TypeScript development
@@ -243,10 +245,6 @@ The agent ecosystem consists of **25 specialized agents** organized into three p
 - Proactive on: Financial data, trading strategies, risk models
 
 #### Quality & Enhancement Agents
-**customer-success** `model: sonnet`
-- User onboarding, retention strategies, and customer lifecycle management
-- Support optimization and customer feedback analysis
-- Proactive on: Customer success, user onboarding, retention analysis
 
 **performance-engineer** `model: sonnet`
 - Application performance monitoring, load testing, and scalability planning
@@ -264,9 +262,9 @@ The agent ecosystem consists of **25 specialized agents** organized into three p
 - Proactive on: UI design, user experience, accessibility, design systems
 
 **prompt-engineer** `model: sonnet`
-- EXPERIMENTAL: Prompt preprocessing and context enhancement
-- Vague request clarification and routing optimization
-- Proactive on: Unclear or incomplete user requests
+- LLM integration, prompt optimization, and AI workflow design
+- API integration patterns, model selection, and cost optimization
+- Proactive on: LLM configs, prompt templates, AI integration projects
 
 ### Tier 3: Senior Agents (Opus - Advanced & Strategic)
 
@@ -295,16 +293,29 @@ The agent ecosystem consists of **25 specialized agents** organized into three p
 - Agent ecosystem optimization and capability gap analysis
 - Proactive on: Agent system design requests, ecosystem improvements
 
----
-
 ## Agent Coordination Patterns
 
-Agents follow a hierarchical coordination model:
+Agents follow a hierarchical coordination model with clear handoff protocols and escalation chains:
 
----
+### Primary Coordination Flows
 
+**Development Workflow Pattern:**
+1. **Feature Development**: Specialist agents (python-engineer, frontend-engineer, etc.) implement features
+2. **Quality Gates**: qa-engineer validates functionality and performance
+3. **Documentation**: technical-writer creates user guides and API docs
+4. **Version Control**: git-helper manages branches, merges, and releases
 
----
+**AI/ML Pipeline Pattern:**
+1. **Research Phase**: ai-researcher provides methodology and literature review
+2. **Implementation**: ai-engineer builds models with data-engineer for pipelines
+3. **Integration**: python-engineer handles serving infrastructure
+4. **Optimization**: performance-engineer monitors and optimizes systems
+
+**Cross-Platform Coordination:**
+- **mobile-engineer** coordinates with backend teams for API integration
+- **frontend-engineer** and **mobile-engineer** align on design systems
+- **security-engineer** reviews all authentication and data protection
+- **devops-engineer** manages deployment across web and mobile platforms
 
 ## Agent Usage Examples
 
@@ -391,14 +402,23 @@ Agents follow a hierarchical coordination model:
 - Sonnet agents for implementation
 - Total cost: ~1 Opus + 4-5 Sonnet = ~3-4x Haiku baseline
 
----
+### Example 5: Mobile Application Development
 
+**Scenario**: Building a cross-platform mobile app with React Native, backend API, and cloud deployment.
 
----
+**Agent Coordination Flow:**
+```
+1. mobile-engineer: React Native development and platform-specific optimizations
+2. python-engineer: FastAPI backend with mobile-optimized endpoints
+3. database-engineer: Mobile-friendly data synchronization and offline storage
+4. security-engineer: Mobile authentication and data security
+5. devops-engineer: App store deployment and backend infrastructure
+6. qa-engineer: Cross-platform testing and performance validation
+7. technical-writer: Mobile app documentation and API guides
+```
 
-
----
-
-
----
+**Cost Optimization**:
+- 7 Sonnet agents for comprehensive mobile development
+- Focus on mobile-first performance and offline capabilities
+- Total cost: ~7-9x Haiku baseline
 
