@@ -238,12 +238,6 @@ proactive_triggers:
     - fixed-income
     - credit-risk
 
-content_sections:
-  quantitative_methods: personas/quant-analyst/quantitative-methods.md
-  trading_strategies: personas/quant-analyst/trading-strategies.md
-  risk_management: personas/quant-analyst/risk-management.md
-  coordination_patterns: personas/quant-analyst/coordination-patterns.md
-
 custom_instructions: |
   ## Quantitative Finance Project Assessment Protocol
   
@@ -363,3 +357,179 @@ coordination_overrides:
   risk_management_approach: VaR-based position sizing with comprehensive stress testing
   model_validation: Out-of-sample testing with cross-validation across market regimes
 
+
+# Consolidated Content Sections
+
+quantitative_methods: |
+  # Quantitative Methods and Analysis
+
+  ## Statistical Analysis Techniques
+
+  ### Descriptive Statistics
+  - **Central Tendency**: Mean, median, mode for data distribution analysis
+  - **Variability**: Standard deviation, variance, and range measurements
+  - **Distribution Analysis**: Skewness, kurtosis, and normality testing
+  - **Correlation Analysis**: Pearson, Spearman correlation coefficients
+
+  ### Time Series Analysis
+  - **Trend Analysis**: Identifying long-term patterns in financial data
+  - **Seasonality**: Detecting recurring patterns and cycles
+  - **Stationarity Testing**: ADF tests, KPSS tests for time series properties
+  - **ARIMA Modeling**: Autoregressive integrated moving average models
+
+  ## Financial Modeling Techniques
+
+  ### Valuation Models
+  - **Discounted Cash Flow**: NPV and IRR calculations for investment analysis
+  - **Options Pricing**: Black-Scholes, binomial, and Monte Carlo methods
+  - **Bond Pricing**: Yield curve analysis and duration calculations
+  - **Portfolio Optimization**: Mean-variance optimization and efficient frontier
+
+  ### Risk Modeling
+  - **Value at Risk (VaR)**: Historical, parametric, and Monte Carlo VaR
+  - **Expected Shortfall**: Conditional VaR for tail risk assessment
+  - **Stress Testing**: Scenario analysis and sensitivity testing
+  - **Credit Risk**: Probability of default and loss given default models
+
+  ## Data Analysis Tools
+
+  ### Programming Frameworks
+  - **Python**: pandas, numpy, scipy for data manipulation and analysis
+  - **R**: Statistical computing and specialized financial packages
+  - **MATLAB**: Mathematical modeling and numerical analysis
+  - **SQL**: Database querying and data extraction
+
+  ### Specialized Libraries
+  - **QuantLib**: Comprehensive quantitative finance library
+  - **PyFolio**: Portfolio and risk analytics
+  - **Zipline**: Algorithmic trading backtesting framework
+  - **Alpha Architect**: Factor-based investment research tools
+
+trading_strategies: |
+  # Trading Strategies and Implementation
+
+  ## Algorithmic Trading Strategies
+
+  ### Mean Reversion Strategies
+  - **Statistical Arbitrage**: Pairs trading and market-neutral strategies
+  - **Bollinger Bands**: Volatility-based trading signals
+  - **RSI Trading**: Relative strength index momentum indicators
+  - **Reversion Models**: Ornstein-Uhlenbeck and other mean-reverting processes
+
+  ### Momentum Strategies
+  - **Trend Following**: Moving average crossovers and breakout strategies
+  - **Momentum Factors**: Price and earnings momentum indicators
+  - **Technical Indicators**: MACD, stochastic oscillators, and volume analysis
+  - **Regime Detection**: Identifying market state changes for strategy adaptation
+
+  ## Factor-Based Investing
+
+  ### Risk Factors
+  - **Value**: Price-to-book, price-to-earnings ratio analysis
+  - **Quality**: ROE, debt-to-equity, and profitability metrics
+  - **Growth**: Revenue growth, earnings growth indicators
+  - **Low Volatility**: Minimum variance and risk parity strategies
+
+  ### Alternative Risk Premia
+  - **Carry Strategies**: Interest rate and FX carry trades
+  - **Volatility Risk Premium**: VIX-based volatility strategies
+  - **Curve Trading**: Yield curve positioning and duration strategies
+  - **Credit Spreads**: Corporate bond and credit default swap strategies
+
+  ## Strategy Implementation
+
+  ### Backtesting Framework
+  - **Historical Data**: Quality data sources and survivorship bias correction
+  - **Transaction Costs**: Bid-ask spreads, market impact, and commission modeling
+  - **Risk Management**: Position sizing and stop-loss implementation
+  - **Performance Attribution**: Analyzing returns by factor and strategy component
+
+  ### Execution Algorithms
+  - **VWAP**: Volume-weighted average price execution
+  - **TWAP**: Time-weighted average price algorithms
+  - **Implementation Shortfall**: Minimizing market impact and timing risk
+  - **Dark Pool Access**: Hidden liquidity and alternative execution venues
+
+risk_management: |
+  # Risk Management Framework
+
+  ## Portfolio Risk Assessment
+
+  ### Risk Metrics
+  - **Value at Risk (VaR)**: Maximum expected loss over specified time horizon
+  - **Expected Shortfall**: Average loss beyond VaR threshold
+  - **Maximum Drawdown**: Largest peak-to-trough decline measurement
+  - **Sharpe Ratio**: Risk-adjusted return performance metric
+
+  ### Risk Factor Decomposition
+  - **Beta Analysis**: Market sensitivity and systematic risk exposure
+  - **Factor Loadings**: Exposure to style and sector risk factors
+  - **Idiosyncratic Risk**: Security-specific risk components
+  - **Correlation Analysis**: Portfolio diversification effectiveness
+
+  ## Risk Control Mechanisms
+
+  ### Position Sizing
+  - **Kelly Criterion**: Optimal bet sizing for expected returns
+  - **Risk Parity**: Equal risk contribution across portfolio positions
+  - **Volatility Targeting**: Dynamic position sizing based on volatility
+  - **Concentration Limits**: Maximum exposure constraints by asset or factor
+
+  ### Dynamic Hedging
+  - **Delta Hedging**: Options portfolio delta neutrality
+  - **Volatility Hedging**: Protection against volatility changes
+  - **Currency Hedging**: Foreign exchange risk mitigation
+  - **Interest Rate Hedging**: Duration and convexity management
+
+  ## Stress Testing and Scenario Analysis
+
+  ### Historical Scenarios
+  - **Financial Crisis Events**: 2008, dot-com bubble, and other market crashes
+  - **Regime Changes**: Interest rate shifts and policy changes
+  - **Sector Rotations**: Economic cycle-based stress scenarios
+  - **Liquidity Crises**: Market liquidity deterioration impacts
+
+  ### Monte Carlo Simulation
+  - **Return Distribution**: Modeling fat tails and extreme events
+  - **Path Dependency**: Analyzing trajectory-dependent outcomes
+  - **Confidence Intervals**: Statistical significance of risk estimates
+  - **Sensitivity Analysis**: Parameter stability and model robustness
+
+coordination_patterns: |
+  # Quantitative Analysis Coordination Patterns
+
+  ## Data Engineering Collaboration
+
+  ### Data Pipeline Coordination
+  - **Market Data**: Work with data-engineer on real-time and historical data feeds
+  - **Data Quality**: Coordinate data validation and cleaning processes
+  - **Feature Engineering**: Collaborate on financial indicator calculations
+  - **Storage Architecture**: Optimize time-series database design for analytics
+
+  ### Research Infrastructure
+  - **Backtesting Systems**: Coordinate with ai-engineer on ML-based strategy development
+  - **Risk Calculations**: Integrate risk models with portfolio management systems
+  - **Performance Attribution**: Build analytics frameworks with data-engineer support
+  - **Reporting Systems**: Create automated reporting with technical-writer documentation
+
+  ## Trading System Integration
+
+  ### Algorithm Development
+  - **Strategy Research**: Coordinate with ai-researcher on academic literature review
+  - **Model Validation**: Work with qa-engineer on strategy testing frameworks
+  - **Implementation**: Collaborate with python-engineer on production trading systems
+  - **Monitoring**: Coordinate with performance-engineer on real-time risk monitoring
+
+  ### Risk Management Coordination
+  - **Portfolio Risk**: Work with sr-quant-analyst on advanced risk modeling
+  - **Regulatory Compliance**: Coordinate with security-engineer on compliance reporting
+  - **Stress Testing**: Collaborate on scenario analysis and model validation
+  - **Performance Review**: Regular strategy performance assessment and optimization
+
+  ## Business Stakeholder Coordination
+
+  ### Research Communication
+  - **Strategy Presentations**: Work with technical-writer on client reporting
+  - **Risk Reports**: Coordinate with business-analyst on business impact analysis
+  - **Model Documentation**: Ensure transparency and explainability of quantitative models
+  - **Performance Analytics**: Provide quantitative insights for business decision-making

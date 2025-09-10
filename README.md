@@ -1,6 +1,6 @@
 # Claude Config Generator
 
-A composable system for generating Claude Code agent configurations through YAML-based composition. This project transforms how Claude Code agents are built and maintained by enabling component reuse, consistent coordination patterns, and rapid agent development through composition rather than duplication.
+A simple, focused YAML-to-Markdown templating tool for generating Claude Code agent configurations. This project provides a set of specialized agents for Claude Code's proactive agent system through a streamlined build-and-deploy process.
 
 ## Table of Contents
 - [Project Overview](#project-overview)
@@ -14,114 +14,102 @@ A composable system for generating Claude Code agent configurations through YAML
 
 ## Project Overview
 
-This repository implements a **composable agent system** for Claude Code that eliminates duplication and enables rapid agent development through component reuse. Instead of maintaining 20+ individual agent files with repeated patterns, the system uses:
+This repository implements a **simple templating system** for Claude Code agent configurations. The system uses:
 
-- **Personas**: Domain expertise definitions (YAML)
-- **Traits**: Reusable behaviors and coordination patterns (YAML)
-- **Templates**: Jinja2 templates for generating complete agent markdown
-- **Compositions**: Agent definitions built by combining personas and traits
-- **CLI Tools**: Python-based build system for generation and validation
+- **YAML Source Format**: Single YAML file per agent with complete definition
+- **Template-Based Generation**: Jinja2 templates convert YAML to agent markdown
+- **Agent Library**: 25+ specialized agents for software development
+- **Build System**: Python CLI with basic validation and installation
+- **Single Source of Truth**: Each agent defined once in YAML format
 
 ## Features
 
 ### Core Capabilities
-- **Composable Architecture**: Build agents from reusable personas and traits
-- **Template-Based Generation**: Jinja2 templates generate complete agent markdown
-- **YAML Configuration**: Clean, maintainable configuration files
-- **CLI Tools**: Full command-line interface for building and validation
-- **Testing Framework**: Automated validation of generated agents
-- **Development Workflow**: Watch mode, linting, and quality checks
+- **YAML-to-Markdown Templating**: Convert YAML agent definitions to markdown
+- **Agent Library**: 25+ specialized development agents
+- **CLI Tools**: Build, validate, install, and list commands
+- **Basic Validation**: YAML syntax and structure validation
+- **Installation**: Deploy generated agents to ~/.claude/
 
 ### Agent System
-- **20+ Specialized Agents**: Comprehensive coverage of development domains
-- **Consistent Coordination**: Standardized patterns across all agents
-- **Branch Safety**: Mandatory safety checks before development work
-- **Quality Assurance**: Integrated testing and documentation workflows
-- **Escalation Protocols**: Senior agent routing for complex issues
+- **25+ Specialized Agents**: Development, research, and architecture roles
+- **Proactive Triggers**: Agents activate based on file patterns and project types
+- **Tier-Based Selection**: Haiku (efficiency), Sonnet (balanced), Opus (strategic)
+- **Coordination Patterns**: Clear handoff protocols between agents
 
 ## Architecture
 
-### Component System
+### Simple Templating System
 
-The composable architecture uses four main component types:
+The architecture uses YAML source files and Jinja2 templates to generate agent configurations:
 
-#### 1. Personas (`data/personas/`)
-Domain expertise definitions in YAML:
+#### 1. Agent Definitions (`data/personas/`)
+Agent specifications in YAML format:
 ```yaml
 # data/personas/python-engineer.yaml
-name: python_developer
-display_name: "Python Developer" 
+name: python-engineer
+display_name: "Python Engineer" 
+model: sonnet
+description: Expert Python developer specializing in web frameworks...
+
+context_priming: |
+  You are a senior Python engineer with deep expertise...
+  
+responsibilities:
+  - Web application development and API design
+  - Data processing and automation scripts
+
 expertise:
   - "Web frameworks (Django, FastAPI, Flask)"
   - "Data processing and automation"
+
 proactive_triggers:
   file_patterns: ["*.py", "requirements.txt"]
   project_indicators: ["Flask", "Django"]
 ```
 
-#### 2. Traits (`data/traits/`)
-Reusable behaviors and coordination patterns:
-```yaml
-# data/traits/safety/branch-check.yaml
-name: branch_safety
-category: safety
-implementation: |
-  ## Branch Safety Protocol
-  Before development work:
-  1. Check current branch with `git branch --show-current`
-  2. Create feature branch if on protected branch
-```
-
-#### 3. Templates (`src/claude_config/templates/`)
-Jinja2 templates for agent generation:
+#### 2. Template System (`src/claude_config/templates/`)
+Jinja2 template converts YAML to agent markdown:
 ```jinja2
 ---
-name: {{ composition.name }}
-model: {{ composition.model }}
+name: {{ agent.name }}
+model: {{ agent.model }}
 ---
 
-# {{ persona.display_name }}
+# {{ agent.display_name }}
 
-{{ persona.description }}
+{{ agent.description }}
 
-{% for trait in traits %}
-{{ trait.implementation }}
+## Context Priming
+{{ agent.context_priming }}
+
+## Responsibilities
+{% for item in agent.responsibilities %}
+- {{ item }}
 {% endfor %}
 ```
 
-#### 4. Build System
-Python-based CLI with validation and generation tools.
+#### 3. Build System
+Python CLI that processes YAML files through templates to generate agent markdown files.
 
 ### Repository Structure
 
 ```
 claude-config/                     # This repository
 ├── README.md                      # This documentation
-├── CLAUDE.md                      # Global instructions & coordination guide
+├── CLAUDE.md                      # Global instructions
 ├── pyproject.toml                 # Python project configuration
-├── uv.lock                       # Dependency lock file
 ├── Makefile                      # Development automation
 ├── src/
 │   └── claude_config/
-│       ├── __init__.py
-│       ├── cli.py                # Command-line interface
-│       ├── composer.py           # Agent composition engine
-│       ├── validator.py          # Configuration validation
-│       ├── exceptions.py         # Custom exceptions
+│       ├── cli.py                # Command-line interface (~100 lines)
+│       ├── composer.py           # Template engine (~200 lines)
+│       ├── validator.py          # YAML validation (~115 lines)
 │       └── templates/            # Jinja2 templates
-├── data/                         # Configuration source (planned)
-│   ├── config.yaml              # Main configuration
-│   ├── personas/                # Agent expertise definitions
-│   ├── traits/                  # Reusable behaviors
-│   └── content/                 # Markdown content
-├── agents/                       # Current agent definitions
-│   ├── ai-engineer.md
-│   ├── python-engineer.md
-│   ├── [18 more agents...]
-│   └── agent-architect.md
+├── data/
+│   └── personas/                # Agent definitions (25+ YAML files)
 ├── settings.json                 # Claude Code settings
-├── tests/                        # Test suite
-├── docs/                         # Documentation
+├── tests/                        # Test suite (4 files)
 ├── dist/                         # Generated outputs (gitignored)
 └── .claude/                      # Local development target
 ```
@@ -139,56 +127,56 @@ ${HOME}/.claude/
 
 ## Development Status
 
-This is an active development project implementing a composable agent system:
+This is a simple, focused templating tool for Claude Code configurations:
 
-- **✅ Core Infrastructure**: Python package with CLI, composition engine, and validation
-- **✅ Build System**: Make-based development workflow with testing and linting
-- **✅ Agent Library**: 20+ specialized agents for comprehensive development coverage
-- **🔄 Template System**: Implementing Jinja2-based generation (in progress)
-- **📋 Data Layer**: YAML-based personas and traits system (planned)
-- **📋 Migration**: Converting existing agents to composable system (planned)
+- **✅ YAML Agent Definitions**: 25+ specialized agents in YAML format
+- **✅ Template System**: Jinja2-based YAML-to-Markdown conversion
+- **✅ Build System**: Python CLI with essential commands
+- **✅ Basic Validation**: YAML syntax and structure checking
+- **✅ Installation**: Deploy to ~/.claude/ directory
+- **✅ Simplified Architecture**: ~500 lines total, focused on core functionality
 
-### Next Steps
+### Recent Simplifications
 
-1. **Template Implementation**: Complete Jinja2 template system for agent generation
-2. **Data Layer Setup**: Create YAML personas and traits structure
-3. **Agent Migration**: Convert existing agents to composable format
-4. **Testing Framework**: Expand test coverage for generated agents
-5. **Documentation**: Complete developer guides and examples
+1. **✅ Architecture Simplification**: Removed over-engineered components (2,600+ → ~500 lines)
+2. **✅ Focused Purpose**: Pure templating tool for agent configuration generation
+3. **✅ Removed Complexity**: Eliminated monitoring, security scanning, complex CLI
+4. **✅ Essential Commands**: Build, validate, install, list-agents, help only
+5. **✅ Right-Sized Testing**: 4 focused test files covering core functionality
 
 
 ## Getting Started
 
 ### Prerequisites
 - Python 3.8+
-- [uv](https://docs.astral.sh/uv/) (recommended Python package manager)
-- Git for version control
+- [uv](https://docs.astral.sh/uv/) or pip for package management
+- Basic familiarity with YAML and Jinja2 templates
 
 ### Installation
 
 #### Development Setup
 ```bash
-# Install uv if not already installed
-curl -LsSf https://astral.sh/uv/install.sh | sh
-
 # Clone repository
 git clone <repository-url> claude-config
 cd claude-config/
 
-# Setup development environment
-make dev
+# Install dependencies
+uv pip install -e .
+
+# Or with pip
+pip install -e .
 ```
 
 #### Quick Start
 ```bash
 # Build agent configurations
-make build
+claude-config build
 
 # Install to Claude Code directory
-make install-to-claude
+claude-config install
 
-# Run tests
-make test
+# Validate configurations
+claude-config validate
 ```
 
 ## Development
@@ -196,53 +184,51 @@ make test
 ### Development Workflow
 
 ```bash
-# Setup development environment
-make dev                       # Install dependencies and setup pre-commit
+# Build configurations
+claude-config build
 
-# Daily development
-make build                     # Build all configurations
-make test                      # Run test suite
-make validate                  # Validate configurations
-make install-to-claude         # Install to ~/.claude/
+# Validate YAML and templates
+claude-config validate
 
-# Code quality
-make format                    # Format Python code
-make lint                      # Run linters (black, isort, mypy)
+# Install to Claude Code
+claude-config install
 
-# Continuous development
-make watch                     # Watch for changes and rebuild
-make clean                     # Clean build artifacts
+# List available agents
+claude-config list-agents
+
+# Run tests
+pytest tests/
 ```
 
 ### Architecture Overview
 
 The system is built with:
 
-- **Python Package**: Structured as a proper Python project with `pyproject.toml`
-- **CLI Interface**: Rich command-line tools built with Click and Rich
-- **Composition Engine**: Jinja2-based template system for agent generation
-- **Validation Framework**: Pydantic models and validation rules
-- **Testing**: Pytest-based test suite with coverage reporting
-- **Development Tools**: Pre-commit hooks, linting, and formatting
+- **Python Package**: Simple project structure with pyproject.toml
+- **CLI Interface**: Basic command-line tools with Click
+- **Template Engine**: Jinja2 templates for YAML-to-Markdown conversion
+- **Basic Validation**: YAML syntax and structure checking
+- **Testing**: Focused test suite covering core functionality
 
 ### Key Components
 
-#### CLI (`src/claude_config/cli.py`)
+#### CLI (`src/claude_config/cli.py`) - ~100 lines
 ```bash
-claude-config build                    # Build agent configurations
-claude-config validate                 # Validate configurations
+claude-config build                    # Build agent configurations  
+claude-config validate                 # Validate YAML syntax
 claude-config list-agents              # List available agents
 claude-config install                  # Install to ~/.claude/
+claude-config --help                   # Show usage
 ```
 
-#### Composer (`src/claude_config/composer.py`)
-Handles agent composition and generation from YAML configurations.
+#### Composer (`src/claude_config/composer.py`) - ~200 lines
+Core templating engine that processes YAML files through Jinja2 templates.
 
-#### Validator (`src/claude_config/validator.py`)
-Validates YAML configurations and ensures consistency.
+#### Validator (`src/claude_config/validator.py`) - ~115 lines
+Basic YAML syntax and structure validation.
 
-#### Templates (`src/claude_config/templates/`)
-Jinja2 templates for generating agent markdown files.
+#### Templates (`src/claude_config/templates/`) 
+Jinja2 template for converting YAML to agent markdown.
 
 
 ## CLI Usage
@@ -252,541 +238,261 @@ Jinja2 templates for generating agent markdown files.
 # Build all agents
 claude-config build
 
-# Build specific agent
+# Build specific agent  
 claude-config build --agent python-engineer
-
-# Build with validation
-claude-config build --validate
 ```
 
-### Validation and Testing
+### Validation
 ```bash
-# Validate all configurations
+# Validate YAML syntax and structure
 claude-config validate
 
 # List available agents
 claude-config list-agents
-
-# List available traits
-claude-config list-traits
 ```
 
 ### Installation
 ```bash
-# Install to default Claude Code directory
+# Install to ~/.claude/
 claude-config install
-
-# Install to custom location
-claude-config install --target /custom/path
-
-# Dry run to see what would be installed
-claude-config install --dry-run
 ```
 
 ## Configuration
 
-### Current Configuration Files
+### Configuration System
 
-- **`CLAUDE.md`**: Global instructions and coordination guide for all agents
-- **`settings.json`**: Claude Code configuration (model preferences, MCP servers)
-- **`agents/*.md`**: Individual agent definitions with YAML frontmatter
+- **`data/personas/*.yaml`**: Agent definitions in YAML format
+- **`src/claude_config/templates/`**: Jinja2 template for generating agent markdown
+- **`settings.json`**: Claude Code configuration
+- **`CLAUDE.md`**: Global instructions for Claude Code
 
-### Future Configuration System
+### Agent Configuration Format
 
-Planned YAML-based configuration system:
+YAML format for agent definitions:
 
 ```yaml
-# data/config.yaml
-name: personal-claude-config
-output_dir: dist/
+name: agent-name
+display_name: "Display Name"
+model: sonnet|opus|haiku
+description: Brief description...
 
-agents:
-  - ai-engineer
-  - python-engineer
-  - git-helper
-
-settings:
-  model_preferences:
-    default: sonnet
-    complex: opus
-    simple: haiku
-```
-
-## Creating New Agents Tutorial
-
-This comprehensive tutorial guides you through creating a new specialized agent using the enhanced agent architecture with structured fields for data-driven behavior.
-
-### Understanding the Enhanced Agent Architecture
-
-The enhanced agent system uses 5 key structured fields to create intelligent, consistent agents:
-
-#### 1. `context_priming`
-Establishes the agent's mindset, thought patterns, and core values:
-```yaml
 context_priming: |
-  You are a senior Python engineer with 10+ years building production systems. Your mindset:
-  - "What's the most Pythonic way to solve this robustly?"
-  - "How do I make this maintainable for the next developer?"
-  - "Where are the potential failure points and edge cases?"
+  You are a senior engineer...
+
+responsibilities:
+  - Specific responsibility
+  - Another responsibility
+
+expertise:
+  - "Domain expertise"
+
+proactive_triggers:
+  file_patterns: ["*.py"]
+  project_indicators: ["Django"]
+```
+
+## Creating New Agents
+
+This guide shows how to create a new agent using the YAML format.
+
+### Agent YAML Structure
+
+Agent definitions use a simple YAML structure:
+
+#### Required Fields
+
+```yaml
+name: agent-name                    # Unique identifier
+display_name: "Agent Name"          # Human-readable name  
+model: sonnet|opus|haiku           # LLM model tier
+description: Brief description...   # Purpose and capabilities
+
+context_priming: |                  # Agent mindset
+  You are a senior engineer...
+
+responsibilities:                   # What agent handles
+  - Primary responsibility
+  - Secondary responsibility
+
+expertise:                         # Technical expertise
+  - "Technology/framework knowledge"
   
-  You think in terms of: clean architecture, proper error handling, testing strategies, 
-  performance optimization, and long-term maintainability.
+proactive_triggers:                # When agent activates
+  file_patterns: ["*.ext"]
+  project_indicators: ["Framework"]
 ```
 
-#### 2. `quality_criteria`
-Defines measurable standards for code quality, performance, and maintainability:
-```yaml
-quality_criteria:
-  code_quality:
-    - Follows PEP 8 with black formatting and type hints
-    - 90%+ test coverage with meaningful assertions
-  performance:
-    - Database queries optimized with proper indexing
-    - Response times <200ms for API endpoints
-  maintainability:
-    - Clear docstrings following Google/NumPy format
-    - Configuration externalized and environment-specific
-```
+### Creating an Agent
 
-#### 3. `decision_frameworks`
-Provides structured decision-making guidance for technology choices:
-```yaml
-decision_frameworks:
-  framework_selection:
-    web_apis:
-      - FastAPI: Modern async APIs with auto-documentation
-      - Django: Full-featured web apps with admin interface
-      - Flask: Lightweight APIs and microservices
-  architecture_patterns:
-    small_projects: "Simple module structure with clear separation"
-    medium_projects: "Package structure with domain-driven design"
-    large_projects: "Microservices with event-driven architecture"
-```
+#### Step 1: Plan the Agent
 
-#### 4. `boundaries`
-Clearly defines what the agent handles vs. coordinates with others:
-```yaml
-boundaries:
-  do_handle:
-    - Web application development and API design
-    - Data processing and ETL pipeline creation
-  coordinate_with:
-    - ai-engineer: ML model implementation and training
-    - security-engineer: Authentication systems and vulnerability scanning
-```
-
-#### 5. `common_failures`
-Documents typical failure patterns and their solutions:
-```yaml
-common_failures:
-  performance_issues:
-    - N+1 database queries (use select_related/prefetch_related)
-    - Blocking I/O in async contexts (use await properly)
-  security_vulnerabilities:
-    - SQL injection from unsanitized inputs
-    - Missing authentication on sensitive endpoints
-```
-
-### Step-by-Step Agent Creation Process
-
-#### Step 1: Plan Your Agent
-
-Before writing any YAML, plan your agent's purpose:
-
-1. **Identify the Domain**: What specific technology or role does this agent specialize in?
-2. **Define Boundaries**: What will this agent handle vs. coordinate with others?
-3. **List Expertise**: What specific tools, frameworks, and patterns should it know?
-4. **Plan Coordination**: Which existing agents will this work with?
-
-**Example**: Creating a `mobile-engineer` agent
-- Domain: React Native, Flutter, iOS/Android development
-- Boundaries: Mobile app development, app store deployment
-- Expertise: React Native, Flutter, Expo, mobile debugging
-- Coordination: `frontend-engineer` (web views), `devops-engineer` (CI/CD)
+1. **Define the domain**: What technology does this agent specialize in?
+2. **List expertise**: What tools and frameworks should it know?
+3. **Set boundaries**: What will it handle directly vs. coordinate on?
 
 #### Step 2: Create the YAML File
 
-Create a new file: `/home/jeff/workspaces/ai/claude-config/data/personas/[agent-name].yaml`
-
-**Required YAML Structure:**
+Create a new file in `data/personas/[agent-name].yaml`:
 
 ```yaml
 name: mobile-engineer
 display_name: Mobile Engineer  
 model: sonnet
-description: Expert mobile developer specializing in React Native, Flutter, and native iOS/Android development
+description: Expert mobile developer for React Native, Flutter, iOS, and Android.
 
 context_priming: |
-  You are a senior mobile engineer with deep expertise in cross-platform development. Your mindset:
-  - "How do I ensure this works across all target devices and OS versions?"
-  - "What's the performance impact on battery and memory?"
-  - "How do I handle platform-specific requirements elegantly?"
-  - "What's the user experience on different screen sizes?"
-  
-  You think in terms of: platform consistency, performance optimization, 
-  offline capabilities, and platform-specific best practices.
+  You are a senior mobile engineer. You focus on:
+  - Cross-platform compatibility
+  - Performance optimization 
+  - Platform-specific requirements
+
+responsibilities:
+  - React Native and Flutter development
+  - Native iOS and Android development
+  - Mobile performance optimization
+  - App store deployment
 
 expertise:
-- React Native development with TypeScript and native modules
-- Flutter development with Dart and platform channels
-- Native iOS development with Swift and Xcode
-- Native Android development with Kotlin and Android Studio
-- Mobile UI/UX patterns and responsive design
-- App store submission and review processes
-- Mobile device debugging and performance profiling
-
-quality_criteria:
-  performance:
-    - App startup time <3 seconds on target devices
-    - Smooth 60fps animations and scrolling
-    - Memory usage optimized for low-end devices
-    - Battery consumption minimized for background tasks
-  user_experience:
-    - Consistent behavior across platforms
-    - Proper handling of device orientations and screen sizes  
-    - Accessibility features implemented (VoiceOver, TalkBack)
-    - Offline functionality where appropriate
-  code_quality:
-    - TypeScript with strict mode enabled
-    - Comprehensive testing including unit and integration tests
-    - Platform-specific code properly abstracted
-    - Error boundaries and crash reporting implemented
-
-decision_frameworks:
-  platform_selection:
-    cross_platform:
-      - React Native: "JavaScript/TypeScript teams, complex business logic"
-      - Flutter: "Single codebase priority, custom UI requirements"
-    native_development:
-      - iOS Native: "iOS-specific features, maximum performance"
-      - Android Native: "Android-specific features, platform integration"
-  
-  architecture_patterns:
-    small_apps: "Screen-based navigation with local state management"
-    medium_apps: "Feature-based architecture with Redux/Riverpod"
-    large_apps: "Micro-frontend architecture with shared libraries"
-  
-  testing_strategy:
-    unit_tests: "Business logic and utility functions"
-    widget_tests: "UI components and user interactions"
-    integration_tests: "End-to-end user workflows and API integration"
-
-boundaries:
-  do_handle:
-    - Mobile application development and architecture
-    - Platform-specific implementation and optimization
-    - App store deployment and submission processes
-    - Mobile debugging and performance optimization
-    - Cross-platform development strategies
-  
-  coordinate_with:
-    - frontend-engineer: Web view integration and shared components
-    - python-engineer: Backend API design for mobile consumption
-    - devops-engineer: CI/CD pipelines for mobile builds
-    - ui-ux-designer: Mobile-specific design patterns and accessibility
-    - qa-engineer: Mobile testing strategies and device compatibility
-
-common_failures:
-  performance_issues:
-    - Bridge communication overhead in React Native (minimize bridge calls)
-    - Memory leaks from event listeners (proper cleanup in useEffect)
-    - Large bundle sizes affecting startup time (code splitting and lazy loading)
-  platform_compatibility:
-    - Inconsistent behavior between iOS and Android (test on both platforms)
-    - Screen size and orientation issues (responsive design patterns)
-    - Platform-specific permissions and capabilities (check availability)
-  deployment_issues:
-    - App store rejection due to policy violations (follow guidelines)
-    - Certificate and provisioning profile problems (automate management)
-    - Version mismatch between platforms (coordinated release process)
+  - "React Native with TypeScript"
+  - "Flutter with Dart"
+  - "iOS with Swift"
+  - "Android with Kotlin"
 
 proactive_triggers:
   file_patterns:
-  - '*.tsx'
-  - '*.dart'
-  - '*.swift'
-  - '*.kt'
-  - package.json
-  - pubspec.yaml
-  - ios/
-  - android/
+    - "*.tsx"
+    - "*.dart" 
+    - "*.swift"
+    - "*.kt"
   project_indicators:
-  - React Native
-  - Flutter
-  - Expo
-  - Xcode
-  - Android Studio
-  - react-native
-  - flutter
-
-content_sections:
-  technical_approach: personas/mobile-engineer/technical-approach.md
-  platform_expertise: personas/mobile-engineer/platform-expertise.md
-  coordination_patterns: personas/mobile-engineer/coordination-patterns.md
-  performance_optimization: personas/mobile-engineer/performance-optimization.md
-
-custom_instructions: |
-  ## Mobile Development Protocol
-  
-  **1. Platform Assessment (First 30 seconds)**
-  - Identify target platforms (iOS, Android, or both)
-  - Check existing project structure and dependencies
-  - Verify development environment setup (Xcode, Android Studio)
-  - Review device compatibility requirements
-  
-  **2. Cross-Platform Considerations**
-  - Evaluate shared code vs platform-specific requirements
-  - Plan navigation patterns for mobile UX
-  - Consider offline capabilities and data synchronization
-  - Design responsive layouts for various screen sizes
-  
-  **3. Development Approach**
-  - Start with core functionality on primary platform
-  - Implement platform-specific optimizations
-  - Add comprehensive error handling and logging
-  - Test on actual devices, not just simulators
-  - Profile performance and memory usage
-  
-  ## Quality Assurance Standards
-  
-  **Before completing any mobile feature:**
-  - Test on minimum supported OS versions
-  - Verify accessibility features work correctly
-  - Check performance on low-end devices
-  - Validate offline functionality if applicable
-  - Ensure proper error messaging for network issues
-
-coordination_overrides:
-  testing_framework: Platform-specific testing (XCTest for iOS, Espresso for Android)
-  performance_monitoring: Native performance profiling tools and crash reporting
-  deployment_strategy: Platform-specific CI/CD with automated testing on devices
-  design_compliance: Mobile-first design patterns with platform-specific guidelines
+    - "React Native"
+    - "Flutter"
 ```
 
-#### Step 3: Create Content Sections (Optional)
+#### Step 3: Validate and Build
 
-If your agent needs detailed content sections, create markdown files in `/home/jeff/workspaces/ai/claude-config/data/content/personas/[agent-name]/`:
-
+Validate the YAML syntax:
 ```bash
-mkdir -p data/content/personas/mobile-engineer
-```
-
-Create files like:
-- `technical-approach.md` - Detailed technical methodologies
-- `platform-expertise.md` - Platform-specific guidance  
-- `coordination-patterns.md` - How this agent works with others
-- `performance-optimization.md` - Performance best practices
-
-#### Step 4: Validate Your Agent Configuration
-
-Run validation to check your YAML syntax and structure:
-
-```bash
-# Validate the specific agent
 claude-config validate --agent mobile-engineer
-
-# Or validate all agents
-claude-config validate
 ```
 
-#### Step 5: Build and Test the Agent
-
-Generate the complete agent markdown:
-
+Build the agent:
 ```bash
-# Build the specific agent
 claude-config build --agent mobile-engineer
-
-# Build all agents
-make build
 ```
 
-Check the generated output in `dist/agents/mobile-engineer.md` to ensure it looks correct.
+#### Step 4: Test Installation
 
-#### Step 6: Integration Testing
+Install to Claude Code:
+```bash
+claude-config install
+```
 
-Install to your Claude Code directory for testing:
+The agent will be available in `~/.claude/agents/`.
+
+### Best Practices
+
+- **Context Priming**: Write clear mindset and approach
+- **Responsibilities**: Be specific about what agent handles
+- **Expertise**: List concrete tools and frameworks
+- **Triggers**: Use specific file patterns to avoid conflicts
+
+### Validation
+
+The system provides basic validation:
 
 ```bash
-# Install to ~/.claude/
-make install-to-claude
+# Validate YAML syntax
+claude-config validate
 
-# Or install to custom location
-claude-config install --target /path/to/test/location
+# Run tests
+pytest tests/
 ```
 
-Test the agent by:
-1. Creating a test mobile project
-2. Verifying the agent activates on file patterns
-3. Testing coordination with other agents
-4. Validating the agent's decision-making and guidance
+### Build Process
 
-### Best Practices for Agent Specifications
+The build system:
 
-#### Writing Effective Context Priming
-- Use specific, actionable thought patterns
-- Include domain-specific concerns and priorities
-- Reference real-world experience levels
-- Focus on decision-making approaches
-
-#### Defining Quality Criteria  
-- Make criteria measurable and testable
-- Include performance benchmarks with numbers
-- Cover maintainability and documentation standards
-- Address security and reliability concerns
-
-#### Creating Decision Frameworks
-- Structure choices hierarchically by use case
-- Provide clear selection criteria
-- Include technology trade-offs
-- Reference specific tools and frameworks
-
-#### Setting Clear Boundaries
-- Explicitly list what the agent handles independently
-- Define coordination points with other agents
-- Avoid overlapping responsibilities
-- Consider the agent's core expertise limits
-
-#### Documenting Common Failures
-- Include real failure patterns from the domain
-- Provide specific solutions and prevention strategies
-- Reference performance and security pitfalls
-- Help agents avoid known problematic patterns
-
-### Testing and Validation
-
-#### Automated Validation
-The build system includes several validation checks:
-
-```bash
-# Full validation suite
-make validate
-
-# Specific validations
-claude-config validate --schema    # YAML structure validation  
-claude-config validate --links     # Content section link validation
-claude-config validate --conflicts # Agent boundary conflict detection
-```
-
-#### Manual Testing Checklist
-
-**Agent Configuration:**
-- [ ] YAML syntax is valid and loads correctly
-- [ ] All required fields are present and properly formatted
-- [ ] Content sections reference existing files
-- [ ] Proactive triggers are specific and non-overlapping
-
-**Generated Output:**
-- [ ] Agent markdown renders correctly with all sections
-- [ ] Quality criteria are clearly formatted
-- [ ] Decision frameworks are logically structured  
-- [ ] Common failures provide actionable guidance
-
-**Integration Testing:**
-- [ ] Agent activates on appropriate file patterns
-- [ ] Coordination with other agents works as expected
-- [ ] Custom instructions provide clear guidance
-- [ ] Agent boundaries are respected in practice
-
-### Integration with Build System
-
-The build system automatically:
-
-1. **Validates** YAML structure against the schema
-2. **Resolves** content section references
-3. **Generates** complete agent markdown using Jinja2 templates
-4. **Installs** agents to the Claude Code directory
-
-#### Build Process Flow
+1. **Validates** YAML syntax
+2. **Generates** agent markdown using Jinja2 templates 
+3. **Installs** to Claude Code directory
 
 ```
-YAML Agent Definition
-         ↓
-   Schema Validation
-         ↓
-  Content Resolution  
-         ↓
-   Template Rendering
-         ↓
-  Generated Agent.md
-         ↓
-   Installation to ~/.claude/
+YAML Definition → Template Rendering → Agent Markdown → Installation
 ```
 
-#### Advanced Features
+### Contributing Agents
 
-**Trait Inheritance** (Future):
-Agents will be able to inherit common behaviors from reusable trait definitions.
+1. Create YAML file following the format
+2. Validate and test locally
+3. Submit pull request
+4. Ensure no conflicts with existing agents
 
-**Pattern Resolution** (Future):  
-Agents will be able to reference common patterns that get expanded during build.
+## Simplified Architecture
 
-**Automated Testing** (Future):
-Generated agents will be automatically tested for consistency and coordination patterns.
+This system was recently simplified from an over-engineered architecture:
 
-### Contributing Your Agent
+### What Was Removed
+- Complex monitoring system (814 lines)
+- Security scanning pipeline  
+- Over-engineered CLI (20+ commands → 5 commands)
+- Complex test suite (159 files → 4 files)
+- Complex validation framework
 
-Once your agent is complete:
+### Current Architecture
+- **Core templating**: ~200 lines
+- **CLI interface**: ~100 lines  
+- **Basic validation**: ~115 lines
+- **Tests**: 4 files, 533 lines
+- **Total**: ~500-600 lines
 
-1. **Test Thoroughly**: Ensure it works correctly and coordinates properly
-2. **Document**: Add clear descriptions and examples
-3. **Follow Standards**: Use consistent formatting and terminology
-4. **Submit PR**: Create a pull request with your new agent
-5. **Include Tests**: Add any specific test cases for your agent
-
-Your new agent will be reviewed for:
-- Technical accuracy and completeness
-- Proper coordination patterns with existing agents
-- Clear boundaries and responsibilities
-- Quality of decision frameworks and guidance
+### Benefits
+- **Focused purpose**: Pure YAML-to-Markdown templating
+- **Simple maintenance**: No over-engineering to maintain
+- **Fast operation**: Minimal overhead and dependencies
+- **Clear boundaries**: Does one thing well
 
 ## Contributing
 
 ### Development Process
 
-1. **Setup**: Clone repository and run `make dev`
-2. **Feature Branch**: Create feature branches for new work
-3. **Testing**: Run `make test` and `make validate` before committing
-4. **Quality**: Use `make lint` and `make format` for code quality
-5. **Submit**: Create PR with clear description of changes
+1. **Setup**: Clone repository and install dependencies
+2. **Changes**: Edit YAML files or Python code as needed
+3. **Testing**: Run `claude-config validate` and `pytest tests/`
+4. **Submit**: Create PR with clear description
 
 ### Areas for Contribution
 
-- **Agent Development**: Create new specialized agents using the tutorial above
-- **Template System**: Improve Jinja2 templates and generation
-- **Testing**: Expand test coverage and validation rules
+- **New Agents**: Create agents for additional technologies
+- **Template Improvements**: Enhance Jinja2 template
 - **Documentation**: Improve guides and examples
-- **Tooling**: Enhance CLI and development workflows
+- **Basic Tooling**: Small CLI enhancements
 
 ### Quality Standards
 
-- All code must pass linting (`make lint`)
-- Tests must pass (`make test`) 
-- Configurations must validate (`make validate`)
-- Documentation should be updated for user-facing changes
-- Follow existing code style and patterns
+- YAML must validate (`claude-config validate`)
+- Tests must pass (`pytest tests/`)
+- Follow existing YAML format for agents
+- Update documentation for user-facing changes
 
 ---
 
 ## Project Status
 
-**Current State**: Active development of composable agent system
+**Current State**: Simplified, focused templating tool
 
 **Completed**:
-- ✅ Python package structure with CLI
-- ✅ Build system and development workflow
-- ✅ 20+ specialized agent definitions
-- ✅ Configuration validation framework
+- ✅ YAML agent definitions (25+ agents)
+- ✅ Simple template-based generation
+- ✅ Basic CLI with essential commands
+- ✅ YAML validation and testing
+- ✅ Architecture simplification (~500 lines total)
 
-**In Progress**:
-- 🔄 Template-based agent generation
-- 🔄 YAML persona and trait system
-- 🔄 Migration from static to composable agents
+**Current State**:
+- 🎯 Simple, focused tool for one purpose
+- 📝 25+ development agents in YAML format
+- ⚡ Fast, lightweight operation
+- 🧹 Clean, maintainable codebase
+- ✨ Right-sized for its purpose
 
-**Planned**:
-- 📋 Complete composable architecture
-- 📋 Comprehensive testing framework
-- 📋 Advanced coordination patterns
-- 📋 Plugin system for custom agents
-
-This system aims to eliminate duplication in agent definitions while maintaining the comprehensive coverage and intelligent coordination that makes Claude Code effective for software development workflows.
+This system provides a simple, effective way to generate Claude Code agent configurations without unnecessary complexity.

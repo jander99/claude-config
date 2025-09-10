@@ -88,3 +88,9 @@ logs/
 # Local configuration
 .env.local
 secrets.yaml
+
+# Security scanning reports
+bandit-report.txt
+safety-report.json
+gitleaks-report.json
+security-scan-*.txt

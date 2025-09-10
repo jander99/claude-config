@@ -1,0 +1,174 @@
+{
+  "timestamp": "2025-09-09T22:04:52.244432",
+  "files": {
+    "config.yaml": {
+      "hash": "b620d40d4b4d8aa499717b7fac7e52095bf4bac36e6ead460ee92d14a3911f02",
+      "size": 1801,
+      "lines": 79
+    },
+    "personas/ai-researcher.yaml": {
+      "hash": "4561c20560e23a8723811c3e158f38b5d36e0ce63d9b04aef8bf87089c943bec",
+      "size": 14512,
+      "lines": 311
+    },
+    "personas/qa-engineer.yaml": {
+      "hash": "b3d44efb170afc691ca6ef4462ba3176d03b2ddd37dc3d56c92daf56ed07bdcd",
+      "size": 17109,
+      "lines": 446
+    },
+    "personas/security-engineer.yaml": {
+      "hash": "a7d8a12bdda6c37136b87c11fda9e916241fe9118636e67bcc188fa69a88681b",
+      "size": 76014,
+      "lines": 2123
+    },
+    "personas/frontend-engineer.yaml": {
+      "hash": "b7c10cbf24717e6a3ca30092e618fd15f81fed9259441bea8510338719112ea0",
+      "size": 16832,
+      "lines": 394
+    },
+    "personas/python-engineer.yaml": {
+      "hash": "7ab9ed03f88278489b5779a182da8427583e42f6c0878774ca26ed265856c7ab",
+      "size": 19654,
+      "lines": 435
+    },
+    "personas/performance-engineer.yaml": {
+      "hash": "2e48e945f5f29e2cfbdf2bd9dd998205d5d97861eb5072f2747a68e1db379180",
+      "size": 29185,
+      "lines": 647
+    },
+    "personas/mobile-engineer.yaml": {
+      "hash": "e278eddb8518697daa6da438424daeb854bd9dee1da2969c3fd879b63263d575",
+      "size": 11552,
+      "lines": 227
+    },
+    "personas/business-analyst.yaml": {
+      "hash": "618dada96b947ef46692cf44693cbcd0d8002a86defa75ebbc77100f14f3d7f6",
+      "size": 4985,
+      "lines": 84
+    },
+    "personas/agent-architect.yaml": {
+      "hash": "151050f596904e54497deef98be13c5eff7e499dd5e859e1dd99f41ce2c92907",
+      "size": 59339,
+      "lines": 1312
+    },
+    "personas/database-engineer.yaml": {
+      "hash": "e9e90ef1de9a2475f0dd25d531896d788821939828bdac639a1ca3d04ba06b9b",
+      "size": 111632,
+      "lines": 3169
+    },
+    "personas/prompt-engineer.yaml": {
+      "hash": "ae54fe8b4cb11c725c3dba931cc060944eb3c7f085381f8ef8455537da1df9a8",
+      "size": 11677,
+      "lines": 229
+    },
+    "personas/data-engineer.yaml": {
+      "hash": "485aa2787bb9e8dfa836ce48b72cb059d8dfc62add7c21d71b6a6e7399626b96",
+      "size": 72937,
+      "lines": 1916
+    },
+    "personas/product-manager.yaml": {
+      "hash": "379da8e3dc2501e49efb1963ca603b08b2b39e070a04277f94e7e26a208993de",
+      "size": 44517,
+      "lines": 1260
+    },
+    "personas/sr-quant-analyst.yaml": {
+      "hash": "ee06cd0603157ef873bb3bd265b590ab574d3deadd55a1a2cb4335623bc9bd86",
+      "size": 8276,
+      "lines": 184
+    },
+    "personas/ai-engineer.yaml": {
+      "hash": "a7626615999faa6fc36f3fdc0b7ab2861fa4497dce3f996a4264a695c5406647",
+      "size": 23205,
+      "lines": 516
+    },
+    "personas/java-engineer.yaml": {
+      "hash": "47e353e6220beaec3ce207ae01ec55b2a6e06f4adcf8dc7e092c67947d9618d6",
+      "size": 22604,
+      "lines": 460
+    },
+    "personas/blockchain-engineer.yaml": {
+      "hash": "351de6214ebf5ad99ea29c4bcf45c47d97c21b3e8413e7c33bf983684e737234",
+      "size": 120632,
+      "lines": 3860
+    },
+    "personas/sr-architect.yaml": {
+      "hash": "8778f47b1e74039ab3bb2a54d2226a6c4b168acc3bc324ffb61333ac910bddeb",
+      "size": 57027,
+      "lines": 1502
+    },
+    "personas/integration-architect.yaml": {
+      "hash": "6ddc6de3d50bfbf4fc84d83407cc7f43f5fa82ca47a349340fb28c25ce0804d1",
+      "size": 45886,
+      "lines": 910
+    },
+    "personas/git-helper.yaml": {
+      "hash": "30732d88dd4f61bd2182412cc66f8e5059968c706a41db653c7aebb803b24c08",
+      "size": 19681,
+      "lines": 438
+    },
+    "personas/devops-engineer.yaml": {
+      "hash": "f2fe683d684071e59c1fbeae0569d846213022a0c1cbb079273bcc6fd9a7a58c",
+      "size": 120925,
+      "lines": 4284
+    },
+    "personas/quant-analyst.yaml": {
+      "hash": "3ddc2520b4a51457531e9057160df9685ab6542c913d9b541e9f84724c95d423",
+      "size": 24328,
+      "lines": 536
+    },
+    "personas/ui-ux-designer.yaml": {
+      "hash": "4b5642d6800201d9bee9f28017ff1a00c96f4e742d911efa220f3182dea09dfa",
+      "size": 10184,
+      "lines": 221
+    },
+    "personas/sr-ai-researcher.yaml": {
+      "hash": "3fd6ba5c21d0819f8702fa51b8c4244234a83e90b37cd0baa91571dba6f6cb3f",
+      "size": 24438,
+      "lines": 480
+    },
+    "personas/technical-writer.yaml": {
+      "hash": "339b9d2e727b5272e6cca905c61cd84c94b717188e55e174e6bbf7babade91dd",
+      "size": 15377,
+      "lines": 335
+    },
+    "personas/backup/prompt-engineer-legacy.yaml": {
+      "hash": "a22273de85926e3675e7bb4bd07f9d5fe2efeb835cd81b6a6e425bf70db2248f",
+      "size": 6226,
+      "lines": 104
+    },
+    "global/profiles/developer.yaml": {
+      "hash": "b7e164c574217227c90df3432f0cd36c9cafcaca9cf3e3c12372caaabb551f30",
+      "size": 2467,
+      "lines": 66
+    },
+    "global/profiles/researcher.yaml": {
+      "hash": "3a08da0a8cd3d75582eb7460398fb93cf4eb7c68f73f67200b8e9a4fe81f6528",
+      "size": 2574,
+      "lines": 65
+    },
+    "global/environments/development.yaml": {
+      "hash": "90e1e031aec2cdbe2530abc06c153a8c8b19e1e37265bb61fae82b24eecc2de7",
+      "size": 1498,
+      "lines": 33
+    },
+    "global/environments/production.yaml": {
+      "hash": "bdc961b6b4e400ad5672a88e7606c1ea83e5c3f7385f6686aa547dc8d16596bd",
+      "size": 2078,
+      "lines": 44
+    }
+  },
+  "structure": {
+    "personas": 31,
+    "global": 3,
+    "personas/quant-analyst": 4,
+    "personas/backup": 2,
+    "personas/agent-architect": 5,
+    "personas/sr-ai-researcher": 4,
+    "personas/performance-engineer": 5,
+    "personas/integration-architect": 2,
+    "personas/backup/legacy-agents": 22,
+    "global/profiles": 2,
+    "global/base": 1,
+    "global/environments": 2
+  }
+}

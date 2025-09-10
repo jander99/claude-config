@@ -4,138 +4,131 @@ This file provides project-specific guidance to Claude Code when working with th
 
 ## Repository Purpose
 
-This is a Claude Code user configuration repository that generates customized configurations for Claude Code's behavior through specialized agent definitions, settings, and project configurations. This repository builds and deploys to the user's `${HOME}/.claude/` directory. This is not a traditional software development project but rather a configuration repository that enhances Claude Code's capabilities through a build-then-deploy system.
+This is a simple YAML-to-Markdown templating tool that generates Claude Code agent configurations. The system processes YAML agent definitions through Jinja2 templates to create agent markdown files, then installs them to `${HOME}/.claude/` directory. This is a focused templating tool (~500 lines total) that does one thing well: convert YAML agent specs to Claude Code configurations.
 
 ## Architecture Overview
 
-This repository contains a collection of specialized agent specifications for Claude Code's proactive agent system. Each agent is defined in a markdown file with specific expertise areas and coordination patterns.
+This repository uses YAML source files and Jinja2 templates to generate agent markdown files. The system consists of:
 
-### Agent Ecosystem
+- **YAML Agent Definitions** (`data/personas/`) - 25+ agent specifications
+- **Template Engine** (`src/claude_config/composer.py`) - ~200 lines of templating logic
+- **Basic CLI** (`src/claude_config/cli.py`) - ~100 lines with build, validate, install, list-agents commands
+- **YAML Validation** (`src/claude_config/validator.py`) - ~115 lines of basic validation
+- **Jinja2 Template** (`src/claude_config/templates/`) - Converts YAML to agent markdown
 
-The agent system is organized around several specialized roles:
+### Agent Library
 
-**Core Development Agents:**
-- `ai-engineer.md` - ML/AI development with PyTorch, transformers, and data science
-- `python-engineer.md` - Web frameworks, data processing, and general Python development  
-- `java-engineer.md` - Spring Boot/Framework and JUnit/Mockito testing
-- `data-engineer.md` - Data pipelines, ETL processes, and streaming systems
-- `blockchain-engineer.md` - Smart contracts, DeFi protocols, and Web3 development
-- `mobile-engineer.md` - iOS, Android, React Native, Flutter mobile development
-- `git-helper.md` - Version control operations and GitHub CLI workflows
+The system generates 25+ specialized agents organized by role:
 
-**Research & Strategy:**
-- `ai-researcher.md` - Literature review and methodology guidance
-- `sr-ai-researcher.md` - Advanced research with multi-domain synthesis
-- `product-manager.md` - Agile methodology and user story creation
-- `quant-analyst.md` - Financial metrics and market data analysis
-- `sr-quant-analyst.md` - Advanced quantitative modeling and risk management
+**Core Development:** `ai-engineer`, `python-engineer`, `java-engineer`, `data-engineer`, `blockchain-engineer`, `mobile-engineer`, `frontend-engineer`, `devops-engineer`, `security-engineer`, `database-engineer`
 
-**Quality & Architecture:**
-- `qa-engineer.md` - Test automation across multiple languages/frameworks
-- `sr-architect.md` - System design and technical escalation resolution
-- `technical-writer.md` - API documentation, user guides, and developer tutorials
+**Research & Strategy:** `ai-researcher`, `sr-ai-researcher`, `product-manager`, `business-analyst`, `quant-analyst`, `sr-quant-analyst`
 
-**AI & Integration Specialists:**
-- `prompt-engineer.md` - LLM integration, prompt optimization, and AI workflow design
+**Quality & Architecture:** `qa-engineer`, `performance-engineer`, `sr-architect`, `integration-architect`, `technical-writer`, `ui-ux-designer`
 
-### Agent Coordination Patterns
+**Specialized:** `prompt-engineer`, `git-helper`, `customer-success`, `project-coordinator`, `agent-architect`
 
-Agents follow a hierarchical coordination model:
+All agents are defined in YAML format in `data/personas/` and converted to markdown via template processing.
 
-1. **Proactive Activation** - Agents auto-activate based on project detection (file patterns, dependencies)
-2. **LLM Integration** - prompt-engineer provides LLM API integration and optimization expertise
-3. **Branch Safety Checks** - All development agents must check branch status before work
-4. **Testing Handoffs** - Development agents coordinate with qa-engineer for validation
-5. **Escalation Chains** - Complex issues escalate to senior agents after 3 failed attempts
-6. **Cross-Domain Coordination** - AI work flows between ai-researcher → ai-engineer → qa-engineer
+### Build Process
+
+The system follows a simple templating workflow:
+
+1. **YAML Agent Definitions** - Each agent specified in `data/personas/{agent}.yaml` 
+2. **Template Processing** - Jinja2 template converts YAML to agent markdown
+3. **Basic Validation** - YAML syntax and structure checking
+4. **Agent Generation** - Complete agent markdown files created in `dist/agents/`
+5. **Installation** - Generated agents deployed to `~/.claude/agents/`
 
 
-### Key Integration Points
+### Core Components
 
-**AI/ML Workflow:**
-- ai-researcher provides methodology guidance
-- ai-engineer implements models with comprehensive metrics
-- data-engineer builds ML data pipelines and feature stores
-- python-engineer handles serving infrastructure
-- qa-engineer validates across the pipeline
-- technical-writer documents ML models and API usage
+**CLI Commands:**
+- `claude-config build` - Process YAML through templates to generate agents
+- `claude-config validate` - Check YAML syntax and structure
+- `claude-config install` - Deploy generated agents to ~/.claude/
+- `claude-config list-agents` - List available agent definitions
+- `claude-config --help` - Show usage information
 
-**LLM Integration Workflow:**
-- prompt-engineer optimizes LLM API integrations and prompt templates
-- Provides cost optimization and model selection guidance
-- Coordinates with ai-engineer for ML pipeline integration
+**Template System:**
+- Single Jinja2 template at `src/claude_config/templates/agent.md.j2`
+- Converts YAML agent specifications to complete markdown
+- Simple variable substitution and basic control flow
 
-**Data & Blockchain Workflows:**
-- data-engineer builds scalable data pipelines and ETL processes
-- blockchain-engineer implements DeFi protocols and smart contracts
-- Both coordinate with quant-analyst agents for financial data analysis
-- Cross-integration for on-chain data analytics and traditional finance
-
-**Documentation & Quality Assurance:**
-- All development work coordinates with qa-engineer for testing
-- technical-writer creates comprehensive documentation after feature completion
-- sr-architect handles complex technical escalations
-- Branch protection enforced through git-helper workflows
+**Validation:**
+- Basic YAML syntax checking
+- Required field validation (name, model, description, etc.)
+- Structure verification for consistent agent format
 
 ## Directory Structure
 
 ### This Repository (Development)
-- `data/personas/` - Specialized agent definitions (.yaml files with YAML frontmatter)
-- `docs/` - Documentation and guides  
-- `data/` - Configuration generation system
-- `CLAUDE.md` - Global instructions and coordination guide
+- `data/personas/` - YAML agent definitions (25+ files)
+- `src/claude_config/cli.py` - Command-line interface (~100 lines)
+- `src/claude_config/composer.py` - Template engine (~200 lines)
+- `src/claude_config/validator.py` - YAML validation (~115 lines)
+- `src/claude_config/templates/` - Jinja2 template for agent generation
+- `tests/` - Test suite (4 files covering core functionality)
 - `README.md` - Repository documentation
+- `CLAUDE.md` - This project guide
 
 ### Production Directory (`${HOME}/.claude/`)
 Generated and deployed from this repository:
-- `agents/` - Specialized agent definitions
-- `settings.json` - Claude Code configuration (model preferences, etc.)
-- `projects/` - Project-specific configurations and contexts
-- `todos/` - Task management and agent coordination state
-- `ide/`, `local/`, `shell-snapshots/`, `statsig/` - Claude Code runtime directories
+- `agents/` - Generated agent markdown files
+- `settings.json` - Claude Code configuration
+- `CLAUDE.md` - Global instructions
+- `[runtime directories]` - Claude Code operational files
 
-## Configuration
+## Simple Configuration
 
-- **Model Selection**: `settings.json` controls default model preferences (`opusplan`, `sonnet`, `haiku`)
-- **Agent Activation**: Agents auto-activate based on project detection patterns
-- **Global Instructions**: This CLAUDE.md file provides context to all Claude Code sessions
+- **Agent Definitions**: YAML files in `data/personas/` define each agent
+- **Template**: Single Jinja2 template generates agent markdown
+- **Settings**: Basic `settings.json` for Claude Code preferences
+- **Build & Deploy**: CLI processes YAML → markdown → installation
 
 
-## Agent Specifications Structure
 
-Each agent file follows this format:
+## Agent YAML Structure
+
+Each agent is defined in a YAML file with this basic structure:
 ```yaml
----
 name: agent-name
-description: Brief description with proactive triggers
+display_name: "Agent Name"
 model: sonnet|opus|haiku
----
+description: Brief description of agent purpose
+
+context_priming: |
+  Agent mindset and thought patterns
+
+responsibilities:
+  - Primary responsibility
+  - Secondary responsibility
+
+expertise:
+  - "Technical expertise area"
+
+proactive_triggers:
+  file_patterns: ["*.ext"]
+  project_indicators: ["Framework"]
 ```
 
-Followed by detailed sections on:
-- Core Responsibilities
-- Context Detection & Safety (branch checks, project verification)
-- Technical Approach & Expertise
-- Coordination Patterns with other agents
-- Example Workflows
-- Proactive Suggestions
+## Working with This Repository
 
-## Working with This Configuration Repository
-
-1. **Modifying Agent Behavior**: Edit agent .yaml files in `data/personas/` to refine coordination patterns and triggers
-2. **Adding New Agents**: Create new .yaml files in `data/personas/` following the established YAML format  
-3. **Updating Global Instructions**: Modify this CLAUDE.md file to change how Claude Code behaves
-4. **Configuration Changes**: Update settings.json for model preferences and global settings
-5. **Version Control**: Use standard git workflows to track configuration changes
+1. **Modify Agents**: Edit YAML files in `data/personas/` to update agent behavior
+2. **Add New Agents**: Create new YAML files following the established format
+3. **Build Agents**: Run `claude-config build` to process YAML through templates
+4. **Validate**: Use `claude-config validate` to check YAML syntax
+5. **Install**: Deploy with `claude-config install` to ~/.claude/
+6. **Test**: Use `pytest tests/` to run the test suite
 
 
 ## Repository Standards
 
-- Agent specifications use YAML frontmatter for metadata
-- Coordination patterns clearly define handoff points between agents  
-- Branch safety checks are mandatory for all development agents
-- Testing coordination follows established patterns (3 retry attempts before escalation)
-- All agents include proactive activation triggers and project detection logic
+- All agents defined in YAML format with consistent structure
+- Use specific file patterns and project indicators for activation
+- Follow naming conventions (kebab-case for agent names)
+- Include context priming, responsibilities, and expertise for each agent
+- Validate YAML before committing changes
 
 
 # Claude Agent Ecosystem Coordination Guide
@@ -155,7 +148,7 @@ This document serves as the definitive guide for understanding and coordinating 
 
 ## Available Specialized Agents
 
-The agent ecosystem consists of **24 specialized agents** organized into three performance tiers based on complexity and cost requirements.
+The agent ecosystem consists of **25 specialized agents** organized into three performance tiers based on complexity and cost requirements.
 
 ### Tier 1: Efficiency Agents (Haiku - Fast & Cost-Effective)
 

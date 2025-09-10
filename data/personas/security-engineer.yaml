@@ -243,12 +243,6 @@ proactive_triggers:
   - phishing
   - social-engineering
 
-content_sections:
-  application_security: personas/security-engineer/application-security.md
-  infrastructure_security: personas/security-engineer/infrastructure-security.md
-  security_automation: personas/security-engineer/security-automation.md
-  compliance: personas/security-engineer/compliance.md
-
 custom_instructions: |
   ## Security Assessment Protocol
   
@@ -349,3 +343,1780 @@ escalation_triggers:
   - Security incidents requiring executive notification
   - Cryptographic implementations requiring specialized review
   - Third-party security integrations requiring vendor coordination
+
+# Consolidated Content Sections
+
+application_security: |
+  # Application Security Implementation
+
+  ## Overview
+
+  Application security forms the foundation of secure software development, encompassing secure coding practices, vulnerability assessment, input validation, authentication systems, and comprehensive security testing throughout the development lifecycle.
+
+  ## Secure Coding Practices
+
+  ### Input Validation and Sanitization
+
+  **Validation Frameworks:**
+  - **Server-Side Validation**: Always validate on server, never trust client input
+  - **Whitelist Approach**: Define allowed input patterns rather than blacklisting
+  - **Data Type Validation**: Enforce strict data type and format requirements
+  - **Length and Range Limits**: Implement maximum length and value range controls
+
+  **Implementation Patterns:**
+  ```python
+  # Input validation example
+  def validate_user_input(data):
+      # Type validation
+      if not isinstance(data.get('email'), str):
+          raise ValidationError("Email must be string")
+
+      # Format validation using whitelist
+      if not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', data['email']):
+          raise ValidationError("Invalid email format")
+
+      # Length validation
+      if len(data['email']) > 254:
+          raise ValidationError("Email too long")
+
+      return sanitize_input(data)
+  ```
+
+  **SQL Injection Prevention:**
+  - **Parameterized Queries**: Always use prepared statements
+  - **ORM Usage**: Leverage secure ORM frameworks when possible
+  - **Input Escaping**: Properly escape special characters
+  - **Least Privilege**: Database connections with minimal required permissions
+
+  ### Authentication and Authorization
+
+  **Authentication Systems:**
+  - **Multi-Factor Authentication**: Implement 2FA/MFA for all user accounts
+  - **Password Security**: Enforce strong password policies and secure storage
+  - **Session Management**: Secure session handling with proper timeout
+  - **Biometric Integration**: Support for modern authentication methods
+
+  **Authorization Frameworks:**
+  - **Role-Based Access Control (RBAC)**: Hierarchical permission system
+  - **Attribute-Based Access Control (ABAC)**: Fine-grained access decisions
+  - **Principle of Least Privilege**: Minimal necessary permissions
+  - **Dynamic Authorization**: Real-time access control evaluation
+
+  **Implementation Example:**
+  ```python
+  class SecurityMiddleware:
+      def __init__(self):
+          self.rbac = RoleBasedAccessControl()
+          self.session_manager = SecureSessionManager()
+
+      def authenticate_user(self, credentials):
+          # Multi-factor authentication
+          user = self.verify_primary_credentials(credentials)
+          if user and self.requires_2fa(user):
+              return self.initiate_2fa_flow(user)
+          return user
+
+      def authorize_request(self, user, resource, action):
+          # Check permissions with context
+          return self.rbac.check_permission(
+              user=user,
+              resource=resource,
+              action=action,
+              context=self.get_request_context()
+          )
+  ```
+
+  ### Cryptographic Security
+
+  **Encryption Standards:**
+  - **Data at Rest**: AES-256 encryption for stored sensitive data
+  - **Data in Transit**: TLS 1.3 for all network communications
+  - **Key Management**: Secure key generation, storage, and rotation
+  - **Hashing Algorithms**: Use secure hashing (SHA-256, bcrypt for passwords)
+
+  **Implementation Guidelines:**
+  - **Random Generation**: Cryptographically secure random number generation
+  - **Salt Usage**: Unique salts for all password hashing
+  - **Key Derivation**: PBKDF2, scrypt, or Argon2 for key derivation
+  - **Certificate Management**: Proper PKI implementation and certificate lifecycle
+
+  ## Vulnerability Assessment
+
+  ### Automated Security Testing
+
+  **Static Application Security Testing (SAST):**
+  - **Code Analysis**: Automated source code vulnerability scanning
+  - **Dependency Scanning**: Third-party library vulnerability detection
+  - **Configuration Review**: Security misconfiguration identification
+  - **Policy Enforcement**: Automated compliance checking
+
+  **Dynamic Application Security Testing (DAST):**
+  - **Runtime Scanning**: Live application vulnerability testing
+  - **Penetration Testing**: Simulated attack scenario execution
+  - **API Security Testing**: REST/GraphQL endpoint security validation
+  - **Authentication Testing**: Session management and access control validation
+
+  **Interactive Application Security Testing (IAST):**
+  - **Real-Time Analysis**: Runtime code analysis during testing
+  - **Coverage Optimization**: Comprehensive code path testing
+  - **False Positive Reduction**: Context-aware vulnerability detection
+  - **Performance Monitoring**: Security testing with minimal performance impact
+
+  ### Manual Security Review
+
+  **Code Review Process:**
+  1. **Security-Focused Review**: Dedicated security code review sessions
+  2. **Threat Modeling**: Systematic threat identification and analysis
+  3. **Architecture Review**: Security architecture validation
+  4. **Compliance Checking**: Regulatory requirement verification
+
+  **Review Checklist:**
+  - Input validation and output encoding implementation
+  - Authentication and authorization logic correctness
+  - Cryptographic implementation security
+  - Error handling and information disclosure prevention
+  - Logging and monitoring coverage adequacy
+
+  ## Security Testing Integration
+
+  ### CI/CD Pipeline Security
+
+  **Automated Security Gates:**
+  ```yaml
+  # Security pipeline example
+  security_pipeline:
+    pre_commit:
+      - secret_detection
+      - dependency_vulnerability_scan
+      - static_code_analysis
+
+    build_stage:
+      - container_image_scanning
+      - security_unit_tests
+      - configuration_validation
+
+    deployment_stage:
+      - dynamic_security_testing
+      - infrastructure_compliance_check
+      - security_smoke_tests
+  ```
+
+  **Security Test Automation:**
+  - **Unit Security Tests**: Security-focused unit test coverage
+  - **Integration Security Tests**: Cross-component security validation
+  - **Regression Security Tests**: Security regression prevention
+  - **Performance Security Tests**: Security under load conditions
+
+  ### Compliance Testing
+
+  **Framework Compliance:**
+  - **OWASP Top 10**: Systematic testing against common vulnerabilities
+  - **NIST Cybersecurity Framework**: Comprehensive security control validation
+  - **ISO 27001**: Information security management compliance
+  - **SOC 2**: Trust services criteria compliance
+
+  **Regulatory Compliance:**
+  - **GDPR**: Data protection and privacy compliance
+  - **CCPA**: California consumer privacy compliance
+  - **HIPAA**: Healthcare information protection compliance
+  - **PCI DSS**: Payment card industry security standards
+
+  ## Security Monitoring and Response
+
+  ### Security Logging
+
+  **Logging Strategy:**
+  - **Security Events**: Authentication, authorization, and security-relevant events
+  - **Audit Trails**: Complete audit trail for all security-sensitive operations
+  - **Error Logging**: Security error logging without information disclosure
+  - **Performance Monitoring**: Security control performance and effectiveness
+
+  **Log Management:**
+  ```python
+  class SecurityLogger:
+      def __init__(self):
+          self.logger = self.setup_secure_logger()
+
+      def log_authentication_event(self, user_id, event_type, success, ip_address):
+          self.logger.info({
+              'event_type': 'authentication',
+              'user_id': self.hash_user_id(user_id),  # Privacy protection
+              'success': success,
+              'ip_address': self.anonymize_ip(ip_address),
+              'timestamp': datetime.utcnow(),
+              'event_details': event_type
+          })
+
+      def log_authorization_event(self, user_id, resource, action, granted):
+          self.logger.info({
+              'event_type': 'authorization',
+              'user_id': self.hash_user_id(user_id),
+              'resource': resource,
+              'action': action,
+              'granted': granted,
+              'timestamp': datetime.utcnow()
+          })
+  ```
+
+  ### Incident Response
+
+  **Response Procedures:**
+  1. **Detection**: Automated threat detection and alert generation
+  2. **Analysis**: Security incident analysis and classification
+  3. **Containment**: Immediate threat containment and isolation
+  4. **Recovery**: System recovery and service restoration
+  5. **Lessons Learned**: Post-incident analysis and improvement
+
+  **Automation Integration:**
+  - **Automated Response**: Immediate automated response to common threats
+  - **Alert Escalation**: Intelligent alert routing and escalation
+  - **Forensic Data Collection**: Automated evidence collection and preservation
+  - **Communication**: Automated stakeholder notification and updates
+
+  ## Development Integration Patterns
+
+  ### Security-First Development
+
+  **Shift-Left Security:**
+  - **Design Phase**: Security requirements integration from design
+  - **Development Phase**: Secure coding practices and real-time guidance
+  - **Testing Phase**: Comprehensive security testing integration
+  - **Deployment Phase**: Security validation before production release
+
+  **Developer Training:**
+  - **Secure Coding Training**: Regular security awareness and skill development
+  - **Threat Modeling Training**: Developer threat modeling capability
+  - **Security Tool Training**: Security tool usage and interpretation
+  - **Incident Response Training**: Developer incident response procedures
+
+  ### Framework Integration
+
+  **Language-Specific Security:**
+  - **Python**: Django security middleware, Flask security extensions
+  - **Java**: Spring Security framework, OWASP Java security libraries
+  - **JavaScript**: Helmet.js, Express security middleware
+  - **Go**: Secure coding practices and security-focused libraries
+
+  **Security Tool Integration:**
+  - **IDE Integration**: Security plugin integration for real-time feedback
+  - **Build Tool Integration**: Security scanning in build processes
+  - **Version Control Integration**: Pre-commit security hooks and validation
+  - **Deployment Integration**: Security validation in deployment pipelines
+
+  This application security framework provides comprehensive coverage of secure development practices, ensuring robust security throughout the software development lifecycle while maintaining development velocity and code quality.
+
+infrastructure_security: |
+  # Infrastructure Security Implementation
+
+  ## Overview
+
+  Infrastructure security encompasses the comprehensive protection of systems, networks, cloud environments, and deployment pipelines. This includes network security, container security, cloud security configuration, and infrastructure monitoring to create a robust security foundation.
+
+  ## Network Security
+
+  ### Network Segmentation and Access Control
+
+  **Network Architecture:**
+  - **Zero Trust Model**: Never trust, always verify approach to network access
+  - **Micro-segmentation**: Fine-grained network isolation and access control
+  - **Network Zoning**: Logical separation of network segments by security requirements
+  - **DMZ Implementation**: Proper demilitarized zone configuration for external access
+
+  **Firewall Configuration:**
+  ```yaml
+  # Network security configuration example
+  firewall_rules:
+    web_tier:
+      inbound:
+        - protocol: HTTPS
+          port: 443
+          source: internet
+          action: allow
+      outbound:
+        - protocol: HTTPS
+          port: 443
+          destination: api_tier
+          action: allow
+
+    api_tier:
+      inbound:
+        - protocol: HTTPS
+          port: 8443
+          source: web_tier
+          action: allow
+      outbound:
+        - protocol: TLS
+          port: 5432
+          destination: database_tier
+          action: allow
+
+    database_tier:
+      inbound:
+        - protocol: TLS
+          port: 5432
+          source: api_tier
+          action: allow
+      outbound: deny_all
+  ```
+
+  **VPN and Remote Access:**
+  - **VPN Configuration**: Secure VPN implementation with strong encryption
+  - **Certificate-Based Authentication**: PKI-based access control
+  - **Split Tunneling Control**: Selective traffic routing for security
+  - **Session Monitoring**: VPN session logging and anomaly detection
+
+  ### Network Monitoring and Intrusion Detection
+
+  **Network Monitoring Tools:**
+  - **Network Traffic Analysis**: Real-time traffic monitoring and analysis
+  - **Intrusion Detection Systems (IDS)**: Network-based intrusion detection
+  - **Intrusion Prevention Systems (IPS)**: Automated threat blocking
+  - **Network Behavior Analysis**: Baseline establishment and anomaly detection
+
+  **Implementation Example:**
+  ```python
+  class NetworkSecurityMonitor:
+      def __init__(self):
+          self.ids = IntrusionDetectionSystem()
+          self.traffic_analyzer = NetworkTrafficAnalyzer()
+          self.alert_system = SecurityAlertSystem()
+
+      def monitor_network_traffic(self):
+          while True:
+              traffic_data = self.traffic_analyzer.capture_traffic()
+              threats = self.ids.analyze_traffic(traffic_data)
+
+              for threat in threats:
+                  self.handle_security_threat(threat)
+
+      def handle_security_threat(self, threat):
+          # Log security event
+          self.log_security_event(threat)
+
+          # Automatic response based on threat level
+          if threat.severity == 'HIGH':
+              self.block_malicious_ip(threat.source_ip)
+              self.alert_system.send_immediate_alert(threat)
+          elif threat.severity == 'MEDIUM':
+              self.rate_limit_source(threat.source_ip)
+              self.alert_system.queue_alert(threat)
+  ```
+
+  ## Container and Orchestration Security
+
+  ### Container Security
+
+  **Image Security:**
+  - **Base Image Scanning**: Vulnerability scanning of base container images
+  - **Dependency Scanning**: Third-party package vulnerability assessment
+  - **Image Signing**: Digital signature verification for container images
+  - **Registry Security**: Secure container registry configuration and access control
+
+  **Runtime Security:**
+  ```dockerfile
+  # Secure container configuration
+  FROM node:18-alpine
+
+  # Create non-root user
+  RUN addgroup -g 1001 -S nodejs
+  RUN adduser -S nextjs -u 1001
+
+  # Install dependencies with security scanning
+  COPY package*.json ./
+  RUN npm ci --only=production && npm cache clean --force
+
+  # Copy application files
+  COPY --chown=nextjs:nodejs . .
+
+  # Set security-focused runtime configuration
+  USER nextjs
+  EXPOSE 3000
+  WORKDIR /app
+
+  # Health check for monitoring
+  HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+      CMD curl -f http://localhost:3000/health || exit 1
+
+  CMD ["npm", "start"]
+  ```
+
+  **Container Runtime Security:**
+  - **Privileged Container Prevention**: Avoid running containers with elevated privileges
+  - **Resource Limitations**: CPU, memory, and disk I/O limits
+  - **Capability Dropping**: Remove unnecessary Linux capabilities
+  - **Seccomp Profiles**: System call filtering for enhanced security
+
+  ### Kubernetes Security
+
+  **Cluster Security Configuration:**
+  ```yaml
+  # Kubernetes security configuration
+  apiVersion: v1
+  kind: SecurityPolicy
+  metadata:
+    name: secure-pod-security-policy
+  spec:
+    privileged: false
+    allowPrivilegeEscalation: false
+    requiredDropCapabilities:
+      - ALL
+    allowedCapabilities: []
+    volumes:
+      - 'configMap'
+      - 'emptyDir'
+      - 'projected'
+      - 'secret'
+      - 'downwardAPI'
+      - 'persistentVolumeClaim'
+    runAsUser:
+      rule: 'MustRunAsNonRoot'
+    seLinux:
+      rule: 'RunAsAny'
+    fsGroup:
+      rule: 'RunAsAny'
+  ```
+
+  **Network Policies:**
+  - **Pod-to-Pod Communication Control**: Granular network access control between pods
+  - **Ingress/Egress Rules**: Specific traffic flow restrictions
+  - **Namespace Isolation**: Network isolation between different namespaces
+  - **Service Mesh Security**: Istio/Linkerd security configuration
+
+  **RBAC Implementation:**
+  ```yaml
+  # Role-based access control
+  apiVersion: rbac.authorization.k8s.io/v1
+  kind: Role
+  metadata:
+    namespace: production
+    name: pod-reader
+  rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "watch", "list"]
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["get", "list"]
+
+  ---
+  apiVersion: rbac.authorization.k8s.io/v1
+  kind: RoleBinding
+  metadata:
+    name: read-pods
+    namespace: production
+  subjects:
+  - kind: User
+    name: developer
+    apiGroup: rbac.authorization.k8s.io
+  roleRef:
+    kind: Role
+    name: pod-reader
+    apiGroup: rbac.authorization.k8s.io
+  ```
+
+  ## Cloud Security Configuration
+
+  ### AWS Security Configuration
+
+  **Identity and Access Management (IAM):**
+  ```json
+  {
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Principal": {
+          "Service": "ec2.amazonaws.com"
+        },
+        "Action": "sts:AssumeRole",
+        "Condition": {
+          "StringEquals": {
+            "aws:RequestedRegion": ["us-east-1", "us-west-2"]
+          },
+          "DateGreaterThan": {
+            "aws:CurrentTime": "2024-01-01T00:00:00Z"
+          }
+        }
+      }
+    ]
+  }
+  ```
+
+  **VPC Security Configuration:**
+  - **Private Subnet Design**: Database and application servers in private subnets
+  - **Public Subnet Restriction**: Only load balancers and bastion hosts in public subnets
+  - **Security Group Rules**: Least privilege firewall rule implementation
+  - **NACLs**: Additional network-level access control layers
+
+  **S3 Security:**
+  - **Bucket Policies**: Restrictive bucket access policies
+  - **Encryption**: Server-side encryption for all stored objects
+  - **Access Logging**: Comprehensive access logging and monitoring
+  - **Versioning**: Object versioning for data protection
+
+  ### Azure Security Configuration
+
+  **Azure Active Directory Integration:**
+  - **Multi-Factor Authentication**: Enforced MFA for all administrative accounts
+  - **Conditional Access Policies**: Context-based access control
+  - **Privileged Identity Management**: Just-in-time administrative access
+  - **Identity Protection**: Risk-based access policies
+
+  **Network Security Groups:**
+  ```json
+  {
+    "securityRules": [
+      {
+        "name": "Allow-HTTPS",
+        "priority": 1000,
+        "protocol": "Tcp",
+        "access": "Allow",
+        "direction": "Inbound",
+        "sourcePortRange": "*",
+        "destinationPortRange": "443",
+        "sourceAddressPrefix": "*",
+        "destinationAddressPrefix": "*"
+      },
+      {
+        "name": "Deny-All",
+        "priority": 4000,
+        "protocol": "*",
+        "access": "Deny",
+        "direction": "Inbound",
+        "sourcePortRange": "*",
+        "destinationPortRange": "*",
+        "sourceAddressPrefix": "*",
+        "destinationAddressPrefix": "*"
+      }
+    ]
+  }
+  ```
+
+  ### Google Cloud Platform Security
+
+  **IAM and Service Accounts:**
+  - **Principle of Least Privilege**: Minimal required permissions
+  - **Service Account Key Management**: Secure key rotation and management
+  - **Workload Identity**: Kubernetes service account integration
+  - **Audit Logging**: Comprehensive audit trail for all access
+
+  **VPC Security:**
+  - **Private Google Access**: Secure access to Google services without external IPs
+  - **Firewall Rules**: Hierarchical firewall rule management
+  - **VPC Flow Logs**: Network traffic logging and analysis
+  - **Cloud NAT**: Secure outbound internet access for private instances
+
+  ## Infrastructure Monitoring
+
+  ### Security Information and Event Management (SIEM)
+
+  **Log Aggregation:**
+  ```python
+  class InfrastructureSecurityMonitor:
+      def __init__(self):
+          self.siem = SIEMSystem()
+          self.log_collector = LogCollector()
+          self.threat_detector = ThreatDetector()
+
+      def collect_security_logs(self):
+          # Collect logs from multiple sources
+          sources = [
+              self.collect_firewall_logs(),
+              self.collect_server_logs(),
+              self.collect_application_logs(),
+              self.collect_network_device_logs()
+          ]
+
+          for log_source in sources:
+              events = self.log_collector.parse_logs(log_source)
+              self.siem.ingest_events(events)
+
+      def analyze_security_events(self):
+          events = self.siem.get_recent_events()
+          threats = self.threat_detector.analyze_events(events)
+
+          for threat in threats:
+              self.respond_to_threat(threat)
+  ```
+
+  **Alert Management:**
+  - **Correlation Rules**: Event correlation for threat detection
+  - **False Positive Reduction**: Machine learning-based alert refinement
+  - **Escalation Procedures**: Automated alert escalation based on severity
+  - **Response Automation**: Automated response to common security incidents
+
+  ### Infrastructure Vulnerability Management
+
+  **Vulnerability Scanning:**
+  - **Asset Discovery**: Automated infrastructure asset discovery and inventory
+  - **Vulnerability Assessment**: Regular vulnerability scanning of all infrastructure
+  - **Patch Management**: Systematic security patch deployment
+  - **Configuration Management**: Security configuration drift detection
+
+  **Compliance Monitoring:**
+  ```python
+  class ComplianceMonitor:
+      def __init__(self):
+          self.compliance_frameworks = {
+              'CIS': CISBenchmarkChecker(),
+              'NIST': NISTFrameworkChecker(),
+              'PCI': PCIComplianceChecker()
+          }
+
+      def run_compliance_checks(self, infrastructure):
+          compliance_results = {}
+
+          for framework, checker in self.compliance_frameworks.items():
+              results = checker.assess_compliance(infrastructure)
+              compliance_results[framework] = results
+
+              # Generate compliance report
+              self.generate_compliance_report(framework, results)
+
+              # Remediate non-compliant configurations
+              self.auto_remediate_violations(results)
+
+          return compliance_results
+  ```
+
+  ## Deployment Pipeline Security
+
+  ### Secure CI/CD Implementation
+
+  **Pipeline Security Gates:**
+  ```yaml
+  # Secure CI/CD pipeline configuration
+  stages:
+    - security_scan
+    - build
+    - security_test
+    - deploy
+
+  security_scan:
+    script:
+      - secret_detection_scan
+      - dependency_vulnerability_scan
+      - static_code_analysis
+    artifacts:
+      reports:
+        security: security-report.json
+
+  build:
+    dependencies:
+      - security_scan
+    script:
+      - secure_build_process
+      - container_image_scanning
+    artifacts:
+      paths:
+        - secure-application-image
+
+  security_test:
+    dependencies:
+      - build
+    script:
+      - dynamic_security_testing
+      - infrastructure_security_testing
+      - compliance_validation
+
+  deploy:
+    dependencies:
+      - security_test
+    script:
+      - secure_deployment_process
+      - runtime_security_validation
+    environment:
+      name: production
+      url: https://secure-app.example.com
+  ```
+
+  **Secret Management:**
+  - **Vault Integration**: HashiCorp Vault or cloud-native secret management
+  - **Secret Rotation**: Automated secret rotation and distribution
+  - **Environment Separation**: Separate secrets for different environments
+  - **Audit Trail**: Complete audit trail for all secret access
+
+  ### Infrastructure as Code Security
+
+  **Terraform Security:**
+  ```hcl
+  # Secure Terraform configuration
+  resource "aws_s3_bucket" "secure_bucket" {
+    bucket = var.bucket_name
+
+    # Enable versioning
+    versioning {
+      enabled = true
+    }
+
+    # Server-side encryption
+    server_side_encryption_configuration {
+      rule {
+        apply_server_side_encryption_by_default {
+          sse_algorithm = "AES256"
+        }
+      }
+    }
+
+    # Block public access
+    public_access_block {
+      block_public_acls       = true
+      block_public_policy     = true
+      ignore_public_acls      = true
+      restrict_public_buckets = true
+    }
+
+    # Enable logging
+    logging {
+      target_bucket = aws_s3_bucket.access_logs.id
+      target_prefix = "access-logs/"
+    }
+  }
+  ```
+
+  **Configuration Validation:**
+  - **Policy as Code**: Automated policy enforcement for infrastructure
+  - **Security Scanning**: IaC security scanning before deployment
+  - **Drift Detection**: Configuration drift monitoring and remediation
+  - **Change Management**: Controlled infrastructure change processes
+
+  This infrastructure security framework provides comprehensive protection across all layers of infrastructure, from network and compute resources to cloud services and deployment pipelines, ensuring robust security throughout the entire technology stack.
+
+security_automation: |
+  # Security Automation and DevSecOps
+
+  ## Overview
+
+  Security automation integrates security practices directly into development and operations workflows, enabling continuous security monitoring, automated threat response, and scalable security operations. This approach ensures security keeps pace with rapid development cycles while reducing manual overhead.
+
+  ## Automated Security Testing
+
+  ### CI/CD Pipeline Security Integration
+
+  **Security Pipeline Architecture:**
+  ```yaml
+  # Comprehensive security automation pipeline
+  security_pipeline:
+    stages:
+      - secrets_detection
+      - dependency_scanning
+      - static_analysis
+      - container_scanning
+      - infrastructure_scanning
+      - dynamic_testing
+      - compliance_checking
+      - deployment_validation
+
+    secrets_detection:
+      tools:
+        - truffleHog
+        - GitLeaks
+        - detect-secrets
+      actions:
+        - scan_commit_history
+        - scan_current_changes
+        - validate_environment_files
+      failure_action: block_pipeline
+
+    dependency_scanning:
+      tools:
+        - OWASP_Dependency_Check
+        - Snyk
+        - npm_audit
+        - pip_safety
+      thresholds:
+        critical: 0
+        high: 2
+        medium: 10
+      actions:
+        - generate_sbom
+        - update_vulnerability_database
+        - create_remediation_tickets
+
+    static_analysis:
+      tools:
+        - SonarQube
+        - CodeQL
+        - Semgrep
+        - Bandit
+      coverage_threshold: 80
+      quality_gate: required
+  ```
+
+  **Automated Security Gates:**
+  ```python
+  class SecurityGateOrchestrator:
+      def __init__(self):
+          self.security_tools = {
+              'secrets': SecretsDetector(),
+              'sast': StaticAnalysisScanner(),
+              'dependencies': DependencyScanner(),
+              'containers': ContainerScanner(),
+              'infrastructure': InfrastructureScanner()
+          }
+          self.policy_engine = SecurityPolicyEngine()
+
+      def execute_security_gates(self, build_context):
+          results = {}
+
+          for gate_name, scanner in self.security_tools.items():
+              try:
+                  scan_result = scanner.scan(build_context)
+                  results[gate_name] = scan_result
+
+                  # Check against security policies
+                  policy_result = self.policy_engine.evaluate(gate_name, scan_result)
+
+                  if policy_result.action == 'BLOCK':
+                      self.block_pipeline(gate_name, policy_result.reason)
+                  elif policy_result.action == 'WARN':
+                      self.generate_warning(gate_name, policy_result.findings)
+
+              except Exception as e:
+                  self.handle_scanner_failure(gate_name, e)
+
+          return self.generate_security_report(results)
+
+      def block_pipeline(self, gate_name, reason):
+          raise SecurityGateFailure(f"Security gate {gate_name} failed: {reason}")
+  ```
+
+  ### Continuous Security Monitoring
+
+  **Runtime Security Monitoring:**
+  - **Application Performance Monitoring (APM)**: Security-focused application monitoring
+  - **Runtime Application Self-Protection (RASP)**: Real-time application protection
+  - **Container Runtime Monitoring**: Runtime container security monitoring
+  - **Infrastructure Monitoring**: Continuous infrastructure security assessment
+
+  **Monitoring Implementation:**
+  ```python
+  class RuntimeSecurityMonitor:
+      def __init__(self):
+          self.monitors = {
+              'application': ApplicationSecurityMonitor(),
+              'infrastructure': InfrastructureMonitor(),
+              'network': NetworkSecurityMonitor(),
+              'containers': ContainerRuntimeMonitor()
+          }
+          self.alert_manager = SecurityAlertManager()
+          self.response_engine = AutomatedResponseEngine()
+
+      def start_continuous_monitoring(self):
+          for monitor_type, monitor in self.monitors.items():
+              monitor.start_monitoring()
+              monitor.register_callback(self.handle_security_event)
+
+      def handle_security_event(self, event):
+          # Classify and prioritize the event
+          classification = self.classify_security_event(event)
+
+          # Generate alert
+          alert = self.alert_manager.create_alert(event, classification)
+
+          # Trigger automated response
+          if classification.severity >= SecuritySeverity.HIGH:
+              self.response_engine.execute_response(event, classification)
+
+          # Log for analysis
+          self.log_security_event(event, classification)
+  ```
+
+  ## Automated Threat Detection
+
+  ### Machine Learning-Based Detection
+
+  **Anomaly Detection:**
+  ```python
+  class SecurityAnomalyDetector:
+      def __init__(self):
+          self.models = {
+              'network_traffic': NetworkAnomalyModel(),
+              'user_behavior': UserBehaviorModel(),
+              'application_behavior': ApplicationBehaviorModel(),
+              'system_calls': SystemCallAnomalyModel()
+          }
+          self.baseline_manager = BaselineManager()
+
+      def detect_anomalies(self, monitoring_data):
+          anomalies = []
+
+          for data_type, data in monitoring_data.items():
+              if data_type in self.models:
+                  model = self.models[data_type]
+                  baseline = self.baseline_manager.get_baseline(data_type)
+
+                  # Detect anomalies using ML model
+                  detected_anomalies = model.detect_anomalies(data, baseline)
+
+                  # Score and classify anomalies
+                  for anomaly in detected_anomalies:
+                      scored_anomaly = self.score_anomaly(anomaly, data_type)
+                      anomalies.append(scored_anomaly)
+
+          return self.prioritize_anomalies(anomalies)
+
+      def update_baselines(self, new_data):
+          # Continuously update baselines with clean data
+          for data_type, data in new_data.items():
+              if self.is_clean_data(data):
+                  self.baseline_manager.update_baseline(data_type, data)
+  ```
+
+  **Threat Intelligence Integration:**
+  - **IOC Matching**: Automated indicators of compromise matching
+  - **Threat Feed Integration**: Real-time threat intelligence consumption
+  - **Attribution Analysis**: Threat actor and campaign identification
+  - **Contextual Enrichment**: Threat context and impact analysis
+
+  ### Automated Incident Response
+
+  **Response Orchestration:**
+  ```python
+  class AutomatedIncidentResponse:
+      def __init__(self):
+          self.playbooks = SecurityPlaybookManager()
+          self.containment_engine = ContainmentEngine()
+          self.notification_system = NotificationSystem()
+          self.forensics_collector = ForensicsDataCollector()
+
+      def respond_to_incident(self, security_incident):
+          # Select appropriate response playbook
+          playbook = self.playbooks.select_playbook(security_incident)
+
+          # Execute containment actions
+          containment_actions = playbook.get_containment_actions()
+          for action in containment_actions:
+              self.containment_engine.execute_action(action)
+
+          # Collect forensic evidence
+          forensic_data = self.forensics_collector.collect_evidence(
+              security_incident
+          )
+
+          # Notify stakeholders
+          self.notification_system.send_incident_notifications(
+              security_incident,
+              playbook.notification_recipients
+          )
+
+          # Execute recovery actions
+          recovery_actions = playbook.get_recovery_actions()
+          for action in recovery_actions:
+              self.execute_recovery_action(action)
+
+          return self.generate_incident_report(security_incident, forensic_data)
+  ```
+
+  **Containment Strategies:**
+  - **Network Isolation**: Automated network segmentation and isolation
+  - **Account Disabling**: Automatic user account suspension
+  - **Process Termination**: Malicious process identification and termination
+  - **Traffic Blocking**: Automated malicious traffic blocking
+
+  ## Security Orchestration Platforms
+
+  ### SOAR Implementation
+
+  **Security Orchestration Platform:**
+  ```yaml
+  # SOAR workflow configuration
+  security_workflows:
+    phishing_response:
+      trigger:
+        - email_security_alert
+        - user_report
+
+      steps:
+        - name: analyze_email
+          action: email_analysis
+          tools: [urlvoid, virustotal, hybrid_analysis]
+
+        - name: check_indicators
+          action: ioc_lookup
+          sources: [threat_intelligence_feeds]
+
+        - name: containment
+          condition: malicious_detected
+          actions:
+            - block_sender
+            - quarantine_email
+            - disable_affected_accounts
+
+        - name: notify_users
+          action: send_notification
+          recipients: [affected_users, security_team]
+
+        - name: update_defenses
+          actions:
+            - update_email_filters
+            - add_to_blacklist
+            - update_security_awareness
+
+    malware_response:
+      trigger:
+        - endpoint_detection
+        - network_anomaly
+
+      steps:
+        - name: isolate_endpoint
+          action: network_isolation
+          immediate: true
+
+        - name: collect_artifacts
+          action: forensic_collection
+          artifacts: [memory_dump, disk_image, network_logs]
+
+        - name: analyze_malware
+          action: malware_analysis
+          tools: [sandbox_analysis, reverse_engineering]
+
+        - name: threat_hunting
+          action: proactive_search
+          scope: [network, endpoints, logs]
+
+        - name: remediation
+          actions:
+            - malware_removal
+            - system_hardening
+            - patch_deployment
+  ```
+
+  ### Integration Architectures
+
+  **Security Tool Integration:**
+  ```python
+  class SecurityOrchestrationPlatform:
+      def __init__(self):
+          self.integrations = {
+              'siem': SIEMIntegration(),
+              'edr': EDRIntegration(),
+              'vulnerability_scanner': VulnerabilityIntegration(),
+              'threat_intelligence': ThreatIntelIntegration(),
+              'email_security': EmailSecurityIntegration(),
+              'cloud_security': CloudSecurityIntegration()
+          }
+          self.workflow_engine = WorkflowEngine()
+          self.case_management = CaseManagementSystem()
+
+      def execute_security_workflow(self, trigger_event):
+          # Determine appropriate workflow
+          workflow = self.workflow_engine.select_workflow(trigger_event)
+
+          # Create security case
+          case = self.case_management.create_case(trigger_event, workflow)
+
+          # Execute workflow steps
+          for step in workflow.steps:
+              try:
+                  # Get required integrations
+                  required_tools = step.required_integrations
+                  tool_results = {}
+
+                  for tool_name in required_tools:
+                      if tool_name in self.integrations:
+                          integration = self.integrations[tool_name]
+                          result = integration.execute_action(step.action, step.parameters)
+                          tool_results[tool_name] = result
+
+                  # Process step results
+                  step_result = self.process_step_results(step, tool_results)
+                  case.add_step_result(step_result)
+
+                  # Check for workflow branching conditions
+                  if step.has_conditions():
+                      next_steps = step.evaluate_conditions(step_result)
+                      workflow.add_dynamic_steps(next_steps)
+
+              except Exception as e:
+                  self.handle_workflow_error(case, step, e)
+
+          return case
+  ```
+
+  ## Compliance Automation
+
+  ### Regulatory Compliance Monitoring
+
+  **Automated Compliance Checking:**
+  ```python
+  class ComplianceAutomationEngine:
+      def __init__(self):
+          self.compliance_frameworks = {
+              'SOC2': SOC2ComplianceChecker(),
+              'PCI_DSS': PCIDSSComplianceChecker(),
+              'HIPAA': HIPAAComplianceChecker(),
+              'GDPR': GDPRComplianceChecker(),
+              'ISO27001': ISO27001ComplianceChecker()
+          }
+          self.evidence_collector = ComplianceEvidenceCollector()
+          self.reporting_engine = ComplianceReportingEngine()
+
+      def run_compliance_assessment(self, framework, scope):
+          checker = self.compliance_frameworks[framework]
+
+          # Collect evidence
+          evidence = self.evidence_collector.collect_evidence(framework, scope)
+
+          # Run compliance checks
+          assessment_results = checker.assess_compliance(evidence)
+
+          # Generate findings
+          findings = self.analyze_compliance_gaps(assessment_results)
+
+          # Generate remediation recommendations
+          remediation_plan = self.generate_remediation_plan(findings)
+
+          # Generate compliance report
+          report = self.reporting_engine.generate_report(
+              framework, assessment_results, findings, remediation_plan
+          )
+
+          return {
+              'assessment_results': assessment_results,
+              'findings': findings,
+              'remediation_plan': remediation_plan,
+              'report': report
+          }
+  ```
+
+  **Policy as Code:**
+  ```yaml
+  # Security policy definitions
+  security_policies:
+    password_policy:
+      rules:
+        - minimum_length: 12
+        - complexity_requirements: true
+        - password_history: 24
+        - maximum_age: 90
+        - lockout_threshold: 5
+      enforcement: automatic
+      exceptions: []
+
+    data_classification:
+      categories:
+        - public
+        - internal
+        - confidential
+        - restricted
+      handling_requirements:
+        restricted:
+          - encryption_required: true
+          - access_logging: required
+          - retention_period: 7_years
+          - geographical_restrictions: true
+
+    network_access:
+      default: deny
+      allowed_protocols:
+        - HTTPS
+        - SSH
+        - SFTP
+      firewall_rules:
+        - source: internal_network
+          destination: database_network
+          action: allow
+          protocol: TLS
+          port: 5432
+  ```
+
+  ### Audit Trail Automation
+
+  **Comprehensive Audit Logging:**
+  ```python
+  class AutomatedAuditSystem:
+      def __init__(self):
+          self.audit_logger = StructuredAuditLogger()
+          self.compliance_mapper = ComplianceRequirementMapper()
+          self.retention_manager = RetentionPolicyManager()
+          self.integrity_manager = AuditIntegrityManager()
+
+      def log_security_event(self, event):
+          # Create structured audit entry
+          audit_entry = self.create_audit_entry(event)
+
+          # Map to compliance requirements
+          compliance_mappings = self.compliance_mapper.map_event(event)
+          audit_entry['compliance_mappings'] = compliance_mappings
+
+          # Ensure integrity
+          audit_entry = self.integrity_manager.sign_entry(audit_entry)
+
+          # Store with appropriate retention policy
+          retention_policy = self.retention_manager.get_policy(event.category)
+          self.audit_logger.log_with_retention(audit_entry, retention_policy)
+
+          # Real-time compliance monitoring
+          self.check_real_time_compliance(audit_entry)
+
+      def generate_compliance_report(self, framework, time_range):
+          # Retrieve relevant audit entries
+          audit_entries = self.audit_logger.query_entries(
+              compliance_framework=framework,
+              time_range=time_range
+          )
+
+          # Verify audit trail integrity
+          integrity_status = self.integrity_manager.verify_entries(audit_entries)
+
+          # Generate compliance evidence
+          evidence = self.generate_compliance_evidence(audit_entries, framework)
+
+          return {
+              'audit_entries': audit_entries,
+              'integrity_status': integrity_status,
+              'compliance_evidence': evidence,
+              'framework': framework,
+              'time_range': time_range
+          }
+  ```
+
+  ## Security Metrics and Analytics
+
+  ### Security KPI Automation
+
+  **Metrics Collection:**
+  ```python
+  class SecurityMetricsCollector:
+      def __init__(self):
+          self.metrics_sources = {
+              'vulnerability_scans': VulnerabilityMetrics(),
+              'security_incidents': IncidentMetrics(),
+              'compliance_status': ComplianceMetrics(),
+              'security_training': TrainingMetrics(),
+              'threat_detection': ThreatDetectionMetrics()
+          }
+          self.dashboard = SecurityDashboard()
+          self.alerting = MetricsAlerting()
+
+      def collect_security_metrics(self):
+          metrics = {}
+
+          for source_name, collector in self.metrics_sources.items():
+              source_metrics = collector.collect_metrics()
+              metrics[source_name] = source_metrics
+
+              # Check for metric thresholds
+              threshold_violations = self.check_metric_thresholds(
+                  source_name, source_metrics
+              )
+
+              if threshold_violations:
+                  self.alerting.send_threshold_alerts(threshold_violations)
+
+          # Update dashboard
+          self.dashboard.update_metrics(metrics)
+
+          # Generate trend analysis
+          trend_analysis = self.analyze_security_trends(metrics)
+
+          return {
+              'current_metrics': metrics,
+              'trend_analysis': trend_analysis,
+              'threshold_violations': threshold_violations
+          }
+  ```
+
+  **Automated Reporting:**
+  - **Executive Dashboards**: Real-time security posture visibility
+  - **Compliance Reports**: Automated regulatory reporting
+  - **Trend Analysis**: Security metrics trend identification
+  - **Risk Scoring**: Automated risk assessment and scoring
+
+  This security automation framework ensures comprehensive security coverage through automated testing, monitoring, threat detection, and compliance management, enabling scalable security operations that keep pace with rapid development cycles.
+
+compliance: |
+  # Security Compliance and Governance
+
+  ## Overview
+
+  Security compliance ensures adherence to regulatory requirements, industry standards, and organizational policies through systematic compliance management, continuous monitoring, audit preparation, and governance frameworks that maintain security posture while enabling business operations.
+
+  ## Regulatory Compliance Frameworks
+
+  ### Data Protection Regulations
+
+  **GDPR (General Data Protection Regulation):**
+  - **Data Subject Rights**: Right to access, rectification, erasure, and portability
+  - **Consent Management**: Explicit consent collection and management
+  - **Data Processing**: Lawful basis for processing and purpose limitation
+  - **Data Protection by Design**: Privacy-first system design and implementation
+
+  **GDPR Implementation:**
+  ```python
+  class GDPRComplianceManager:
+      def __init__(self):
+          self.consent_manager = ConsentManager()
+          self.data_subject_rights = DataSubjectRightsHandler()
+          self.privacy_impact_assessor = PrivacyImpactAssessment()
+          self.breach_notifier = BreachNotificationSystem()
+
+      def handle_data_subject_request(self, request_type, subject_id, request_data):
+          # Verify data subject identity
+          if not self.verify_data_subject_identity(subject_id, request_data):
+              raise UnauthorizedDataSubjectRequest()
+
+          if request_type == 'ACCESS':
+              return self.data_subject_rights.handle_access_request(subject_id)
+          elif request_type == 'RECTIFICATION':
+              return self.data_subject_rights.handle_rectification_request(
+                  subject_id, request_data['corrections']
+              )
+          elif request_type == 'ERASURE':
+              return self.data_subject_rights.handle_erasure_request(subject_id)
+          elif request_type == 'PORTABILITY':
+              return self.data_subject_rights.handle_portability_request(subject_id)
+
+      def assess_data_processing_compliance(self, processing_activity):
+          # Check lawful basis for processing
+          lawful_basis = self.validate_lawful_basis(processing_activity)
+
+          # Verify consent if required
+          if lawful_basis.requires_consent():
+              consent_status = self.consent_manager.check_consent(
+                  processing_activity.subject_id,
+                  processing_activity.purpose
+              )
+              if not consent_status.is_valid():
+                  raise InvalidConsentException()
+
+          # Conduct privacy impact assessment if required
+          if self.requires_pia(processing_activity):
+              pia_result = self.privacy_impact_assessor.conduct_assessment(
+                  processing_activity
+              )
+              if pia_result.risk_level == 'HIGH':
+                  self.escalate_high_risk_processing(processing_activity, pia_result)
+  ```
+
+  **CCPA (California Consumer Privacy Act):**
+  - **Consumer Rights**: Right to know, delete, opt-out, and non-discrimination
+  - **Business Obligations**: Disclosure requirements and consumer request handling
+  - **Data Sale Restrictions**: Opt-out mechanisms for data selling
+  - **Service Provider Agreements**: Third-party processing compliance
+
+  **HIPAA (Health Insurance Portability and Accountability Act):**
+  - **Protected Health Information (PHI)**: Identification and protection
+  - **Minimum Necessary Standard**: Data access limitation principles
+  - **Business Associate Agreements**: Third-party compliance requirements
+  - **Breach Notification**: Incident reporting and notification procedures
+
+  ### Industry Standards Compliance
+
+  **PCI DSS (Payment Card Industry Data Security Standard):**
+  ```python
+  class PCIDSSComplianceChecker:
+      def __init__(self):
+          self.requirements = {
+              'firewall_configuration': PCIFirewallChecker(),
+              'vendor_defaults': VendorDefaultChecker(),
+              'cardholder_data_protection': CardholderDataChecker(),
+              'encrypted_transmission': EncryptionChecker(),
+              'antivirus_software': AntivirusChecker(),
+              'secure_systems': SecureSystemsChecker(),
+              'access_control': AccessControlChecker(),
+              'unique_ids': UniqueUserIDChecker(),
+              'physical_access': PhysicalAccessChecker(),
+              'network_monitoring': NetworkMonitoringChecker(),
+              'security_testing': SecurityTestingChecker(),
+              'information_security_policy': PolicyChecker()
+          }
+
+      def assess_pci_compliance(self, environment):
+          compliance_results = {}
+          overall_compliance = True
+
+          for requirement, checker in self.requirements.items():
+              try:
+                  result = checker.check_compliance(environment)
+                  compliance_results[requirement] = result
+
+                  if not result.compliant:
+                      overall_compliance = False
+                      self.log_compliance_violation(requirement, result.findings)
+
+              except Exception as e:
+                  compliance_results[requirement] = {
+                      'compliant': False,
+                      'error': str(e),
+                      'status': 'ASSESSMENT_FAILED'
+                  }
+                  overall_compliance = False
+
+          # Generate compliance report
+          report = self.generate_pci_report(compliance_results, overall_compliance)
+
+          # Create remediation plan for violations
+          if not overall_compliance:
+              remediation_plan = self.create_remediation_plan(compliance_results)
+              report['remediation_plan'] = remediation_plan
+
+          return report
+  ```
+
+  **SOC 2 (Service Organization Control 2):**
+  - **Trust Service Criteria**: Security, availability, processing integrity, confidentiality, privacy
+  - **Control Objectives**: Detailed security control implementation
+  - **Audit Evidence**: Comprehensive evidence collection and documentation
+  - **Continuous Monitoring**: Ongoing compliance monitoring and reporting
+
+  **ISO 27001 (Information Security Management):**
+  - **ISMS Implementation**: Information Security Management System
+  - **Risk Assessment**: Systematic information security risk assessment
+  - **Control Framework**: Comprehensive security control implementation
+  - **Continuous Improvement**: Regular review and improvement processes
+
+  ## Audit Preparation and Management
+
+  ### Audit Readiness Framework
+
+  **Evidence Collection Automation:**
+  ```python
+  class AuditEvidenceCollector:
+      def __init__(self):
+          self.evidence_sources = {
+              'access_logs': AccessLogCollector(),
+              'configuration_management': ConfigurationEvidence(),
+              'security_assessments': SecurityAssessmentEvidence(),
+              'incident_responses': IncidentResponseEvidence(),
+              'training_records': SecurityTrainingEvidence(),
+              'policy_documentation': PolicyDocumentationEvidence()
+          }
+          self.evidence_repository = EvidenceRepository()
+          self.compliance_mapper = ComplianceRequirementMapper()
+
+      def collect_audit_evidence(self, compliance_framework, audit_period):
+          evidence_package = {}
+
+          # Get compliance requirements for framework
+          requirements = self.compliance_mapper.get_requirements(compliance_framework)
+
+          for requirement in requirements:
+              requirement_evidence = {}
+
+              # Collect evidence from relevant sources
+              for source_name, collector in self.evidence_sources.items():
+                  if collector.supports_requirement(requirement):
+                      evidence = collector.collect_evidence(requirement, audit_period)
+                      requirement_evidence[source_name] = evidence
+
+              evidence_package[requirement.id] = requirement_evidence
+
+          # Store evidence package
+          evidence_id = self.evidence_repository.store_evidence(
+              compliance_framework,
+              audit_period,
+              evidence_package
+          )
+
+          # Generate evidence integrity proof
+          integrity_proof = self.generate_integrity_proof(evidence_package)
+
+          return {
+              'evidence_id': evidence_id,
+              'evidence_package': evidence_package,
+              'integrity_proof': integrity_proof,
+              'collection_timestamp': datetime.utcnow()
+          }
+  ```
+
+  **Control Testing Documentation:**
+  - **Control Design Testing**: Evaluation of control design effectiveness
+  - **Control Operating Effectiveness**: Testing of control implementation
+  - **Sampling Methodologies**: Statistical sampling for control testing
+  - **Exception Handling**: Documentation of control failures and remediation
+
+  ### Auditor Collaboration
+
+  **Audit Workflow Management:**
+  ```python
+  class AuditWorkflowManager:
+      def __init__(self):
+          self.audit_tracker = AuditRequestTracker()
+          self.evidence_provider = EvidenceProvider()
+          self.communication_manager = AuditorCommunicationManager()
+          self.remediation_tracker = RemediationTracker()
+
+      def handle_auditor_request(self, request):
+          # Log audit request
+          request_id = self.audit_tracker.create_request(request)
+
+          # Validate request scope and timing
+          if not self.validate_audit_request(request):
+              return self.generate_request_rejection(request, request_id)
+
+          # Prepare requested evidence
+          evidence = self.evidence_provider.prepare_evidence(
+              request.evidence_requirements,
+              request.time_scope
+          )
+
+          # Sanitize sensitive information
+          sanitized_evidence = self.sanitize_evidence_for_auditor(evidence)
+
+          # Provide evidence to auditor
+          delivery_confirmation = self.evidence_provider.deliver_evidence(
+              request.auditor_id,
+              sanitized_evidence
+          )
+
+          # Update audit tracker
+          self.audit_tracker.update_request_status(
+              request_id,
+              'EVIDENCE_PROVIDED',
+              delivery_confirmation
+          )
+
+          return {
+              'request_id': request_id,
+              'evidence_delivered': True,
+              'delivery_confirmation': delivery_confirmation
+          }
+
+      def track_audit_findings(self, audit_id, findings):
+          for finding in findings:
+              # Assess finding severity
+              severity = self.assess_finding_severity(finding)
+
+              # Create remediation plan
+              remediation_plan = self.create_remediation_plan(finding)
+
+              # Track remediation progress
+              remediation_id = self.remediation_tracker.create_remediation(
+                  audit_id,
+                  finding,
+                  remediation_plan
+              )
+
+              # Schedule follow-up activities
+              self.schedule_remediation_activities(remediation_id, remediation_plan)
+  ```
+
+  ## Governance and Risk Management
+
+  ### Security Governance Framework
+
+  **Governance Structure:**
+  ```python
+  class SecurityGovernanceFramework:
+      def __init__(self):
+          self.governance_committees = {
+              'security_steering': SecuritySteeringCommittee(),
+              'risk_management': RiskManagementCommittee(),
+              'compliance_oversight': ComplianceOversightCommittee(),
+              'incident_response': IncidentResponseCommittee()
+          }
+          self.policy_manager = SecurityPolicyManager()
+          self.metrics_dashboard = GovernanceDashboard()
+
+      def conduct_governance_review(self):
+          review_results = {}
+
+          for committee_name, committee in self.governance_committees.items():
+              # Conduct committee review
+              committee_review = committee.conduct_review()
+              review_results[committee_name] = committee_review
+
+              # Review relevant policies
+              relevant_policies = self.policy_manager.get_policies_for_committee(
+                  committee_name
+              )
+
+              policy_reviews = []
+              for policy in relevant_policies:
+                  policy_review = self.review_security_policy(policy)
+                  policy_reviews.append(policy_review)
+
+              review_results[committee_name]['policy_reviews'] = policy_reviews
+
+          # Update governance dashboard
+          self.metrics_dashboard.update_governance_metrics(review_results)
+
+          # Generate governance report
+          governance_report = self.generate_governance_report(review_results)
+
+          return governance_report
+  ```
+
+  **Risk Assessment Integration:**
+  - **Risk Identification**: Systematic identification of security risks
+  - **Risk Analysis**: Quantitative and qualitative risk assessment
+  - **Risk Treatment**: Risk mitigation, transfer, acceptance, or avoidance
+  - **Risk Monitoring**: Continuous risk monitoring and reassessment
+
+  ### Policy Management
+
+  **Policy Lifecycle Management:**
+  ```python
+  class SecurityPolicyLifecycleManager:
+      def __init__(self):
+          self.policy_repository = PolicyRepository()
+          self.approval_workflow = PolicyApprovalWorkflow()
+          self.training_manager = PolicyTrainingManager()
+          self.compliance_tracker = PolicyComplianceTracker()
+
+      def create_security_policy(self, policy_draft):
+          # Validate policy structure and content
+          validation_result = self.validate_policy_draft(policy_draft)
+          if not validation_result.valid:
+              raise InvalidPolicyException(validation_result.errors)
+
+          # Submit for approval workflow
+          approval_id = self.approval_workflow.submit_for_approval(policy_draft)
+
+          # Track approval progress
+          approval_status = self.approval_workflow.track_approval(approval_id)
+
+          if approval_status.approved:
+              # Publish approved policy
+              policy_id = self.policy_repository.publish_policy(
+                  policy_draft,
+                  approval_status.approval_metadata
+              )
+
+              # Schedule training on new policy
+              training_campaign = self.training_manager.create_training_campaign(
+                  policy_id,
+                  policy_draft.affected_roles
+              )
+
+              # Initialize compliance tracking
+              self.compliance_tracker.initialize_tracking(policy_id)
+
+              return {
+                  'policy_id': policy_id,
+                  'training_campaign_id': training_campaign.id,
+                  'effective_date': policy_draft.effective_date
+              }
+
+          return {'status': 'PENDING_APPROVAL', 'approval_id': approval_id}
+
+      def review_policy_effectiveness(self, policy_id):
+          # Collect compliance metrics
+          compliance_metrics = self.compliance_tracker.get_compliance_metrics(policy_id)
+
+          # Analyze policy violations
+          violations = self.analyze_policy_violations(policy_id)
+
+          # Review training effectiveness
+          training_effectiveness = self.training_manager.assess_training_effectiveness(
+              policy_id
+          )
+
+          # Generate recommendations
+          recommendations = self.generate_policy_recommendations(
+              compliance_metrics,
+              violations,
+              training_effectiveness
+          )
+
+          return {
+              'compliance_metrics': compliance_metrics,
+              'violations': violations,
+              'training_effectiveness': training_effectiveness,
+              'recommendations': recommendations
+          }
+  ```
+
+  ## Continuous Compliance Monitoring
+
+  ### Real-time Compliance Tracking
+
+  **Compliance Dashboard:**
+  ```python
+  class ContinuousComplianceMonitor:
+      def __init__(self):
+          self.compliance_frameworks = {
+              'SOC2': SOC2Monitor(),
+              'PCI_DSS': PCIDSSMonitor(),
+              'HIPAA': HIPAAMonitor(),
+              'GDPR': GDPRMonitor(),
+              'ISO27001': ISO27001Monitor()
+          }
+          self.alerting_system = ComplianceAlertingSystem()
+          self.dashboard = ComplianceDashboard()
+          self.trend_analyzer = ComplianceTrendAnalyzer()
+
+      def monitor_compliance_status(self):
+          compliance_status = {}
+
+          for framework_name, monitor in self.compliance_frameworks.items():
+              try:
+                  # Get current compliance status
+                  status = monitor.get_current_status()
+                  compliance_status[framework_name] = status
+
+                  # Check for compliance violations
+                  violations = monitor.check_for_violations()
+                  if violations:
+                      self.handle_compliance_violations(framework_name, violations)
+
+                  # Update compliance metrics
+                  metrics = monitor.calculate_compliance_metrics()
+                  self.dashboard.update_framework_metrics(framework_name, metrics)
+
+              except Exception as e:
+                  self.handle_monitoring_error(framework_name, e)
+
+          # Analyze compliance trends
+          trend_analysis = self.trend_analyzer.analyze_trends(compliance_status)
+
+          # Generate compliance summary
+          summary = self.generate_compliance_summary(compliance_status, trend_analysis)
+
+          return summary
+
+      def handle_compliance_violations(self, framework, violations):
+          for violation in violations:
+              # Classify violation severity
+              severity = self.classify_violation_severity(violation)
+
+              # Generate alert
+              alert = self.alerting_system.create_compliance_alert(
+                  framework,
+                  violation,
+                  severity
+              )
+
+              # Initiate remediation workflow
+              remediation_id = self.initiate_remediation_workflow(violation)
+
+              # Log compliance violation
+              self.log_compliance_violation(framework, violation, remediation_id)
+  ```
+
+  ### Automated Remediation
+
+  **Remediation Orchestration:**
+  - **Automatic Remediation**: Automated fixes for common compliance violations
+  - **Workflow Triggers**: Automated workflow initiation for complex violations
+  - **Escalation Procedures**: Automated escalation for high-severity violations
+  - **Progress Tracking**: Real-time remediation progress monitoring
+
+  **Integration with DevOps:**
+  ```yaml
+  # Compliance-integrated DevOps pipeline
+  compliance_integration:
+    pre_deployment:
+      - compliance_policy_check
+      - security_configuration_validation
+      - data_classification_verification
+
+    deployment:
+      - compliance_monitoring_setup
+      - audit_logging_activation
+      - security_control_validation
+
+    post_deployment:
+      - compliance_status_verification
+      - audit_trail_validation
+      - monitoring_alert_configuration
+
+    continuous_monitoring:
+      - real_time_compliance_checking
+      - automated_violation_detection
+      - remediation_workflow_triggers
+  ```
+
+  This comprehensive compliance framework ensures systematic adherence to regulatory requirements and industry standards while maintaining operational efficiency and providing clear audit trails for all compliance activities.

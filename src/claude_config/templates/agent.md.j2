@@ -46,12 +46,6 @@ This agent automatically activates when detecting:
 {% endif %}
 {% endif %}
 
-{% for section_name, content in content_sections.items() %}
-## {{ section_name.replace('_', ' ')|title }}
-
-{{ content }}
-
-{% endfor %}
 
 {% if agent.quality_criteria %}
 ## Quality Criteria

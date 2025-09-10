@@ -184,11 +184,6 @@ proactive_triggers:
   - c8
   - mutation-testing
 
-content_sections:
-  project_detection: personas/qa-engineer/project-detection.md
-  test_execution: personas/qa-engineer/test-execution.md
-  result_analysis: personas/qa-engineer/result-analysis.md
-
 test_execution_strategy:
   language_specific:
     python:
@@ -352,3 +347,99 @@ coordination_overrides:
   error_analysis: Detailed error context with root cause analysis and fix recommendations
   coverage_reporting: Comprehensive coverage analysis with gap identification and improvement suggestions
   performance_monitoring: Test execution performance tracking with optimization recommendations
+
+# Consolidated Content Sections
+
+project_detection: |
+  ## Project Detection & Test Execution
+
+  ### Java Projects
+  **Detection**: Look for `build.gradle`, `build.gradle.kts`, or `pom.xml`
+
+  **Gradle Projects**:
+  - Primary: `./gradlew test` (if gradlew exists)
+  - Fallback: `gradle test`
+  - For specific tests: `./gradlew test --tests "ClassName.methodName"`
+  - Reactive testing: Supports JUnit 5, Mockito, StepVerifier
+
+  **Maven Projects**:
+  - Primary: `./mvnw test` (if mvnw exists)  
+  - Fallback: `mvn test`
+  - For specific tests: `mvn test -Dtest="ClassName#methodName"`
+
+  ### Python Projects
+  **Detection**: Look for `pyproject.toml`, `requirements.txt`, `setup.py`, `pytest.ini`
+
+  **Test Execution**:
+  - Primary: `pytest` (if pytest is detected in dependencies)
+  - With coverage: `pytest --cov=src --cov-report=term-missing`
+  - XML output: `pytest --junit-xml=test-results.xml`
+  - Fallback: `python -m unittest discover`
+
+  ### JavaScript/TypeScript Projects
+  **Detection**: Look for `package.json`
+
+  **Test Execution**:
+  - Read `package.json` scripts section for `test` command
+  - Primary: `npm test` or `yarn test`
+  - Jest-specific: `npx jest` or `yarn jest`
+  - With coverage: `npm run test -- --coverage`
+
+test_execution: |
+  ## Test Execution Strategy
+
+  ### Go Projects  
+  **Detection**: Look for `go.mod`
+  **Test Execution**:
+  - Primary: `go test ./...`
+  - With coverage: `go test -cover ./...`
+  - Verbose: `go test -v ./...`
+  - Specific package: `go test ./path/to/package`
+
+  ### Rust Projects
+  **Detection**: Look for `Cargo.toml`
+  **Test Execution**:
+  - Primary: `cargo test`
+  - With output: `cargo test -- --nocapture`
+  - Specific test: `cargo test test_name`
+
+  ### Multi-Language Support
+  - **Auto-Detection**: Analyze project structure to identify primary language and testing framework
+  - **Framework-Specific**: Use appropriate test runners and assertion patterns
+  - **Result Parsing**: Parse language-specific test output formats
+  - **Coverage Integration**: Support coverage reporting across different languages
+  - **Parallel Testing**: Execute tests efficiently with proper resource management
+
+result_analysis: |
+  ## Test Result Analysis & Feedback
+
+  ### Structured Feedback Format
+  **PASSED Results**:
+  ```
+  ✅ PASSED: [Framework] tests completed successfully
+  - Tests run: X passed, Y skipped
+  - Coverage: Z% (if available)
+  - Duration: Xs
+  ```
+
+  **FAILED Results**:
+  ```
+  ❌ FAILED: [Framework] tests failed
+  - Tests run: X passed, Y failed, Z skipped
+  - Failed tests:
+    - TestClass.testMethod: [specific error message]
+    - TestClass.testMethod2: [specific error message]
+  - Suggestions: [actionable guidance for fixes]
+  ```
+
+  ### Error Analysis Patterns
+  - **Compilation Errors**: Syntax issues, missing imports, type mismatches
+  - **Test Logic Failures**: Assertion failures, mock setup issues, data problems
+  - **Integration Failures**: Database connection, external service, configuration issues
+  - **Performance Issues**: Timeout failures, memory issues, resource constraints
+
+  ### Actionable Feedback
+  - **Specific Error Context**: Provide exact line numbers and error messages
+  - **Fix Suggestions**: Recommend specific approaches for common failure patterns
+  - **Resource Guidance**: Point to relevant documentation or examples
+  - **Retry Coordination**: Support development agent retry workflows with detailed context

@@ -188,12 +188,6 @@ proactive_triggers:
   - neon
   - xata
 
-content_sections:
-  database_design: personas/database-engineer/database-design.md
-  query_optimization: personas/database-engineer/query-optimization.md
-  migrations: personas/database-engineer/migrations.md
-  performance: personas/database-engineer/performance.md
-
 custom_instructions: |
   ## Database Assessment Protocol
   
@@ -279,3 +273,2896 @@ escalation_triggers:
   - Cross-platform data integration requiring enterprise data architecture
   - Compliance and regulatory requirements beyond database-level implementation
   - Multi-tenant or complex sharding strategies requiring architectural guidance
+
+# Consolidated Content Sections
+
+database_design: |
+  # Database Schema Design and Architecture
+
+  ## Overview
+
+  Database schema design encompasses the systematic planning and implementation of database structures, including table design, relationship modeling, indexing strategies, and data architecture patterns that ensure optimal performance, maintainability, and scalability across relational and NoSQL database systems.
+
+  ## Relational Database Design
+
+  ### Entity Relationship Modeling
+
+  **Conceptual Modeling:**
+  - **Entity Identification**: Business object identification and definition
+  - **Attribute Definition**: Entity property specification and constraints
+  - **Relationship Mapping**: Inter-entity relationship identification and cardinality
+  - **Business Rule Integration**: Domain-specific constraint modeling
+
+  **Logical Design Principles:**
+  ```sql
+  -- Example: E-commerce schema design
+  -- Customer entity with proper normalization
+  CREATE TABLE customers (
+      customer_id BIGSERIAL PRIMARY KEY,
+      email VARCHAR(255) UNIQUE NOT NULL,
+      password_hash VARCHAR(255) NOT NULL,
+      first_name VARCHAR(100) NOT NULL,
+      last_name VARCHAR(100) NOT NULL,
+      phone VARCHAR(20),
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+      is_active BOOLEAN DEFAULT TRUE,
+
+      -- Constraints
+      CONSTRAINT email_format CHECK (email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'),
+      CONSTRAINT name_not_empty CHECK (
+          LENGTH(TRIM(first_name)) > 0 AND 
+          LENGTH(TRIM(last_name)) > 0
+      )
+  );
+
+  -- Address entity with proper separation
+  CREATE TABLE addresses (
+      address_id BIGSERIAL PRIMARY KEY,
+      customer_id BIGINT NOT NULL REFERENCES customers(customer_id) ON DELETE CASCADE,
+      address_type VARCHAR(20) NOT NULL CHECK (address_type IN ('billing', 'shipping', 'both')),
+      street_address VARCHAR(255) NOT NULL,
+      city VARCHAR(100) NOT NULL,
+      state_province VARCHAR(100),
+      postal_code VARCHAR(20) NOT NULL,
+      country_code CHAR(2) NOT NULL,
+      is_default BOOLEAN DEFAULT FALSE,
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+
+      -- Ensure only one default address per type per customer
+      UNIQUE(customer_id, address_type, is_default) DEFERRABLE INITIALLY DEFERRED
+  );
+
+  -- Product catalog with hierarchical categories
+  CREATE TABLE categories (
+      category_id BIGSERIAL PRIMARY KEY,
+      parent_category_id BIGINT REFERENCES categories(category_id),
+      category_name VARCHAR(100) NOT NULL,
+      category_path LTREE, -- PostgreSQL hierarchical data type
+      description TEXT,
+      is_active BOOLEAN DEFAULT TRUE,
+      display_order INTEGER DEFAULT 0,
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+
+      -- Prevent self-referencing and circular references
+      CONSTRAINT no_self_reference CHECK (category_id != parent_category_id)
+  );
+  ```
+
+  ### Normalization and Denormalization
+
+  **Normalization Strategies:**
+  - **First Normal Form (1NF)**: Atomic values and unique column names
+  - **Second Normal Form (2NF)**: Elimination of partial dependencies
+  - **Third Normal Form (3NF)**: Elimination of transitive dependencies
+  - **Boyce-Codd Normal Form (BCNF)**: Stricter dependency requirements
+
+  **Strategic Denormalization:**
+  ```sql
+  -- Example: Order summary denormalization for performance
+  CREATE TABLE orders (
+      order_id BIGSERIAL PRIMARY KEY,
+      customer_id BIGINT NOT NULL REFERENCES customers(customer_id),
+      order_status VARCHAR(20) NOT NULL DEFAULT 'pending',
+
+      -- Denormalized summary fields for performance
+      total_items INTEGER NOT NULL DEFAULT 0,
+      subtotal DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+      tax_amount DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+      shipping_cost DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+      total_amount DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+
+      -- Maintaining referential data
+      shipping_address_id BIGINT REFERENCES addresses(address_id),
+      billing_address_id BIGINT REFERENCES addresses(address_id),
+
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+
+      -- Triggers to maintain denormalized data consistency
+      CONSTRAINT positive_amounts CHECK (
+          subtotal >= 0 AND tax_amount >= 0 AND 
+          shipping_cost >= 0 AND total_amount >= 0
+      )
+  );
+
+  -- Trigger function to maintain order totals
+  CREATE OR REPLACE FUNCTION update_order_totals()
+  RETURNS TRIGGER AS $$
+  BEGIN
+      UPDATE orders SET
+          total_items = (
+              SELECT COALESCE(SUM(quantity), 0)
+              FROM order_items 
+              WHERE order_id = NEW.order_id
+          ),
+          subtotal = (
+              SELECT COALESCE(SUM(quantity * unit_price), 0.00)
+              FROM order_items 
+              WHERE order_id = NEW.order_id
+          ),
+          updated_at = CURRENT_TIMESTAMP
+      WHERE order_id = NEW.order_id;
+
+      RETURN NEW;
+  END;
+  $$ LANGUAGE plpgsql;
+
+  CREATE TRIGGER order_items_update_totals
+      AFTER INSERT OR UPDATE OR DELETE ON order_items
+      FOR EACH ROW EXECUTE FUNCTION update_order_totals();
+  ```
+
+  ### Data Type Optimization
+
+  **Appropriate Data Type Selection:**
+  ```sql
+  -- Optimized data types for different use cases
+  CREATE TABLE products (
+      product_id BIGSERIAL PRIMARY KEY,
+      sku VARCHAR(50) UNIQUE NOT NULL, -- Limited length for SKUs
+      name VARCHAR(255) NOT NULL,
+      description TEXT, -- Unlimited text for descriptions
+
+      -- Price storage with appropriate precision
+      price DECIMAL(10,2) NOT NULL CHECK (price >= 0),
+      cost DECIMAL(10,2) CHECK (cost >= 0),
+
+      -- Weight in grams (integer for precision)
+      weight_grams INTEGER CHECK (weight_grams > 0),
+
+      -- Dimensions in millimeters
+      length_mm INTEGER CHECK (length_mm > 0),
+      width_mm INTEGER CHECK (width_mm > 0),
+      height_mm INTEGER CHECK (height_mm > 0),
+
+      -- Inventory management
+      stock_quantity INTEGER NOT NULL DEFAULT 0 CHECK (stock_quantity >= 0),
+      reserved_quantity INTEGER NOT NULL DEFAULT 0 CHECK (reserved_quantity >= 0),
+
+      -- Status fields
+      is_active BOOLEAN DEFAULT TRUE,
+      is_featured BOOLEAN DEFAULT FALSE,
+
+      -- Timestamps
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+
+      -- JSON for flexible attributes (PostgreSQL)
+      attributes JSONB,
+
+      -- Search optimization
+      search_vector TSVECTOR GENERATED ALWAYS AS (
+          to_tsvector('english', name || ' ' || COALESCE(description, ''))
+      ) STORED
+  );
+  ```
+
+  ## NoSQL Database Design
+
+  ### Document Database Design
+
+  **MongoDB Schema Patterns:**
+  ```javascript
+  // User profile with embedded documents
+  {
+    "_id": ObjectId("..."),
+    "email": "user@example.com",
+    "profile": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "avatar": {
+        "url": "https://cdn.example.com/avatars/user123.jpg",
+        "thumbnails": {
+          "small": "https://cdn.example.com/avatars/user123_sm.jpg",
+          "medium": "https://cdn.example.com/avatars/user123_md.jpg"
+        }
+      }
+    },
+    "preferences": {
+      "notifications": {
+        "email": true,
+        "sms": false,
+        "push": true
+      },
+      "privacy": {
+        "profileVisible": true,
+        "showOnlineStatus": false
+      }
+    },
+    "addresses": [
+      {
+        "type": "home",
+        "street": "123 Main St",
+        "city": "Anytown",
+        "country": "US",
+        "postalCode": "12345",
+        "isDefault": true
+      }
+    ],
+    "createdAt": ISODate("2024-01-01T00:00:00Z"),
+    "updatedAt": ISODate("2024-01-01T00:00:00Z")
+  }
+
+  // Product catalog with references and embeddings
+  {
+    "_id": ObjectId("..."),
+    "sku": "PROD-001",
+    "name": "Premium Laptop",
+    "description": "High-performance laptop for professionals",
+    "category": {
+      "id": ObjectId("..."),
+      "name": "Electronics",
+      "path": "electronics/computers/laptops"
+    },
+    "pricing": {
+      "currency": "USD",
+      "listPrice": 1299.99,
+      "salePrice": 1199.99,
+      "costPrice": 800.00
+    },
+    "inventory": {
+      "stockQuantity": 45,
+      "reservedQuantity": 5,
+      "reorderLevel": 10,
+      "supplier": {
+        "id": ObjectId("..."),
+        "name": "Tech Supplier Inc"
+      }
+    },
+    "specifications": {
+      "processor": "Intel i7-12700H",
+      "memory": "16GB DDR4",
+      "storage": "512GB SSD",
+      "display": "15.6\" FHD"
+    },
+    "reviews": {
+      "averageRating": 4.5,
+      "totalReviews": 127,
+      "ratingDistribution": {
+        "5": 78,
+        "4": 32,
+        "3": 12,
+        "2": 3,
+        "1": 2
+      }
+    },
+    "isActive": true,
+    "createdAt": ISODate("2024-01-01T00:00:00Z"),
+    "updatedAt": ISODate("2024-01-01T00:00:00Z")
+  }
+  ```
+
+  **Design Patterns for MongoDB:**
+  - **Embedding vs. Referencing**: Decision criteria for data modeling
+  - **One-to-Few**: Embedding small arrays of related documents
+  - **One-to-Many**: Reference pattern for large related collections
+  - **Many-to-Many**: Two-way referencing with junction collections
+
+  ### Key-Value Store Design
+
+  **Redis Data Structure Patterns:**
+  ```python
+  # User session management
+  class RedisSessionManager:
+      def __init__(self, redis_client):
+          self.redis = redis_client
+          self.session_prefix = "session:"
+          self.user_sessions_prefix = "user_sessions:"
+
+      def create_session(self, user_id, session_data, ttl=3600):
+          session_id = str(uuid.uuid4())
+          session_key = f"{self.session_prefix}{session_id}"
+          user_sessions_key = f"{self.user_sessions_prefix}{user_id}"
+
+          # Store session data with expiration
+          session_payload = {
+              'user_id': user_id,
+              'created_at': datetime.utcnow().isoformat(),
+              'last_activity': datetime.utcnow().isoformat(),
+              **session_data
+          }
+
+          # Use pipeline for atomic operations
+          pipe = self.redis.pipeline()
+          pipe.hmset(session_key, session_payload)
+          pipe.expire(session_key, ttl)
+          pipe.sadd(user_sessions_key, session_id)
+          pipe.expire(user_sessions_key, ttl + 300)  # Slightly longer TTL
+          pipe.execute()
+
+          return session_id
+
+      def get_session(self, session_id):
+          session_key = f"{self.session_prefix}{session_id}"
+          session_data = self.redis.hgetall(session_key)
+
+          if session_data:
+              # Update last activity
+              self.redis.hset(session_key, 'last_activity', 
+                            datetime.utcnow().isoformat())
+              return session_data
+
+          return None
+
+  # Cache management with intelligent invalidation
+  class IntelligentCacheManager:
+      def __init__(self, redis_client):
+          self.redis = redis_client
+          self.cache_tags_prefix = "cache_tags:"
+
+      def set_with_tags(self, key, value, tags, ttl=3600):
+          # Store the cached value
+          self.redis.setex(key, ttl, value)
+
+          # Associate with tags for bulk invalidation
+          pipe = self.redis.pipeline()
+          for tag in tags:
+              tag_key = f"{self.cache_tags_prefix}{tag}"
+              pipe.sadd(tag_key, key)
+              pipe.expire(tag_key, ttl + 300)
+          pipe.execute()
+
+      def invalidate_by_tag(self, tag):
+          tag_key = f"{self.cache_tags_prefix}{tag}"
+          cached_keys = self.redis.smembers(tag_key)
+
+          if cached_keys:
+              # Remove all cached entries with this tag
+              pipe = self.redis.pipeline()
+              for key in cached_keys:
+                  pipe.delete(key)
+              pipe.delete(tag_key)
+              pipe.execute()
+  ```
+
+  ## Indexing Strategies
+
+  ### Relational Database Indexing
+
+  **Strategic Index Design:**
+  ```sql
+  -- Primary and unique indexes
+  CREATE UNIQUE INDEX idx_customers_email ON customers(email);
+  CREATE INDEX idx_customers_active ON customers(is_active) WHERE is_active = true;
+
+  -- Composite indexes for common query patterns
+  CREATE INDEX idx_orders_customer_status_date ON orders(customer_id, order_status, created_at DESC);
+  CREATE INDEX idx_products_category_active ON products(category_id, is_active, price) WHERE is_active = true;
+
+  -- Partial indexes for specific conditions
+  CREATE INDEX idx_orders_pending ON orders(created_at DESC) WHERE order_status = 'pending';
+  CREATE INDEX idx_products_featured ON products(display_order, name) WHERE is_featured = true;
+
+  -- Full-text search indexes
+  CREATE INDEX idx_products_search ON products USING GIN(search_vector);
+  CREATE INDEX idx_products_attributes ON products USING GIN(attributes) WHERE attributes IS NOT NULL;
+
+  -- Expression indexes for computed values
+  CREATE INDEX idx_customers_full_name ON customers(LOWER(first_name || ' ' || last_name));
+  CREATE INDEX idx_orders_total_range ON orders((
+      CASE 
+          WHEN total_amount < 100 THEN 'low'
+          WHEN total_amount < 500 THEN 'medium'
+          ELSE 'high'
+      END
+  ));
+  ```
+
+  **Index Maintenance Strategies:**
+  ```sql
+  -- Index usage monitoring query
+  SELECT 
+      schemaname,
+      tablename,
+      indexname,
+      idx_scan,
+      idx_tup_read,
+      idx_tup_fetch,
+      idx_scan::float / GREATEST(seq_scan + idx_scan, 1) AS index_usage_ratio
+  FROM pg_stat_user_indexes 
+  ORDER BY idx_scan DESC;
+
+  -- Unused index identification
+  SELECT 
+      schemaname,
+      tablename,
+      indexname,
+      idx_scan,
+      pg_size_pretty(pg_relation_size(indexrelid)) as size
+  FROM pg_stat_user_indexes 
+  WHERE idx_scan = 0
+  AND schemaname = 'public'
+  ORDER BY pg_relation_size(indexrelid) DESC;
+  ```
+
+  ### NoSQL Indexing Patterns
+
+  **MongoDB Index Strategies:**
+  ```javascript
+  // Compound indexes for query patterns
+  db.products.createIndex(
+    { category: 1, isActive: 1, price: 1 },
+    { name: "idx_category_active_price" }
+  );
+
+  // Text search indexes
+  db.products.createIndex(
+    { name: "text", description: "text" },
+    { 
+      name: "idx_product_search",
+      weights: { name: 10, description: 1 },
+      default_language: "english"
+    }
+  );
+
+  // Geospatial indexes for location-based queries
+  db.stores.createIndex(
+    { location: "2dsphere" },
+    { name: "idx_store_location" }
+  );
+
+  // Partial indexes with conditions
+  db.orders.createIndex(
+    { customerId: 1, createdAt: -1 },
+    { 
+      partialFilterExpression: { status: "active" },
+      name: "idx_active_orders"
+    }
+  );
+
+  // TTL indexes for automatic document expiration
+  db.sessions.createIndex(
+    { lastActivity: 1 },
+    { expireAfterSeconds: 3600, name: "idx_session_ttl" }
+  );
+  ```
+
+  ## Performance Optimization
+
+  ### Query Performance Tuning
+
+  **Query Analysis and Optimization:**
+  ```sql
+  -- Query performance analysis
+  EXPLAIN (ANALYZE, BUFFERS, VERBOSE) 
+  SELECT 
+      c.first_name,
+      c.last_name,
+      c.email,
+      COUNT(o.order_id) as order_count,
+      SUM(o.total_amount) as total_spent
+  FROM customers c
+  LEFT JOIN orders o ON c.customer_id = o.customer_id 
+      AND o.order_status = 'completed'
+      AND o.created_at >= '2024-01-01'
+  WHERE c.is_active = true
+  GROUP BY c.customer_id, c.first_name, c.last_name, c.email
+  HAVING COUNT(o.order_id) > 0
+  ORDER BY total_spent DESC, c.last_name
+  LIMIT 100;
+
+  -- Optimized version with better indexing strategy
+  CREATE INDEX CONCURRENTLY idx_orders_customer_completed_date 
+  ON orders(customer_id, created_at DESC) 
+  WHERE order_status = 'completed';
+
+  -- Window functions for efficient ranking
+  SELECT 
+      product_id,
+      name,
+      price,
+      category_id,
+      ROW_NUMBER() OVER (PARTITION BY category_id ORDER BY price DESC) as price_rank,
+      PERCENT_RANK() OVER (PARTITION BY category_id ORDER BY price) as price_percentile
+  FROM products 
+  WHERE is_active = true;
+  ```
+
+  **Caching Strategies:**
+  ```python
+  class DatabaseCacheLayer:
+      def __init__(self, db_connection, cache_client):
+          self.db = db_connection
+          self.cache = cache_client
+          self.default_ttl = 3600
+
+      def get_product_with_cache(self, product_id):
+          cache_key = f"product:{product_id}"
+
+          # Try cache first
+          cached_product = self.cache.get(cache_key)
+          if cached_product:
+              return json.loads(cached_product)
+
+          # Fetch from database
+          product = self.db.execute("""
+              SELECT p.*, c.name as category_name
+              FROM products p
+              JOIN categories c ON p.category_id = c.category_id
+              WHERE p.product_id = %s AND p.is_active = true
+          """, (product_id,)).fetchone()
+
+          if product:
+              # Cache with tags for intelligent invalidation
+              product_data = dict(product)
+              self.cache.setex(
+                  cache_key, 
+                  self.default_ttl, 
+                  json.dumps(product_data)
+              )
+
+              # Add to cache tags for invalidation
+              self.cache.sadd(f"tag:product_updates", cache_key)
+              self.cache.sadd(f"tag:category:{product['category_id']}", cache_key)
+
+              return product_data
+
+          return None
+
+      def invalidate_product_cache(self, product_id):
+          # Direct cache invalidation
+          self.cache.delete(f"product:{product_id}")
+
+          # Tag-based invalidation for related data
+          self.cache.delete(f"tag:product_updates")
+  ```
+
+  This comprehensive schema design framework ensures optimal database structure, performance, and maintainability across both relational and NoSQL database systems while providing clear patterns for indexing and optimization strategies.
+
+query_optimization: |
+  # Database Performance Optimization
+
+  ## Overview
+
+  Database performance optimization encompasses systematic approaches to improving database response times, throughput, and resource utilization through query optimization, indexing strategies, connection management, and monitoring techniques that ensure optimal performance under varying load conditions.
+
+  ## Query Performance Analysis
+
+  ### Query Execution Plan Analysis
+
+  **PostgreSQL Query Analysis:**
+  ```sql
+  -- Comprehensive query analysis with timing and resource usage
+  EXPLAIN (ANALYZE, BUFFERS, VERBOSE, WAL, SETTINGS) 
+  SELECT 
+      c.customer_id,
+      c.email,
+      c.first_name || ' ' || c.last_name AS full_name,
+      COUNT(o.order_id) AS order_count,
+      SUM(o.total_amount) AS total_revenue,
+      AVG(o.total_amount) AS avg_order_value,
+      MAX(o.created_at) AS last_order_date,
+      EXTRACT(DAYS FROM (CURRENT_DATE - MAX(o.created_at))) AS days_since_last_order
+  FROM customers c
+  LEFT JOIN orders o ON c.customer_id = o.customer_id 
+      AND o.order_status IN ('completed', 'shipped')
+      AND o.created_at >= CURRENT_DATE - INTERVAL '1 year'
+  WHERE c.is_active = true
+      AND c.created_at >= '2023-01-01'
+  GROUP BY c.customer_id, c.email, c.first_name, c.last_name
+  HAVING COUNT(o.order_id) >= 3
+  ORDER BY total_revenue DESC NULLS LAST, order_count DESC
+  LIMIT 1000;
+
+  -- Query optimization analysis function
+  CREATE OR REPLACE FUNCTION analyze_query_performance(query_text TEXT)
+  RETURNS TABLE (
+      execution_time_ms NUMERIC,
+      planning_time_ms NUMERIC,
+      shared_buffers_hit BIGINT,
+      shared_buffers_read BIGINT,
+      temp_buffers_read BIGINT,
+      rows_examined BIGINT,
+      rows_returned BIGINT
+  ) AS $$
+  DECLARE
+      plan_result JSONB;
+      execution_stats RECORD;
+  BEGIN
+      -- Execute query with detailed analysis
+      EXECUTE 'EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON) ' || query_text INTO plan_result;
+
+      -- Extract performance metrics from execution plan
+      SELECT 
+          (plan_result->0->'Execution Time')::NUMERIC,
+          (plan_result->0->'Planning Time')::NUMERIC,
+          COALESCE((plan_result->0->'Shared Hit Blocks')::BIGINT, 0),
+          COALESCE((plan_result->0->'Shared Read Blocks')::BIGINT, 0),
+          COALESCE((plan_result->0->'Temp Read Blocks')::BIGINT, 0),
+          (plan_result->0->'Plan'->'Actual Rows')::BIGINT,
+          (plan_result->0->'Plan'->'Plan Rows')::BIGINT
+      INTO execution_stats;
+
+      RETURN QUERY SELECT 
+          execution_stats.execution_time_ms,
+          execution_stats.planning_time_ms,
+          execution_stats.shared_buffers_hit,
+          execution_stats.shared_buffers_read,
+          execution_stats.temp_buffers_read,
+          execution_stats.rows_examined,
+          execution_stats.rows_returned;
+  END;
+  $$ LANGUAGE plpgsql;
+  ```
+
+  **MySQL Query Performance Analysis:**
+  ```sql
+  -- MySQL query performance analysis with profiling
+  SET profiling = 1;
+
+  SELECT 
+      c.customer_id,
+      c.email,
+      CONCAT(c.first_name, ' ', c.last_name) AS full_name,
+      COUNT(o.order_id) AS order_count,
+      SUM(o.total_amount) AS total_revenue,
+      AVG(o.total_amount) AS avg_order_value
+  FROM customers c
+  LEFT JOIN orders o ON c.customer_id = o.customer_id 
+      AND o.order_status IN ('completed', 'shipped')
+      AND o.created_at >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR)
+  WHERE c.is_active = 1
+  GROUP BY c.customer_id, c.email, c.first_name, c.last_name
+  HAVING COUNT(o.order_id) >= 3
+  ORDER BY total_revenue DESC
+  LIMIT 1000;
+
+  -- Analyze query performance
+  SHOW PROFILE FOR QUERY 1;
+  SHOW PROFILE CPU, MEMORY, SWAPS FOR QUERY 1;
+
+  -- Query execution plan analysis
+  EXPLAIN FORMAT=JSON
+  SELECT /* ... query ... */;
+  ```
+
+  ### Query Optimization Techniques
+
+  **Optimized Query Patterns:**
+  ```sql
+  -- Subquery optimization using EXISTS instead of IN
+  -- Inefficient version
+  SELECT * FROM customers c
+  WHERE c.customer_id IN (
+      SELECT DISTINCT o.customer_id 
+      FROM orders o 
+      WHERE o.order_status = 'completed'
+      AND o.created_at >= '2024-01-01'
+  );
+
+  -- Optimized version using EXISTS
+  SELECT * FROM customers c
+  WHERE EXISTS (
+      SELECT 1 FROM orders o 
+      WHERE o.customer_id = c.customer_id 
+      AND o.order_status = 'completed'
+      AND o.created_at >= '2024-01-01'
+  );
+
+  -- Window function optimization for ranking
+  -- Efficient pagination with window functions
+  SELECT 
+      customer_id,
+      email,
+      order_count,
+      total_revenue,
+      revenue_rank
+  FROM (
+      SELECT 
+          c.customer_id,
+          c.email,
+          COUNT(o.order_id) AS order_count,
+          SUM(o.total_amount) AS total_revenue,
+          ROW_NUMBER() OVER (ORDER BY SUM(o.total_amount) DESC) AS revenue_rank
+      FROM customers c
+      LEFT JOIN orders o ON c.customer_id = o.customer_id
+      WHERE c.is_active = true
+      GROUP BY c.customer_id, c.email
+  ) ranked_customers
+  WHERE revenue_rank BETWEEN 101 AND 200;
+
+  -- Efficient bulk operations using CASE statements
+  UPDATE products 
+  SET 
+      price = CASE 
+          WHEN category_id = 1 THEN price * 1.10  -- Electronics +10%
+          WHEN category_id = 2 THEN price * 1.05  -- Books +5%
+          WHEN category_id = 3 THEN price * 1.15  -- Clothing +15%
+          ELSE price
+      END,
+      updated_at = CURRENT_TIMESTAMP
+  WHERE category_id IN (1, 2, 3) AND is_active = true;
+  ```
+
+  **Advanced Optimization Strategies:**
+  ```python
+  class QueryOptimizer:
+      def __init__(self, db_connection):
+          self.db = db_connection
+          self.query_cache = {}
+          self.execution_stats = {}
+
+      def optimize_pagination_query(self, base_query, page_size, offset):
+          """
+          Optimize pagination using cursor-based pagination for better performance
+          """
+          # Use cursor-based pagination instead of OFFSET
+          cursor_query = f"""
+          WITH ordered_results AS ({base_query})
+          SELECT * FROM ordered_results
+          WHERE id > %(cursor_id)s
+          ORDER BY id
+          LIMIT %(limit)s
+          """
+
+          return cursor_query
+
+      def batch_insert_optimization(self, table_name, records, batch_size=1000):
+          """
+          Optimized batch insert with transaction management
+          """
+          total_records = len(records)
+
+          try:
+              self.db.begin()
+
+              for i in range(0, total_records, batch_size):
+                  batch = records[i:i + batch_size]
+
+                  # Use prepared statements for better performance
+                  placeholders = ', '.join(['%s'] * len(batch))
+                  query = f"""
+                  INSERT INTO {table_name} 
+                  VALUES {placeholders}
+                  ON CONFLICT (unique_column) DO UPDATE SET
+                  updated_at = CURRENT_TIMESTAMP
+                  """
+
+                  self.db.execute(query, batch)
+
+                  # Commit in batches to avoid long transactions
+                  if i % (batch_size * 10) == 0:
+                      self.db.commit()
+                      self.db.begin()
+
+              self.db.commit()
+
+          except Exception as e:
+              self.db.rollback()
+              raise e
+
+      def generate_query_statistics(self, query_id, execution_time, rows_affected):
+          """
+          Track query performance statistics for optimization analysis
+          """
+          if query_id not in self.execution_stats:
+              self.execution_stats[query_id] = {
+                  'executions': 0,
+                  'total_time': 0,
+                  'avg_time': 0,
+                  'max_time': 0,
+                  'min_time': float('inf')
+              }
+
+          stats = self.execution_stats[query_id]
+          stats['executions'] += 1
+          stats['total_time'] += execution_time
+          stats['avg_time'] = stats['total_time'] / stats['executions']
+          stats['max_time'] = max(stats['max_time'], execution_time)
+          stats['min_time'] = min(stats['min_time'], execution_time)
+
+          # Alert on performance degradation
+          if execution_time > stats['avg_time'] * 2:
+              self.alert_performance_degradation(query_id, execution_time, stats['avg_time'])
+  ```
+
+  ## Index Optimization
+
+  ### Strategic Indexing
+
+  **Index Design Patterns:**
+  ```sql
+  -- Multi-column index ordering by selectivity
+  -- High to low selectivity ordering
+  CREATE INDEX idx_orders_status_date_customer ON orders(
+      order_status,     -- High selectivity (few distinct values)
+      created_at DESC,  -- Medium selectivity (time-based)
+      customer_id       -- High selectivity (many distinct values)
+  );
+
+  -- Covering indexes to avoid table lookups
+  CREATE INDEX idx_products_category_covering ON products(
+      category_id, 
+      is_active
+  ) INCLUDE (
+      name, 
+      price, 
+      description
+  ) WHERE is_active = true;
+
+  -- Functional indexes for computed values
+  CREATE INDEX idx_customers_search_name ON customers(
+      LOWER(first_name || ' ' || last_name)
+  );
+
+  -- Partial indexes for specific conditions
+  CREATE INDEX idx_orders_recent_active ON orders(
+      customer_id, 
+      created_at DESC
+  ) WHERE 
+      order_status IN ('pending', 'processing')
+      AND created_at >= CURRENT_DATE - INTERVAL '30 days';
+  ```
+
+  **Index Monitoring and Maintenance:**
+  ```sql
+  -- Index usage analysis
+  CREATE OR REPLACE VIEW index_usage_stats AS
+  SELECT 
+      schemaname,
+      tablename,
+      indexname,
+      idx_scan,
+      idx_tup_read,
+      idx_tup_fetch,
+      pg_size_pretty(pg_relation_size(indexrelid)) as index_size,
+      pg_size_pretty(pg_relation_size(schemaname||'.'||tablename)) as table_size,
+      ROUND(
+          100.0 * idx_scan / GREATEST(
+              (SELECT SUM(idx_scan + seq_scan) FROM pg_stat_user_tables WHERE relname = tablename), 
+              1
+          ), 2
+      ) AS index_usage_pct
+  FROM pg_stat_user_indexes 
+  ORDER BY pg_relation_size(indexrelid) DESC;
+
+  -- Duplicate index detection
+  WITH index_columns AS (
+      SELECT 
+          schemaname,
+          tablename,
+          indexname,
+          array_agg(attname ORDER BY attnum) as columns
+      FROM pg_indexes 
+      JOIN pg_index ON pg_indexes.indexname = pg_class.relname
+      JOIN pg_attribute ON pg_attribute.attrelid = pg_index.indrelid 
+          AND pg_attribute.attnum = ANY(pg_index.indkey)
+      JOIN pg_class ON pg_class.oid = pg_index.indexrelid
+      WHERE schemaname = 'public'
+      GROUP BY schemaname, tablename, indexname
+  )
+  SELECT 
+      i1.schemaname,
+      i1.tablename,
+      i1.indexname as index1,
+      i2.indexname as index2,
+      i1.columns
+  FROM index_columns i1
+  JOIN index_columns i2 ON i1.tablename = i2.tablename 
+      AND i1.columns = i2.columns 
+      AND i1.indexname < i2.indexname;
+  ```
+
+  ### NoSQL Indexing Optimization
+
+  **MongoDB Index Strategies:**
+  ```javascript
+  // Compound index optimization for query patterns
+  db.orders.createIndex(
+    { customerId: 1, status: 1, createdAt: -1 },
+    { 
+      name: "idx_orders_customer_status_date",
+      partialFilterExpression: { 
+        status: { $in: ["pending", "processing", "completed"] }
+      }
+    }
+  );
+
+  // Text index with weights for search relevance
+  db.products.createIndex(
+    {
+      name: "text",
+      description: "text",
+      "category.name": "text"
+    },
+    {
+      name: "idx_product_search",
+      weights: {
+        name: 10,
+        "category.name": 5,
+        description: 1
+      },
+      default_language: "english",
+      language_override: "language"
+    }
+  );
+
+  // Geospatial index for location queries
+  db.stores.createIndex(
+    { location: "2dsphere" },
+    {
+      name: "idx_store_location",
+      "2dsphereIndexVersion": 3
+    }
+  );
+
+  // Wildcard index for dynamic schemas
+  db.products.createIndex(
+    { "attributes.$**": 1 },
+    { name: "idx_product_attributes_wildcard" }
+  );
+
+  // Index usage analysis
+  db.runCommand({
+    aggregate: "orders",
+    pipeline: [
+      { $indexStats: {} }
+    ]
+  });
+  ```
+
+  ## Connection Optimization
+
+  ### Connection Pooling Strategies
+
+  **PostgreSQL Connection Pooling:**
+  ```python
+  import psycopg2
+  from psycopg2 import pool
+  import threading
+  import time
+
+  class OptimizedConnectionPool:
+      def __init__(self, connection_config, min_connections=5, max_connections=20):
+          self.config = connection_config
+          self.min_connections = min_connections
+          self.max_connections = max_connections
+
+          # Create connection pool
+          self.pool = psycopg2.pool.ThreadedConnectionPool(
+              minconn=min_connections,
+              maxconn=max_connections,
+              **connection_config
+          )
+
+          self.connection_stats = {
+              'active_connections': 0,
+              'total_connections_created': 0,
+              'connection_errors': 0,
+              'avg_connection_time': 0
+          }
+
+          self.lock = threading.Lock()
+
+      def get_connection(self, timeout=30):
+          start_time = time.time()
+
+          try:
+              connection = self.pool.getconn()
+
+              if connection:
+                  with self.lock:
+                      self.connection_stats['active_connections'] += 1
+                      self.connection_stats['total_connections_created'] += 1
+
+                      # Update average connection time
+                      connection_time = time.time() - start_time
+                      self.connection_stats['avg_connection_time'] = (
+                          (self.connection_stats['avg_connection_time'] * 
+                           (self.connection_stats['total_connections_created'] - 1) +
+                           connection_time) / 
+                          self.connection_stats['total_connections_created']
+                      )
+
+                  return ConnectionWrapper(connection, self)
+
+          except psycopg2.pool.PoolError as e:
+              with self.lock:
+                  self.connection_stats['connection_errors'] += 1
+
+              raise ConnectionPoolExhausted(f"Connection pool exhausted: {str(e)}")
+
+      def return_connection(self, connection):
+          try:
+              self.pool.putconn(connection)
+
+              with self.lock:
+                  self.connection_stats['active_connections'] -= 1
+
+          except Exception as e:
+              # Log error but don't raise to avoid cascading failures
+              logger.error(f"Error returning connection to pool: {str(e)}")
+
+      def get_pool_status(self):
+          return {
+              'active_connections': self.connection_stats['active_connections'],
+              'total_created': self.connection_stats['total_connections_created'],
+              'errors': self.connection_stats['connection_errors'],
+              'avg_connection_time': self.connection_stats['avg_connection_time'],
+              'pool_size': len(self.pool._pool),
+              'available_connections': len(self.pool._pool) - self.connection_stats['active_connections']
+          }
+
+  class ConnectionWrapper:
+      def __init__(self, connection, pool):
+          self.connection = connection
+          self.pool = pool
+          self.start_time = time.time()
+
+      def __enter__(self):
+          return self.connection
+
+      def __exit__(self, exc_type, exc_val, exc_tb):
+          # Log long-running connections
+          connection_duration = time.time() - self.start_time
+          if connection_duration > 300:  # 5 minutes
+              logger.warning(f"Long-running connection detected: {connection_duration:.2f}s")
+
+          self.pool.return_connection(self.connection)
+
+      def execute(self, query, params=None):
+          cursor = self.connection.cursor()
+          try:
+              cursor.execute(query, params)
+              return cursor.fetchall()
+          finally:
+              cursor.close()
+  ```
+
+  ### Read Replica Configuration
+
+  **Multi-Database Connection Management:**
+  ```python
+  class ReadWriteConnectionManager:
+      def __init__(self, write_config, read_configs):
+          self.write_pool = OptimizedConnectionPool(write_config, min_connections=5, max_connections=15)
+          self.read_pools = [
+              OptimizedConnectionPool(config, min_connections=3, max_connections=10)
+              for config in read_configs
+          ]
+          self.read_pool_index = 0
+          self.read_pool_lock = threading.Lock()
+
+          # Health checking for read replicas
+          self.replica_health = [True] * len(self.read_pools)
+          self.start_health_monitoring()
+
+      def get_write_connection(self):
+          return self.write_pool.get_connection()
+
+      def get_read_connection(self):
+          # Round-robin load balancing across healthy read replicas
+          healthy_pools = [
+              (i, pool) for i, pool in enumerate(self.read_pools)
+              if self.replica_health[i]
+          ]
+
+          if not healthy_pools:
+              # Fallback to write connection if no read replicas available
+              logger.warning("No healthy read replicas available, using write connection")
+              return self.write_pool.get_connection()
+
+          with self.read_pool_lock:
+              pool_index = self.read_pool_index % len(healthy_pools)
+              self.read_pool_index += 1
+
+          selected_pool_index, selected_pool = healthy_pools[pool_index]
+          return selected_pool.get_connection()
+
+      def start_health_monitoring(self):
+          def monitor_replica_health():
+              while True:
+                  for i, pool in enumerate(self.read_pools):
+                      try:
+                          with pool.get_connection() as conn:
+                              cursor = conn.cursor()
+                              cursor.execute("SELECT 1")
+                              cursor.fetchone()
+
+                          self.replica_health[i] = True
+
+                      except Exception as e:
+                          logger.error(f"Read replica {i} health check failed: {str(e)}")
+                          self.replica_health[i] = False
+
+                  time.sleep(30)  # Check every 30 seconds
+
+          health_thread = threading.Thread(target=monitor_replica_health, daemon=True)
+          health_thread.start()
+  ```
+
+  ## Monitoring and Performance Metrics
+
+  ### Real-time Performance Monitoring
+
+  **Database Performance Dashboard:**
+  ```python
+  class DatabasePerformanceMonitor:
+      def __init__(self, db_connections):
+          self.connections = db_connections
+          self.metrics_collector = MetricsCollector()
+          self.alerting_system = AlertingSystem()
+          self.performance_history = {}
+
+      def collect_performance_metrics(self):
+          metrics = {}
+
+          # Connection pool metrics
+          for db_name, connection_pool in self.connections.items():
+              pool_stats = connection_pool.get_pool_status()
+              metrics[f"{db_name}_pool"] = pool_stats
+
+              # Alert on connection pool exhaustion
+              if pool_stats['available_connections'] < 2:
+                  self.alerting_system.send_alert(
+                      f"Connection pool nearly exhausted for {db_name}",
+                      severity="HIGH"
+                  )
+
+          # Database-specific metrics
+          for db_name, connection_pool in self.connections.items():
+              with connection_pool.get_connection() as conn:
+                  db_metrics = self.collect_database_metrics(conn, db_name)
+                  metrics[f"{db_name}_db"] = db_metrics
+
+          # Store metrics for trend analysis
+          timestamp = time.time()
+          self.performance_history[timestamp] = metrics
+
+          # Clean old metrics (keep last 24 hours)
+          cutoff_time = timestamp - 86400
+          self.performance_history = {
+              t: m for t, m in self.performance_history.items() 
+              if t > cutoff_time
+          }
+
+          return metrics
+
+      def collect_database_metrics(self, connection, db_name):
+          cursor = connection.cursor()
+
+          # PostgreSQL-specific metrics
+          if db_name.startswith('postgres'):
+              metrics = {}
+
+              # Active connections
+              cursor.execute("""
+                  SELECT count(*) as active_connections
+                  FROM pg_stat_activity 
+                  WHERE state = 'active'
+              """)
+              metrics['active_connections'] = cursor.fetchone()[0]
+
+              # Long-running queries
+              cursor.execute("""
+                  SELECT count(*) as long_queries
+                  FROM pg_stat_activity 
+                  WHERE state = 'active' 
+                  AND now() - query_start > interval '5 minutes'
+              """)
+              metrics['long_running_queries'] = cursor.fetchone()[0]
+
+              # Cache hit ratio
+              cursor.execute("""
+                  SELECT 
+                      round(
+                          100.0 * sum(blks_hit) / (sum(blks_hit) + sum(blks_read)), 2
+                      ) as cache_hit_ratio
+                  FROM pg_stat_database
+              """)
+              result = cursor.fetchone()
+              metrics['cache_hit_ratio'] = result[0] if result[0] else 0
+
+              # Table and index sizes
+              cursor.execute("""
+                  SELECT 
+                      schemaname,
+                      tablename,
+                      pg_size_pretty(pg_total_relation_size(schemaname||'.'||tablename)) as size
+                  FROM pg_tables 
+                  WHERE schemaname = 'public'
+                  ORDER BY pg_total_relation_size(schemaname||'.'||tablename) DESC
+                  LIMIT 10
+              """)
+              metrics['largest_tables'] = cursor.fetchall()
+
+              return metrics
+
+          cursor.close()
+          return {}
+
+      def analyze_performance_trends(self):
+          if len(self.performance_history) < 10:
+              return {}
+
+          # Analyze trends over time
+          timestamps = sorted(self.performance_history.keys())
+
+          trends = {}
+          for metric_category in ['pool', 'db']:
+              category_trends = {}
+
+              # Analyze key metrics
+              for key_metric in ['active_connections', 'cache_hit_ratio', 'long_running_queries']:
+                  values = []
+                  for ts in timestamps:
+                      for db_key, metrics in self.performance_history[ts].items():
+                          if metric_category in db_key and key_metric in metrics:
+                              values.append(metrics[key_metric])
+
+                  if len(values) > 5:
+                      # Calculate trend (simple linear regression slope)
+                      n = len(values)
+                      x_sum = sum(range(n))
+                      y_sum = sum(values)
+                      xy_sum = sum(i * values[i] for i in range(n))
+                      x2_sum = sum(i * i for i in range(n))
+
+                      slope = (n * xy_sum - x_sum * y_sum) / (n * x2_sum - x_sum * x_sum)
+                      category_trends[key_metric] = {
+                          'trend_slope': slope,
+                          'current_value': values[-1],
+                          'trend_direction': 'increasing' if slope > 0 else 'decreasing' if slope < 0 else 'stable'
+                      }
+
+              trends[metric_category] = category_trends
+
+          return trends
+  ```
+
+  This comprehensive performance optimization framework provides systematic approaches to query optimization, indexing strategies, connection management, and monitoring that ensure optimal database performance under varying load conditions.
+
+migrations: |
+  # Database Migrations and Version Control
+
+  ## Overview
+
+  Database migrations provide systematic version control for database schema changes, enabling safe, reproducible, and reversible database evolution across development, staging, and production environments while maintaining data integrity and minimizing downtime.
+
+  ## Migration Strategy and Planning
+
+  ### Migration Design Principles
+
+  **Safe Migration Patterns:**
+  ```python
+  class MigrationPlanningFramework:
+      def __init__(self):
+          self.migration_types = {
+              'SAFE': 'No data loss or downtime risk',
+              'CAUTION': 'Potential performance impact during migration',
+              'DANGEROUS': 'Potential data loss or extended downtime'
+          }
+          self.rollback_strategies = {}
+          self.impact_assessment = {}
+
+      def assess_migration_impact(self, migration_plan):
+          """
+          Analyze migration for potential risks and impacts
+          """
+          impact_analysis = {
+              'risk_level': 'SAFE',
+              'estimated_downtime': 0,
+              'data_loss_risk': False,
+              'performance_impact': 'LOW',
+              'rollback_complexity': 'SIMPLE',
+              'dependencies': [],
+              'prerequisites': []
+          }
+
+          # Analyze each migration operation
+          for operation in migration_plan['operations']:
+              operation_risk = self.analyze_operation_risk(operation)
+
+              # Escalate overall risk to highest individual risk
+              if operation_risk['risk_level'] == 'DANGEROUS':
+                  impact_analysis['risk_level'] = 'DANGEROUS'
+              elif operation_risk['risk_level'] == 'CAUTION' and impact_analysis['risk_level'] == 'SAFE':
+                  impact_analysis['risk_level'] = 'CAUTION'
+
+              # Accumulate downtime estimates
+              impact_analysis['estimated_downtime'] += operation_risk['downtime_estimate']
+
+              # Flag data loss risks
+              if operation_risk['data_loss_risk']:
+                  impact_analysis['data_loss_risk'] = True
+
+          return impact_analysis
+
+      def analyze_operation_risk(self, operation):
+          """
+          Assess individual migration operation risks
+          """
+          risk_profiles = {
+              'ADD_COLUMN_NULLABLE': {
+                  'risk_level': 'SAFE',
+                  'downtime_estimate': 0,
+                  'data_loss_risk': False,
+                  'performance_impact': 'LOW'
+              },
+              'ADD_COLUMN_NOT_NULL': {
+                  'risk_level': 'CAUTION',
+                  'downtime_estimate': 5,  # seconds
+                  'data_loss_risk': False,
+                  'performance_impact': 'MEDIUM'
+              },
+              'DROP_COLUMN': {
+                  'risk_level': 'DANGEROUS',
+                  'downtime_estimate': 0,
+                  'data_loss_risk': True,
+                  'performance_impact': 'LOW'
+              },
+              'ALTER_COLUMN_TYPE': {
+                  'risk_level': 'DANGEROUS',
+                  'downtime_estimate': 300,  # 5 minutes estimated
+                  'data_loss_risk': True,
+                  'performance_impact': 'HIGH'
+              },
+              'CREATE_INDEX': {
+                  'risk_level': 'CAUTION',
+                  'downtime_estimate': 0,  # Can be done online
+                  'data_loss_risk': False,
+                  'performance_impact': 'MEDIUM'
+              },
+              'DROP_INDEX': {
+                  'risk_level': 'SAFE',
+                  'downtime_estimate': 0,
+                  'data_loss_risk': False,
+                  'performance_impact': 'LOW'
+              }
+          }
+
+          return risk_profiles.get(operation['type'], {
+              'risk_level': 'DANGEROUS',
+              'downtime_estimate': 60,
+              'data_loss_risk': True,
+              'performance_impact': 'HIGH'
+          })
+
+      def generate_safe_migration_plan(self, target_changes):
+          """
+          Generate a safe migration plan that minimizes risk
+          """
+          safe_plan = {
+              'phases': [],
+              'rollback_plan': [],
+              'validation_steps': [],
+              'deployment_strategy': 'blue_green'
+          }
+
+          # Phase 1: Additive changes (safe)
+          additive_changes = [
+              change for change in target_changes 
+              if change['type'] in ['ADD_COLUMN_NULLABLE', 'CREATE_INDEX', 'ADD_TABLE']
+          ]
+
+          if additive_changes:
+              safe_plan['phases'].append({
+                  'name': 'additive_changes',
+                  'operations': additive_changes,
+                  'rollback_strategy': 'simple_reverse',
+                  'validation': 'schema_verification'
+              })
+
+          # Phase 2: Data transformations (caution)
+          transformation_changes = [
+              change for change in target_changes
+              if change['type'] in ['DATA_MIGRATION', 'UPDATE_VALUES']
+          ]
+
+          if transformation_changes:
+              safe_plan['phases'].append({
+                  'name': 'data_transformations',
+                  'operations': transformation_changes,
+                  'rollback_strategy': 'data_backup_restore',
+                  'validation': 'data_integrity_check'
+              })
+
+          # Phase 3: Destructive changes (dangerous - separate deployment)
+          destructive_changes = [
+              change for change in target_changes
+              if change['type'] in ['DROP_COLUMN', 'DROP_TABLE', 'ALTER_COLUMN_TYPE']
+          ]
+
+          if destructive_changes:
+              safe_plan['phases'].append({
+                  'name': 'destructive_changes',
+                  'operations': destructive_changes,
+                  'rollback_strategy': 'full_database_restore',
+                  'validation': 'comprehensive_testing',
+                  'requires_maintenance_window': True
+              })
+
+          return safe_plan
+  ```
+
+  ### Zero-Downtime Migration Strategies
+
+  **Progressive Migration Patterns:**
+  ```sql
+  -- Example: Adding a NOT NULL column with default value
+  -- Phase 1: Add nullable column with default
+  ALTER TABLE customers 
+  ADD COLUMN customer_tier VARCHAR(20) DEFAULT 'standard';
+
+  -- Phase 2: Backfill existing data (can be done in batches)
+  DO $$
+  DECLARE
+      batch_size INTEGER := 1000;
+      processed INTEGER := 0;
+      total_rows INTEGER;
+  BEGIN
+      SELECT COUNT(*) INTO total_rows FROM customers WHERE customer_tier IS NULL;
+
+      WHILE processed < total_rows LOOP
+          UPDATE customers 
+          SET customer_tier = CASE 
+              WHEN (SELECT SUM(total_amount) FROM orders WHERE orders.customer_id = customers.customer_id) > 10000 THEN 'premium'
+              WHEN (SELECT SUM(total_amount) FROM orders WHERE orders.customer_id = customers.customer_id) > 1000 THEN 'gold'
+              ELSE 'standard'
+          END
+          WHERE customer_id IN (
+              SELECT customer_id FROM customers 
+              WHERE customer_tier IS NULL 
+              LIMIT batch_size
+          );
+
+          processed := processed + batch_size;
+
+          -- Commit in batches to avoid long transactions
+          COMMIT;
+
+          -- Brief pause to reduce load
+          PERFORM pg_sleep(0.1);
+      END LOOP;
+  END $$;
+
+  -- Phase 3: Add NOT NULL constraint (after all data is populated)
+  ALTER TABLE customers 
+  ALTER COLUMN customer_tier SET NOT NULL;
+
+  -- Phase 4: Add check constraint for valid values
+  ALTER TABLE customers 
+  ADD CONSTRAINT customer_tier_check 
+  CHECK (customer_tier IN ('standard', 'gold', 'premium'));
+  ```
+
+  **Blue-Green Deployment Migration:**
+  ```python
+  class BlueGreenMigrationManager:
+      def __init__(self, blue_db_config, green_db_config):
+          self.blue_db = DatabaseConnection(blue_db_config)
+          self.green_db = DatabaseConnection(green_db_config)
+          self.migration_state = 'blue_active'
+          self.sync_manager = DatabaseSyncManager()
+
+      def execute_blue_green_migration(self, migration_scripts):
+          """
+          Execute migration using blue-green strategy
+          """
+          try:
+              # Step 1: Ensure green database is in sync with blue
+              self.sync_databases()
+
+              # Step 2: Apply migrations to green database
+              self.apply_migrations_to_green(migration_scripts)
+
+              # Step 3: Validate green database
+              validation_results = self.validate_green_database()
+              if not validation_results['success']:
+                  raise MigrationValidationError(validation_results['errors'])
+
+              # Step 4: Perform final sync (minimal downtime)
+              self.perform_final_sync()
+
+              # Step 5: Switch traffic to green
+              self.switch_to_green()
+
+              # Step 6: Monitor for issues
+              self.monitor_post_migration()
+
+              return {'success': True, 'migration_completed': True}
+
+          except Exception as e:
+              # Rollback to blue if any issues
+              self.rollback_to_blue()
+              raise MigrationError(f"Blue-green migration failed: {str(e)}")
+
+      def sync_databases(self):
+          """
+          Synchronize green database with blue database
+          """
+          # Use logical replication or dump/restore
+          sync_start_time = time.time()
+
+          # Create replication slot on blue database
+          with self.blue_db.get_connection() as blue_conn:
+              blue_conn.execute("""
+                  SELECT pg_create_logical_replication_slot(
+                      'migration_sync_slot', 
+                      'pgoutput'
+                  );
+              """)
+
+          # Set up subscription on green database
+          with self.green_db.get_connection() as green_conn:
+              green_conn.execute(f"""
+                  CREATE SUBSCRIPTION migration_sync
+                  CONNECTION '{self.blue_db.get_connection_string()}'
+                  PUBLICATION migration_publication
+                  WITH (copy_data = true, create_slot = false, slot_name = 'migration_sync_slot');
+              """)
+
+          # Wait for initial sync to complete
+          self.wait_for_sync_completion()
+
+          sync_duration = time.time() - sync_start_time
+          logger.info(f"Database sync completed in {sync_duration:.2f} seconds")
+
+      def apply_migrations_to_green(self, migration_scripts):
+          """
+          Apply migration scripts to green database
+          """
+          with self.green_db.get_connection() as conn:
+              for script in migration_scripts:
+                  try:
+                      conn.execute(script['sql'])
+                      self.log_migration_applied(script['version'], 'green')
+                  except Exception as e:
+                      raise MigrationError(f"Failed to apply migration {script['version']}: {str(e)}")
+
+      def validate_green_database(self):
+          """
+          Comprehensive validation of green database after migration
+          """
+          validation_results = {
+              'success': True,
+              'errors': [],
+              'warnings': [],
+              'performance_metrics': {}
+          }
+
+          # Schema validation
+          schema_diff = self.compare_schemas(self.blue_db, self.green_db)
+          if schema_diff:
+              validation_results['warnings'].append(f"Schema differences detected: {schema_diff}")
+
+          # Data validation
+          data_validation = self.validate_data_integrity()
+          if not data_validation['success']:
+              validation_results['success'] = False
+              validation_results['errors'].extend(data_validation['errors'])
+
+          # Performance validation
+          performance_results = self.run_performance_tests()
+          validation_results['performance_metrics'] = performance_results
+
+          if performance_results['response_time_degradation'] > 20:  # 20% threshold
+              validation_results['success'] = False
+              validation_results['errors'].append(
+                  f"Performance degradation exceeds threshold: {performance_results['response_time_degradation']}%"
+              )
+
+          return validation_results
+  ```
+
+  ## Migration Implementation
+
+  ### Forward Migration Scripts
+
+  **Comprehensive Migration Script Structure:**
+  ```sql
+  -- Migration: 20240301_001_add_customer_loyalty_program.sql
+  -- Description: Add loyalty program features to customer management
+  -- Author: database-engineer
+  -- Risk Level: CAUTION (adds new functionality, minimal data risk)
+
+  BEGIN;
+
+  -- Set migration metadata
+  INSERT INTO schema_migrations (
+      version, 
+      description, 
+      applied_at, 
+      applied_by,
+      risk_level
+  ) VALUES (
+      '20240301_001',
+      'Add customer loyalty program features',
+      CURRENT_TIMESTAMP,
+      USER,
+      'CAUTION'
+  );
+
+  -- Create loyalty tiers lookup table
+  CREATE TABLE loyalty_tiers (
+      tier_id SERIAL PRIMARY KEY,
+      tier_name VARCHAR(50) UNIQUE NOT NULL,
+      tier_code VARCHAR(20) UNIQUE NOT NULL,
+      min_points INTEGER NOT NULL DEFAULT 0,
+      max_points INTEGER,
+      benefits JSONB,
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+
+      CONSTRAINT loyalty_tier_points_check CHECK (
+          max_points IS NULL OR max_points > min_points
+      )
+  );
+
+  -- Insert default loyalty tiers
+  INSERT INTO loyalty_tiers (tier_name, tier_code, min_points, max_points, benefits) VALUES
+  ('Bronze', 'BRONZE', 0, 999, '{"discount_percentage": 5, "free_shipping": false}'),
+  ('Silver', 'SILVER', 1000, 4999, '{"discount_percentage": 10, "free_shipping": true, "early_access": true}'),
+  ('Gold', 'GOLD', 5000, 19999, '{"discount_percentage": 15, "free_shipping": true, "early_access": true, "priority_support": true}'),
+  ('Platinum', 'PLATINUM', 20000, NULL, '{"discount_percentage": 20, "free_shipping": true, "early_access": true, "priority_support": true, "personal_shopper": true}');
+
+  -- Add loyalty program columns to customers table
+  ALTER TABLE customers 
+  ADD COLUMN loyalty_points INTEGER DEFAULT 0 CHECK (loyalty_points >= 0),
+  ADD COLUMN loyalty_tier_id INTEGER REFERENCES loyalty_tiers(tier_id) DEFAULT 1,
+  ADD COLUMN loyalty_joined_date TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  ADD COLUMN loyalty_last_activity TIMESTAMP WITH TIME ZONE;
+
+  -- Create loyalty transactions table for point tracking
+  CREATE TABLE loyalty_transactions (
+      transaction_id BIGSERIAL PRIMARY KEY,
+      customer_id BIGINT NOT NULL REFERENCES customers(customer_id) ON DELETE CASCADE,
+      transaction_type VARCHAR(20) NOT NULL CHECK (
+          transaction_type IN ('EARNED', 'REDEEMED', 'EXPIRED', 'ADJUSTED')
+      ),
+      points INTEGER NOT NULL,
+      description TEXT NOT NULL,
+      reference_id BIGINT, -- Links to orders, returns, etc.
+      reference_type VARCHAR(20), -- 'order', 'return', 'manual', etc.
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+      created_by VARCHAR(100) DEFAULT USER,
+
+      -- Ensure points are appropriate for transaction type
+      CONSTRAINT loyalty_points_sign_check CHECK (
+          (transaction_type IN ('EARNED', 'ADJUSTED') AND points != 0) OR
+          (transaction_type IN ('REDEEMED', 'EXPIRED') AND points <= 0)
+      )
+  );
+
+  -- Create indexes for performance
+  CREATE INDEX idx_customers_loyalty_tier ON customers(loyalty_tier_id);
+  CREATE INDEX idx_customers_loyalty_points ON customers(loyalty_points DESC);
+  CREATE INDEX idx_loyalty_transactions_customer_date ON loyalty_transactions(customer_id, created_at DESC);
+  CREATE INDEX idx_loyalty_transactions_reference ON loyalty_transactions(reference_type, reference_id);
+
+  -- Create function to update customer loyalty tier based on points
+  CREATE OR REPLACE FUNCTION update_customer_loyalty_tier(p_customer_id BIGINT)
+  RETURNS VOID AS $$
+  DECLARE
+      current_points INTEGER;
+      new_tier_id INTEGER;
+  BEGIN
+      -- Get current points for customer
+      SELECT loyalty_points INTO current_points
+      FROM customers
+      WHERE customer_id = p_customer_id;
+
+      -- Determine appropriate tier
+      SELECT tier_id INTO new_tier_id
+      FROM loyalty_tiers
+      WHERE min_points <= current_points
+      AND (max_points IS NULL OR current_points <= max_points)
+      ORDER BY min_points DESC
+      LIMIT 1;
+
+      -- Update customer tier if changed
+      UPDATE customers
+      SET 
+          loyalty_tier_id = new_tier_id,
+          loyalty_last_activity = CURRENT_TIMESTAMP
+      WHERE customer_id = p_customer_id
+      AND loyalty_tier_id != new_tier_id;
+  END;
+  $$ LANGUAGE plpgsql;
+
+  -- Create trigger to update loyalty points and tier when loyalty transactions are added
+  CREATE OR REPLACE FUNCTION process_loyalty_transaction()
+  RETURNS TRIGGER AS $$
+  BEGIN
+      -- Update customer's total points
+      UPDATE customers 
+      SET loyalty_points = loyalty_points + NEW.points
+      WHERE customer_id = NEW.customer_id;
+
+      -- Update customer's loyalty tier
+      PERFORM update_customer_loyalty_tier(NEW.customer_id);
+
+      RETURN NEW;
+  END;
+  $$ LANGUAGE plpgsql;
+
+  CREATE TRIGGER loyalty_transaction_trigger
+      AFTER INSERT ON loyalty_transactions
+      FOR EACH ROW EXECUTE FUNCTION process_loyalty_transaction();
+
+  -- Backfill existing customers with default loyalty tier
+  UPDATE customers 
+  SET 
+      loyalty_tier_id = 1, -- Bronze tier
+      loyalty_joined_date = created_at
+  WHERE loyalty_tier_id IS NULL;
+
+  -- Create view for customer loyalty summary
+  CREATE VIEW customer_loyalty_summary AS
+  SELECT 
+      c.customer_id,
+      c.email,
+      c.first_name,
+      c.last_name,
+      c.loyalty_points,
+      lt.tier_name,
+      lt.tier_code,
+      lt.benefits,
+      c.loyalty_joined_date,
+      c.loyalty_last_activity,
+      COALESCE(stats.total_earned, 0) as total_points_earned,
+      COALESCE(stats.total_redeemed, 0) as total_points_redeemed
+  FROM customers c
+  JOIN loyalty_tiers lt ON c.loyalty_tier_id = lt.tier_id
+  LEFT JOIN (
+      SELECT 
+          customer_id,
+          SUM(CASE WHEN points > 0 THEN points ELSE 0 END) as total_earned,
+          SUM(CASE WHEN points < 0 THEN ABS(points) ELSE 0 END) as total_redeemed
+      FROM loyalty_transactions
+      GROUP BY customer_id
+  ) stats ON c.customer_id = stats.customer_id;
+
+  -- Add comments for documentation
+  COMMENT ON TABLE loyalty_tiers IS 'Defines customer loyalty program tiers and their benefits';
+  COMMENT ON TABLE loyalty_transactions IS 'Tracks all loyalty point transactions for customers';
+  COMMENT ON COLUMN customers.loyalty_points IS 'Current loyalty points balance for customer';
+  COMMENT ON COLUMN customers.loyalty_tier_id IS 'Current loyalty tier based on points balance';
+
+  COMMIT;
+
+  -- Post-migration validation
+  DO $$
+  DECLARE
+      tier_count INTEGER;
+      customer_count INTEGER;
+      transaction_count INTEGER;
+  BEGIN
+      -- Validate loyalty tiers were created
+      SELECT COUNT(*) INTO tier_count FROM loyalty_tiers;
+      IF tier_count != 4 THEN
+          RAISE EXCEPTION 'Migration validation failed: Expected 4 loyalty tiers, found %', tier_count;
+      END IF;
+
+      -- Validate all customers have loyalty tier assigned
+      SELECT COUNT(*) INTO customer_count 
+      FROM customers 
+      WHERE loyalty_tier_id IS NULL OR loyalty_points IS NULL;
+
+      IF customer_count > 0 THEN
+          RAISE EXCEPTION 'Migration validation failed: % customers without loyalty data', customer_count;
+      END IF;
+
+      RAISE NOTICE 'Migration 20240301_001 validation passed: % loyalty tiers, % customers updated', 
+          tier_count, (SELECT COUNT(*) FROM customers);
+  END $$;
+  ```
+
+  ### Rollback Procedures
+
+  **Comprehensive Rollback Strategy:**
+  ```sql
+  -- Rollback: 20240301_001_add_customer_loyalty_program_rollback.sql
+  -- Description: Rollback loyalty program features migration
+  -- Risk Level: DANGEROUS (drops tables and data)
+
+  BEGIN;
+
+  -- Validate rollback preconditions
+  DO $$
+  DECLARE
+      active_transactions INTEGER;
+  BEGIN
+      -- Check for recent loyalty transactions that would be lost
+      SELECT COUNT(*) INTO active_transactions
+      FROM loyalty_transactions
+      WHERE created_at > CURRENT_TIMESTAMP - INTERVAL '24 hours';
+
+      IF active_transactions > 0 THEN
+          RAISE EXCEPTION 'Cannot rollback: % recent loyalty transactions would be lost. Manual data preservation required.', active_transactions;
+      END IF;
+  END $$;
+
+  -- Drop triggers and functions first
+  DROP TRIGGER IF EXISTS loyalty_transaction_trigger ON loyalty_transactions;
+  DROP FUNCTION IF EXISTS process_loyalty_transaction();
+  DROP FUNCTION IF EXISTS update_customer_loyalty_tier(BIGINT);
+
+  -- Drop views
+  DROP VIEW IF EXISTS customer_loyalty_summary;
+
+  -- Remove loyalty columns from customers table
+  ALTER TABLE customers 
+  DROP COLUMN IF EXISTS loyalty_points,
+  DROP COLUMN IF EXISTS loyalty_tier_id,
+  DROP COLUMN IF EXISTS loyalty_joined_date,
+  DROP COLUMN IF EXISTS loyalty_last_activity;
+
+  -- Drop loyalty tables (in reverse dependency order)
+  DROP TABLE IF EXISTS loyalty_transactions;
+  DROP TABLE IF EXISTS loyalty_tiers;
+
+  -- Remove migration record
+  DELETE FROM schema_migrations WHERE version = '20240301_001';
+
+  -- Validate rollback completion
+  DO $$
+  DECLARE
+      loyalty_tables INTEGER;
+  BEGIN
+      SELECT COUNT(*) INTO loyalty_tables
+      FROM information_schema.tables
+      WHERE table_name IN ('loyalty_tiers', 'loyalty_transactions')
+      AND table_schema = 'public';
+
+      IF loyalty_tables > 0 THEN
+          RAISE EXCEPTION 'Rollback validation failed: Loyalty tables still exist';
+      END IF;
+
+      RAISE NOTICE 'Rollback 20240301_001 completed successfully';
+  END $$;
+
+  COMMIT;
+  ```
+
+  ### Data Migration Patterns
+
+  **Safe Data Transformation:**
+  ```python
+  class DataMigrationManager:
+      def __init__(self, db_connection):
+          self.db = db_connection
+          self.batch_size = 1000
+          self.max_retry_attempts = 3
+
+      def migrate_customer_data_with_validation(self):
+          """
+          Migrate customer data with comprehensive validation and rollback capability
+          """
+          migration_id = self.start_migration_tracking('customer_data_normalization')
+
+          try:
+              # Phase 1: Create backup table
+              self.create_backup_table('customers', 'customers_backup_20240301')
+
+              # Phase 2: Add new normalized columns
+              self.add_migration_columns()
+
+              # Phase 3: Migrate data in batches
+              total_customers = self.get_total_customer_count()
+              migrated_count = 0
+
+              while migrated_count < total_customers:
+                  batch_result = self.migrate_customer_batch(
+                      offset=migrated_count,
+                      limit=self.batch_size
+                  )
+
+                  migrated_count += batch_result['processed']
+
+                  # Log progress
+                  progress_pct = (migrated_count / total_customers) * 100
+                  logger.info(f"Customer migration progress: {progress_pct:.1f}% ({migrated_count}/{total_customers})")
+
+                  # Validate batch results
+                  if not batch_result['success']:
+                      raise DataMigrationError(f"Batch migration failed: {batch_result['error']}")
+
+              # Phase 4: Validate migration results
+              validation_results = self.validate_migration_results()
+              if not validation_results['success']:
+                  raise DataMigrationError(f"Migration validation failed: {validation_results['errors']}")
+
+              # Phase 5: Update constraints and indexes
+              self.finalize_migration()
+
+              self.complete_migration_tracking(migration_id, 'SUCCESS')
+              return {'success': True, 'migrated_records': migrated_count}
+
+          except Exception as e:
+              # Rollback migration
+              self.rollback_migration('customers_backup_20240301')
+              self.complete_migration_tracking(migration_id, 'FAILED', str(e))
+              raise e
+
+      def migrate_customer_batch(self, offset, limit):
+          """
+          Migrate a batch of customer records with error handling
+          """
+          try:
+              with self.db.get_connection() as conn:
+                  cursor = conn.cursor()
+
+                  # Select batch of customers to migrate
+                  cursor.execute("""
+                      SELECT customer_id, full_name, address_text
+                      FROM customers
+                      WHERE migration_status IS NULL
+                      ORDER BY customer_id
+                      LIMIT %s OFFSET %s
+                  """, (limit, offset))
+
+                  customers = cursor.fetchall()
+
+                  for customer in customers:
+                      try:
+                          # Parse and normalize data
+                          normalized_data = self.normalize_customer_data(customer)
+
+                          # Update customer record
+                          cursor.execute("""
+                              UPDATE customers
+                              SET
+                                  first_name = %s,
+                                  last_name = %s,
+                                  street_address = %s,
+                                  city = %s,
+                                  state = %s,
+                                  postal_code = %s,
+                                  country = %s,
+                                  migration_status = 'COMPLETED',
+                                  migration_timestamp = CURRENT_TIMESTAMP
+                              WHERE customer_id = %s
+                          """, (
+                              normalized_data['first_name'],
+                              normalized_data['last_name'],
+                              normalized_data['street_address'],
+                              normalized_data['city'],
+                              normalized_data['state'],
+                              normalized_data['postal_code'],
+                              normalized_data['country'],
+                              customer['customer_id']
+                          ))
+
+                      except Exception as e:
+                          # Log individual record error but continue with batch
+                          logger.error(f"Failed to migrate customer {customer['customer_id']}: {str(e)}")
+
+                          cursor.execute("""
+                              UPDATE customers
+                              SET
+                                  migration_status = 'FAILED',
+                                  migration_error = %s,
+                                  migration_timestamp = CURRENT_TIMESTAMP
+                              WHERE customer_id = %s
+                          """, (str(e), customer['customer_id']))
+
+                  conn.commit()
+                  return {'success': True, 'processed': len(customers)}
+
+          except Exception as e:
+              return {'success': False, 'error': str(e), 'processed': 0}
+
+      def validate_migration_results(self):
+          """
+          Comprehensive validation of migration results
+          """
+          validation_results = {
+              'success': True,
+              'errors': [],
+              'warnings': [],
+              'statistics': {}
+          }
+
+          with self.db.get_connection() as conn:
+              cursor = conn.cursor()
+
+              # Check for failed migrations
+              cursor.execute("SELECT COUNT(*) FROM customers WHERE migration_status = 'FAILED'")
+              failed_count = cursor.fetchone()[0]
+
+              if failed_count > 0:
+                  validation_results['errors'].append(f"{failed_count} customers failed migration")
+                  validation_results['success'] = False
+
+              # Check for incomplete migrations
+              cursor.execute("SELECT COUNT(*) FROM customers WHERE migration_status IS NULL")
+              incomplete_count = cursor.fetchone()[0]
+
+              if incomplete_count > 0:
+                  validation_results['errors'].append(f"{incomplete_count} customers not migrated")
+                  validation_results['success'] = False
+
+              # Validate data integrity
+              cursor.execute("""
+                  SELECT COUNT(*) FROM customers 
+                  WHERE migration_status = 'COMPLETED' 
+                  AND (first_name IS NULL OR last_name IS NULL)
+              """)
+              invalid_data_count = cursor.fetchone()[0]
+
+              if invalid_data_count > 0:
+                  validation_results['errors'].append(f"{invalid_data_count} customers have invalid normalized data")
+                  validation_results['success'] = False
+
+              # Collect statistics
+              cursor.execute("""
+                  SELECT 
+                      migration_status,
+                      COUNT(*) as count
+                  FROM customers
+                  GROUP BY migration_status
+              """)
+
+              validation_results['statistics'] = {
+                  row[0]: row[1] for row in cursor.fetchall()
+              }
+
+          return validation_results
+  ```
+
+  This comprehensive migration framework provides systematic approaches to database schema evolution, ensuring safe, reproducible, and reversible changes while maintaining data integrity and minimizing operational risks.
+
+performance: |
+  # Data Modeling and Architecture
+
+  ## Overview
+
+  Data modeling encompasses the systematic design of data structures, relationships, and constraints that accurately represent business requirements while ensuring optimal performance, scalability, and maintainability across different database paradigms including relational, document, graph, and time-series databases.
+
+  ## Conceptual Data Modeling
+
+  ### Business Requirements Analysis
+
+  **Domain-Driven Design Approach:**
+  ```python
+  # Domain entity identification and modeling
+  class BusinessDomainAnalyzer:
+      def __init__(self):
+          self.entities = {}
+          self.relationships = {}
+          self.business_rules = []
+          self.constraints = {}
+
+      def identify_core_entities(self, business_requirements):
+          """
+          Extract core business entities from requirements
+          """
+          entities = {}
+
+          # E-commerce domain example
+          entities['Customer'] = {
+              'attributes': {
+                  'customer_id': {'type': 'identifier', 'required': True},
+                  'email': {'type': 'string', 'unique': True, 'required': True},
+                  'password_hash': {'type': 'string', 'required': True},
+                  'first_name': {'type': 'string', 'required': True},
+                  'last_name': {'type': 'string', 'required': True},
+                  'date_of_birth': {'type': 'date', 'required': False},
+                  'phone': {'type': 'string', 'required': False},
+                  'created_at': {'type': 'timestamp', 'auto': True},
+                  'is_active': {'type': 'boolean', 'default': True}
+              },
+              'business_rules': [
+                  'Email must be unique across all customers',
+                  'Password must meet security requirements',
+                  'Customer must be 18+ for certain product categories'
+              ]
+          }
+
+          entities['Product'] = {
+              'attributes': {
+                  'product_id': {'type': 'identifier', 'required': True},
+                  'sku': {'type': 'string', 'unique': True, 'required': True},
+                  'name': {'type': 'string', 'required': True},
+                  'description': {'type': 'text', 'required': False},
+                  'category_id': {'type': 'foreign_key', 'references': 'Category'},
+                  'price': {'type': 'decimal', 'precision': 10, 'scale': 2, 'required': True},
+                  'cost': {'type': 'decimal', 'precision': 10, 'scale': 2},
+                  'stock_quantity': {'type': 'integer', 'min': 0, 'required': True},
+                  'is_active': {'type': 'boolean', 'default': True}
+              },
+              'business_rules': [
+                  'SKU must be unique across all products',
+                  'Price must be greater than or equal to cost',
+                  'Stock quantity cannot be negative',
+                  'Products can only be sold if active and in stock'
+              ]
+          }
+
+          entities['Order'] = {
+              'attributes': {
+                  'order_id': {'type': 'identifier', 'required': True},
+                  'customer_id': {'type': 'foreign_key', 'references': 'Customer'},
+                  'order_status': {'type': 'enum', 'values': ['pending', 'processing', 'shipped', 'delivered', 'cancelled']},
+                  'order_date': {'type': 'timestamp', 'auto': True},
+                  'subtotal': {'type': 'decimal', 'precision': 12, 'scale': 2},
+                  'tax_amount': {'type': 'decimal', 'precision': 12, 'scale': 2},
+                  'shipping_cost': {'type': 'decimal', 'precision': 12, 'scale': 2},
+                  'total_amount': {'type': 'decimal', 'precision': 12, 'scale': 2, 'required': True}
+              },
+              'business_rules': [
+                  'Total amount must equal subtotal + tax + shipping',
+                  'Orders can only be modified in pending status',
+                  'Cancelled orders cannot change to other statuses'
+              ]
+          }
+
+          return entities
+
+      def define_entity_relationships(self, entities):
+          """
+          Define relationships between business entities
+          """
+          relationships = {
+              'customer_addresses': {
+                  'type': 'one_to_many',
+                  'parent': 'Customer',
+                  'child': 'Address',
+                  'foreign_key': 'customer_id',
+                  'cascade': 'delete'
+              },
+              'customer_orders': {
+                  'type': 'one_to_many',
+                  'parent': 'Customer',
+                  'child': 'Order',
+                  'foreign_key': 'customer_id',
+                  'cascade': 'restrict'  # Don't delete customers with orders
+              },
+              'order_items': {
+                  'type': 'one_to_many',
+                  'parent': 'Order',
+                  'child': 'OrderItem',
+                  'foreign_key': 'order_id',
+                  'cascade': 'delete'
+              },
+              'product_categories': {
+                  'type': 'many_to_one',
+                  'child': 'Product',
+                  'parent': 'Category',
+                  'foreign_key': 'category_id',
+                  'cascade': 'restrict'
+              },
+              'product_reviews': {
+                  'type': 'one_to_many',
+                  'parent': 'Product',
+                  'child': 'Review',
+                  'foreign_key': 'product_id',
+                  'cascade': 'delete'
+              }
+          }
+
+          return relationships
+  ```
+
+  ### Entity Relationship Diagrams
+
+  **Advanced ER Modeling:**
+  ```sql
+  -- Comprehensive entity relationship implementation
+  -- Customer entity with full normalization
+  CREATE TABLE customers (
+      customer_id BIGSERIAL PRIMARY KEY,
+      email VARCHAR(255) UNIQUE NOT NULL,
+      password_hash VARCHAR(255) NOT NULL,
+
+      -- Personal information
+      first_name VARCHAR(100) NOT NULL,
+      last_name VARCHAR(100) NOT NULL,
+      date_of_birth DATE,
+      phone VARCHAR(20),
+
+      -- Account management
+      is_active BOOLEAN DEFAULT TRUE,
+      email_verified BOOLEAN DEFAULT FALSE,
+      phone_verified BOOLEAN DEFAULT FALSE,
+
+      -- Timestamps
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+      last_login_at TIMESTAMP WITH TIME ZONE,
+
+      -- Constraints
+      CONSTRAINT customer_email_format CHECK (
+          email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'
+      ),
+      CONSTRAINT customer_names_not_empty CHECK (
+          LENGTH(TRIM(first_name)) > 0 AND LENGTH(TRIM(last_name)) > 0
+      ),
+      CONSTRAINT customer_age_check CHECK (
+          date_of_birth IS NULL OR 
+          date_of_birth <= CURRENT_DATE - INTERVAL '13 years'
+      )
+  );
+
+  -- Address entity with proper normalization and validation
+  CREATE TABLE addresses (
+      address_id BIGSERIAL PRIMARY KEY,
+      customer_id BIGINT NOT NULL REFERENCES customers(customer_id) ON DELETE CASCADE,
+
+      -- Address classification
+      address_type VARCHAR(20) NOT NULL CHECK (
+          address_type IN ('billing', 'shipping', 'both')
+      ),
+      address_label VARCHAR(50), -- Home, Work, etc.
+
+      -- Address components
+      recipient_name VARCHAR(200),
+      company_name VARCHAR(200),
+      street_address_1 VARCHAR(255) NOT NULL,
+      street_address_2 VARCHAR(255),
+      city VARCHAR(100) NOT NULL,
+      state_province VARCHAR(100),
+      postal_code VARCHAR(20) NOT NULL,
+      country_code CHAR(2) NOT NULL,
+
+      -- Validation and preferences
+      is_default BOOLEAN DEFAULT FALSE,
+      is_verified BOOLEAN DEFAULT FALSE,
+
+      -- Timestamps
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+
+      -- Ensure only one default address per type per customer
+      UNIQUE(customer_id, address_type, is_default) DEFERRABLE INITIALLY DEFERRED
+  );
+
+  -- Category hierarchy with closure table pattern
+  CREATE TABLE categories (
+      category_id BIGSERIAL PRIMARY KEY,
+      category_name VARCHAR(100) NOT NULL,
+      category_slug VARCHAR(100) UNIQUE NOT NULL,
+      description TEXT,
+      parent_category_id BIGINT REFERENCES categories(category_id),
+
+      -- Display and management
+      display_order INTEGER DEFAULT 0,
+      is_active BOOLEAN DEFAULT TRUE,
+
+      -- SEO and metadata
+      meta_title VARCHAR(255),
+      meta_description TEXT,
+
+      -- Timestamps
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+
+      -- Prevent self-referencing
+      CONSTRAINT no_self_reference CHECK (category_id != parent_category_id)
+  );
+
+  -- Category closure table for efficient hierarchy queries
+  CREATE TABLE category_hierarchy (
+      ancestor_id BIGINT NOT NULL REFERENCES categories(category_id) ON DELETE CASCADE,
+      descendant_id BIGINT NOT NULL REFERENCES categories(category_id) ON DELETE CASCADE,
+      depth INTEGER NOT NULL DEFAULT 0,
+
+      PRIMARY KEY (ancestor_id, descendant_id),
+      CONSTRAINT hierarchy_depth_check CHECK (depth >= 0)
+  );
+
+  -- Product entity with comprehensive attributes
+  CREATE TABLE products (
+      product_id BIGSERIAL PRIMARY KEY,
+      sku VARCHAR(50) UNIQUE NOT NULL,
+      name VARCHAR(255) NOT NULL,
+      description TEXT,
+      category_id BIGINT NOT NULL REFERENCES categories(category_id),
+
+      -- Pricing
+      price DECIMAL(12,2) NOT NULL CHECK (price >= 0),
+      compare_at_price DECIMAL(12,2) CHECK (compare_at_price >= price),
+      cost DECIMAL(12,2) CHECK (cost >= 0),
+
+      -- Physical attributes
+      weight_grams INTEGER CHECK (weight_grams > 0),
+      length_mm INTEGER CHECK (length_mm > 0),
+      width_mm INTEGER CHECK (width_mm > 0),
+      height_mm INTEGER CHECK (height_mm > 0),
+
+      -- Inventory management
+      inventory_quantity INTEGER NOT NULL DEFAULT 0 CHECK (inventory_quantity >= 0),
+      inventory_policy VARCHAR(20) DEFAULT 'deny' CHECK (
+          inventory_policy IN ('deny', 'continue')
+      ),
+
+      -- Product management
+      is_active BOOLEAN DEFAULT TRUE,
+      is_featured BOOLEAN DEFAULT FALSE,
+      requires_shipping BOOLEAN DEFAULT TRUE,
+      is_taxable BOOLEAN DEFAULT TRUE,
+
+      -- SEO and searchability
+      handle VARCHAR(255) UNIQUE,
+      meta_title VARCHAR(255),
+      meta_description TEXT,
+      search_keywords TEXT,
+
+      -- Timestamps
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+
+      -- Full-text search vector
+      search_vector TSVECTOR GENERATED ALWAYS AS (
+          setweight(to_tsvector('english', name), 'A') ||
+          setweight(to_tsvector('english', COALESCE(description, '')), 'B') ||
+          setweight(to_tsvector('english', COALESCE(search_keywords, '')), 'C')
+      ) STORED
+  );
+  ```
+
+  ## Logical Data Models
+
+  ### Relationship Patterns
+
+  **Advanced Relationship Modeling:**
+  ```sql
+  -- Many-to-many relationship with attributes (Order-Product through OrderItem)
+  CREATE TABLE order_items (
+      order_item_id BIGSERIAL PRIMARY KEY,
+      order_id BIGINT NOT NULL REFERENCES orders(order_id) ON DELETE CASCADE,
+      product_id BIGINT NOT NULL REFERENCES products(product_id),
+
+      -- Quantity and pricing at time of order
+      quantity INTEGER NOT NULL CHECK (quantity > 0),
+      unit_price DECIMAL(12,2) NOT NULL CHECK (unit_price >= 0),
+      total_price DECIMAL(12,2) NOT NULL CHECK (total_price >= 0),
+
+      -- Product snapshot at time of order
+      product_name VARCHAR(255) NOT NULL,
+      product_sku VARCHAR(50) NOT NULL,
+
+      -- Fulfillment tracking
+      quantity_fulfilled INTEGER DEFAULT 0 CHECK (
+          quantity_fulfilled >= 0 AND quantity_fulfilled <= quantity
+      ),
+
+      -- Timestamps
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+
+      -- Ensure unique product per order
+      UNIQUE(order_id, product_id),
+
+      -- Ensure total price matches quantity * unit_price
+      CONSTRAINT price_calculation_check CHECK (
+          total_price = quantity * unit_price
+      )
+  );
+
+  -- Self-referencing relationship (Category hierarchy)
+  CREATE TABLE category_relationships (
+      parent_id BIGINT NOT NULL REFERENCES categories(category_id) ON DELETE CASCADE,
+      child_id BIGINT NOT NULL REFERENCES categories(category_id) ON DELETE CASCADE,
+      relationship_type VARCHAR(20) DEFAULT 'parent_child' CHECK (
+          relationship_type IN ('parent_child', 'related', 'alternative')
+      ),
+
+      PRIMARY KEY (parent_id, child_id, relationship_type),
+
+      -- Prevent self-referencing
+      CONSTRAINT no_self_reference CHECK (parent_id != child_id)
+  );
+
+  -- Polymorphic relationships (Comments on different entity types)
+  CREATE TABLE comments (
+      comment_id BIGSERIAL PRIMARY KEY,
+      commentable_type VARCHAR(50) NOT NULL CHECK (
+          commentable_type IN ('product', 'order', 'customer')
+      ),
+      commentable_id BIGINT NOT NULL,
+
+      -- Comment content
+      title VARCHAR(255),
+      content TEXT NOT NULL,
+      rating INTEGER CHECK (rating >= 1 AND rating <= 5),
+
+      -- Author information
+      author_id BIGINT REFERENCES customers(customer_id),
+      author_name VARCHAR(100), -- For guest comments
+      author_email VARCHAR(255), -- For guest comments
+
+      -- Moderation
+      is_approved BOOLEAN DEFAULT FALSE,
+      is_featured BOOLEAN DEFAULT FALSE,
+
+      -- Timestamps
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+
+      -- Ensure polymorphic integrity
+      CONSTRAINT comment_author_check CHECK (
+          (author_id IS NOT NULL) OR 
+          (author_name IS NOT NULL AND author_email IS NOT NULL)
+      )
+  );
+
+  -- Create indexes for polymorphic relationships
+  CREATE INDEX idx_comments_polymorphic ON comments(commentable_type, commentable_id);
+  CREATE INDEX idx_comments_approval_date ON comments(is_approved, created_at DESC);
+  ```
+
+  ### Data Integrity Constraints
+
+  **Advanced Constraint Implementation:**
+  ```sql
+  -- Complex business rule constraints
+  CREATE OR REPLACE FUNCTION validate_order_business_rules()
+  RETURNS TRIGGER AS $$
+  BEGIN
+      -- Validate order status transitions
+      IF OLD.order_status IS NOT NULL AND NEW.order_status != OLD.order_status THEN
+          -- Define valid status transitions
+          IF NOT (
+              (OLD.order_status = 'pending' AND NEW.order_status IN ('processing', 'cancelled')) OR
+              (OLD.order_status = 'processing' AND NEW.order_status IN ('shipped', 'cancelled')) OR
+              (OLD.order_status = 'shipped' AND NEW.order_status IN ('delivered', 'returned')) OR
+              (OLD.order_status = 'delivered' AND NEW.order_status = 'returned')
+          ) THEN
+              RAISE EXCEPTION 'Invalid order status transition from % to %', 
+                  OLD.order_status, NEW.order_status;
+          END IF;
+      END IF;
+
+      -- Validate order totals
+      IF NEW.total_amount != (NEW.subtotal + NEW.tax_amount + NEW.shipping_cost) THEN
+          RAISE EXCEPTION 'Order total amount does not match sum of components';
+      END IF;
+
+      -- Validate customer is active
+      IF NOT EXISTS (
+          SELECT 1 FROM customers 
+          WHERE customer_id = NEW.customer_id AND is_active = TRUE
+      ) THEN
+          RAISE EXCEPTION 'Cannot create order for inactive customer';
+      END IF;
+
+      RETURN NEW;
+  END;
+  $$ LANGUAGE plpgsql;
+
+  CREATE TRIGGER order_business_rules_trigger
+      BEFORE INSERT OR UPDATE ON orders
+      FOR EACH ROW EXECUTE FUNCTION validate_order_business_rules();
+
+  -- Inventory management constraints
+  CREATE OR REPLACE FUNCTION manage_product_inventory()
+  RETURNS TRIGGER AS $$
+  BEGIN
+      IF TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN
+          -- Check inventory availability
+          IF NEW.quantity > 0 THEN
+              DECLARE
+                  available_quantity INTEGER;
+              BEGIN
+                  SELECT (inventory_quantity - reserved_quantity) 
+                  INTO available_quantity
+                  FROM products 
+                  WHERE product_id = NEW.product_id;
+
+                  IF available_quantity < NEW.quantity THEN
+                      RAISE EXCEPTION 'Insufficient inventory for product ID %. Available: %, Requested: %',
+                          NEW.product_id, available_quantity, NEW.quantity;
+                  END IF;
+              END;
+          END IF;
+
+          RETURN NEW;
+      END IF;
+
+      RETURN NULL;
+  END;
+  $$ LANGUAGE plpgsql;
+
+  CREATE TRIGGER order_items_inventory_trigger
+      BEFORE INSERT OR UPDATE ON order_items
+      FOR EACH ROW EXECUTE FUNCTION manage_product_inventory();
+  ```
+
+  ## Document Database Modeling
+
+  ### MongoDB Schema Design Patterns
+
+  **Embedded vs. Referenced Data:**
+  ```javascript
+  // Product catalog with embedded reviews (one-to-few pattern)
+  {
+    "_id": ObjectId("..."),
+    "sku": "LAPTOP-001",
+    "name": "Professional Laptop",
+    "description": "High-performance laptop for professionals",
+    "category": {
+      "id": ObjectId("..."),
+      "name": "Electronics",
+      "path": ["electronics", "computers", "laptops"]
+    },
+    "pricing": {
+      "currency": "USD",
+      "listPrice": 1299.99,
+      "salePrice": 1199.99,
+      "costPrice": 800.00,
+      "priceHistory": [
+        {
+          "price": 1299.99,
+          "effectiveDate": ISODate("2024-01-01"),
+          "reason": "initial_price"
+        },
+        {
+          "price": 1199.99,
+          "effectiveDate": ISODate("2024-03-01"),
+          "reason": "promotion"
+        }
+      ]
+    },
+    "inventory": {
+      "quantity": 45,
+      "reserved": 5,
+      "available": 40,
+      "reorderLevel": 10,
+      "locations": [
+        {
+          "warehouse": "main",
+          "quantity": 30,
+          "reserved": 3
+        },
+        {
+          "warehouse": "west",
+          "quantity": 15,
+          "reserved": 2
+        }
+      ]
+    },
+    "specifications": {
+      "processor": "Intel i7-12700H",
+      "memory": "16GB DDR4",
+      "storage": "512GB SSD",
+      "display": "15.6\" FHD",
+      "weight": "2.1kg",
+      "dimensions": {
+        "length": 357,
+        "width": 234,
+        "height": 19.9,
+        "unit": "mm"
+      }
+    },
+    "reviews": {
+      "summary": {
+        "averageRating": 4.5,
+        "totalReviews": 127,
+        "distribution": {
+          "5": 78,
+          "4": 32,
+          "3": 12,
+          "2": 3,
+          "1": 2
+        }
+      },
+      "featured": [
+        {
+          "id": ObjectId("..."),
+          "rating": 5,
+          "title": "Excellent performance",
+          "content": "Great laptop for development work...",
+          "author": {
+            "id": ObjectId("..."),
+            "name": "John D.",
+            "verified": true
+          },
+          "createdAt": ISODate("2024-01-15"),
+          "helpful": 23
+        }
+      ]
+    },
+    "seo": {
+      "slug": "professional-laptop-i7",
+      "metaTitle": "Professional Laptop - High Performance Computing",
+      "metaDescription": "Discover our professional laptop with Intel i7 processor...",
+      "keywords": ["laptop", "professional", "intel", "i7", "development"]
+    },
+    "isActive": true,
+    "isFeatured": false,
+    "createdAt": ISODate("2024-01-01T00:00:00Z"),
+    "updatedAt": ISODate("2024-03-01T10:30:00Z")
+  }
+
+  // Customer profile with references to orders (one-to-many pattern)
+  {
+    "_id": ObjectId("..."),
+    "email": "john.doe@example.com",
+    "profile": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "dateOfBirth": ISODate("1985-06-15"),
+      "phone": "+1-555-123-4567",
+      "avatar": {
+        "url": "https://cdn.example.com/avatars/john.jpg",
+        "thumbnails": {
+          "small": "https://cdn.example.com/avatars/john_sm.jpg",
+          "medium": "https://cdn.example.com/avatars/john_md.jpg"
+        }
+      }
+    },
+    "preferences": {
+      "notifications": {
+        "email": true,
+        "sms": false,
+        "push": true,
+        "categories": ["orders", "promotions", "newsletters"]
+      },
+      "privacy": {
+        "profileVisible": true,
+        "showOnlineStatus": false,
+        "allowMarketing": true
+      },
+      "shopping": {
+        "preferredCategories": ["electronics", "books"],
+        "priceAlerts": true,
+        "wishlistPublic": false
+      }
+    },
+    "addresses": [
+      {
+        "type": "billing",
+        "isDefault": true,
+        "recipient": "John Doe",
+        "street": "123 Main St",
+        "city": "Anytown",
+        "state": "CA",
+        "postalCode": "12345",
+        "country": "US",
+        "instructions": "Leave at front door"
+      },
+      {
+        "type": "shipping",
+        "isDefault": false,
+        "recipient": "John Doe",
+        "company": "Tech Corp",
+        "street": "456 Business Ave",
+        "city": "Anytown",
+        "state": "CA",
+        "postalCode": "12346",
+        "country": "US"
+      }
+    ],
+    "loyaltyProgram": {
+      "tier": "gold",
+      "points": 15420,
+      "joinDate": ISODate("2023-01-15"),
+      "benefits": ["free_shipping", "early_access", "birthday_discount"]
+    },
+    "statistics": {
+      "totalOrders": 24,
+      "totalSpent": 5684.32,
+      "averageOrderValue": 236.85,
+      "lastOrderDate": ISODate("2024-02-15"),
+      "favoriteCategory": "electronics"
+    },
+    "authentication": {
+      "passwordHash": "$2b$12$...", // Handled securely
+      "lastLogin": ISODate("2024-03-01T15:30:00Z"),
+      "loginCount": 156,
+      "twoFactorEnabled": true
+    },
+    "isActive": true,
+    "emailVerified": true,
+    "phoneVerified": true,
+    "createdAt": ISODate("2023-01-15T00:00:00Z"),
+    "updatedAt": ISODate("2024-03-01T15:30:00Z")
+  }
+  ```
+
+  **Schema Validation in MongoDB:**
+  ```javascript
+  // Comprehensive schema validation
+  db.createCollection("products", {
+    validator: {
+      $jsonSchema: {
+        bsonType: "object",
+        required: ["sku", "name", "category", "pricing", "inventory"],
+        properties: {
+          sku: {
+            bsonType: "string",
+            pattern: "^[A-Z0-9-]{3,50}$",
+            description: "SKU must be 3-50 alphanumeric characters with dashes"
+          },
+          name: {
+            bsonType: "string",
+            minLength: 1,
+            maxLength: 255,
+            description: "Product name is required and must be 1-255 characters"
+          },
+          category: {
+            bsonType: "object",
+            required: ["id", "name", "path"],
+            properties: {
+              id: { bsonType: "objectId" },
+              name: { bsonType: "string" },
+              path: {
+                bsonType: "array",
+                items: { bsonType: "string" }
+              }
+            }
+          },
+          pricing: {
+            bsonType: "object",
+            required: ["currency", "listPrice"],
+            properties: {
+              currency: {
+                enum: ["USD", "EUR", "GBP", "JPY"],
+                description: "Currency must be a supported currency code"
+              },
+              listPrice: {
+                bsonType: "double",
+                minimum: 0,
+                description: "List price must be a non-negative number"
+              },
+              salePrice: {
+                bsonType: "double",
+                minimum: 0,
+                description: "Sale price must be a non-negative number"
+              }
+            }
+          },
+          inventory: {
+            bsonType: "object",
+            required: ["quantity", "available"],
+            properties: {
+              quantity: {
+                bsonType: "int",
+                minimum: 0,
+                description: "Quantity must be a non-negative integer"
+              },
+              available: {
+                bsonType: "int",
+                minimum: 0,
+                description: "Available quantity must be non-negative"
+              }
+            }
+          },
+          isActive: {
+            bsonType: "bool",
+            description: "Active status must be a boolean"
+          },
+          createdAt: {
+            bsonType: "date",
+            description: "Created date must be a valid date"
+          }
+        }
+      }
+    },
+    validationLevel: "strict",
+    validationAction: "error"
+  });
+
+  // Index creation for optimal query performance
+  db.products.createIndex({ "sku": 1 }, { unique: true });
+  db.products.createIndex({ "category.id": 1, "isActive": 1, "pricing.listPrice": 1 });
+  db.products.createIndex({ "name": "text", "description": "text" }, { 
+    weights: { "name": 10, "description": 1 },
+    name: "product_search_index"
+  });
+  db.products.createIndex({ "inventory.available": 1 });
+  db.products.createIndex({ "createdAt": -1 });
+  ```
+
+  ## Graph Database Modeling
+
+  ### Neo4j Relationship Modeling
+
+  **Social Commerce Graph Model:**
+  ```cypher
+  // Create node types with properties
+  CREATE CONSTRAINT customer_email IF NOT EXISTS FOR (c:Customer) REQUIRE c.email IS UNIQUE;
+  CREATE CONSTRAINT product_sku IF NOT EXISTS FOR (p:Product) REQUIRE p.sku IS UNIQUE;
+  CREATE CONSTRAINT category_slug IF NOT EXISTS FOR (cat:Category) REQUIRE cat.slug IS UNIQUE;
+
+  // Customer nodes
+  CREATE (c:Customer {
+    customerId: 'cust_001',
+    email: 'john.doe@example.com',
+    firstName: 'John',
+    lastName: 'Doe',
+    dateOfBirth: date('1985-06-15'),
+    createdAt: datetime(),
+    isActive: true
+  });
+
+  // Product nodes with rich attributes
+  CREATE (p:Product {
+    productId: 'prod_001',
+    sku: 'LAPTOP-001',
+    name: 'Professional Laptop',
+    description: 'High-performance laptop for professionals',
+    price: 1299.99,
+    category: 'Electronics',
+    brand: 'TechBrand',
+    model: 'Pro 15',
+    specifications: {
+      processor: 'Intel i7',
+      memory: '16GB',
+      storage: '512GB SSD'
+    },
+    createdAt: datetime(),
+    isActive: true
+  });
+
+  // Category hierarchy
+  CREATE (cat:Category {
+    categoryId: 'cat_001',
+    name: 'Electronics',
+    slug: 'electronics',
+    description: 'Electronic devices and accessories'
+  });
+
+  // Relationships with properties
+  CREATE (c)-[:PURCHASED {
+    orderId: 'order_001',
+    quantity: 1,
+    unitPrice: 1299.99,
+    totalPrice: 1299.99,
+    purchaseDate: datetime(),
+    orderStatus: 'completed'
+  }]->(p);
+
+  CREATE (c)-[:REVIEWED {
+    reviewId: 'review_001',
+    rating: 5,
+    title: 'Excellent laptop',
+    content: 'Great performance and build quality',
+    reviewDate: datetime(),
+    verified: true,
+    helpful: 23
+  }]->(p);
+
+  // Social relationships
+  CREATE (c1:Customer)-[:FOLLOWS {
+    followDate: datetime(),
+    notifications: true
+  }]->(c2:Customer);
+
+  CREATE (c)-[:ADDED_TO_WISHLIST {
+    addedDate: datetime(),
+    priority: 'high'
+  }]->(p);
+
+  // Complex queries leveraging graph structure
+  // Find customers who bought similar products
+  MATCH (c:Customer)-[:PURCHASED]->(p:Product)<-[:PURCHASED]-(similar:Customer)
+  WHERE c.customerId = 'cust_001' AND c <> similar
+  WITH similar, count(p) as commonPurchases
+  ORDER BY commonPurchases DESC
+  LIMIT 10
+  RETURN similar.firstName, similar.lastName, commonPurchases;
+
+  // Product recommendation based on purchase patterns
+  MATCH (c:Customer {customerId: 'cust_001'})-[:PURCHASED]->(p:Product),
+        (p)<-[:PURCHASED]-(other:Customer)-[:PURCHASED]->(rec:Product)
+  WHERE NOT (c)-[:PURCHASED]->(rec)
+  WITH rec, count(other) as purchaseCount
+  ORDER BY purchaseCount DESC
+  LIMIT 5
+  RETURN rec.name, rec.price, rec.category, purchaseCount;
+  ```
+
+  This comprehensive data modeling framework provides systematic approaches to designing data structures across different database paradigms while ensuring optimal performance, maintainability, and business rule compliance.

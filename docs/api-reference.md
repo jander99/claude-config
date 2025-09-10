@@ -4,8 +4,7 @@
 - [Python Package API](#python-package-api)
 - [CLI Command Reference](#cli-command-reference)
 - [Configuration Schema](#configuration-schema)
-- [Template API](#template-api)
-- [Validation Framework](#validation-framework)
+- [Template System](#template-system)
 
 ## Python Package API
 
@@ -14,34 +13,31 @@
 #### `claude_config.composer`
 
 **Class: `AgentComposer`**
-Main class for composing agents from YAML configurations and templates.
+Core templating engine for processing YAML agent definitions through Jinja2 templates.
 
 ```python
 class AgentComposer:
-    """Agent composition engine for generating agents from YAML configurations."""
+    """Simple templating engine for converting YAML to agent markdown."""
     
     def __init__(self, config_path: str, template_path: str) -> None:
-        """Initialize composer with configuration and template paths."""
+        """Initialize composer with YAML and template paths."""
     
-    def compose_agent(self, agent_name: str) -> str:
-        """Generate complete agent markdown from YAML configuration.
+    def generate_agent(self, agent_name: str) -> str:
+        """Generate agent markdown from YAML definition via template.
         
         Args:
-            agent_name: Name of agent to compose
+            agent_name: Name of agent to generate
             
         Returns:
-            Complete agent markdown as string
+            Agent markdown as string
             
         Raises:
-            AgentNotFoundError: If agent configuration doesn't exist
-            ValidationError: If YAML configuration is invalid
+            AgentNotFoundError: If YAML file doesn't exist
+            ValidationError: If YAML is invalid
         """
     
     def list_available_agents(self) -> List[str]:
-        """Return list of available agent names from configurations."""
-    
-    def validate_agent_config(self, agent_name: str) -> bool:
-        """Validate agent YAML configuration against schema."""
+        """Return list of available agents from YAML files."""
 ```
 
 **Usage Example:**
@@ -53,8 +49,8 @@ composer = AgentComposer(
     template_path="src/claude_config/templates"
 )
 
-# Generate agent
-agent_markdown = composer.compose_agent("python-engineer")
+# Generate agent markdown
+agent_markdown = composer.generate_agent("python-engineer")
 
 # List available agents  
 agents = composer.list_available_agents()
@@ -64,49 +60,39 @@ print(f"Available agents: {agents}")
 #### `claude_config.validator`
 
 **Class: `ConfigValidator`**
-Validates YAML configurations and ensures consistency across agents.
+Basic YAML syntax and structure validation.
 
 ```python
 class ConfigValidator:
-    """Validation framework for agent configurations."""
+    """Basic YAML validation for agent configurations."""
     
-    def __init__(self, schema_path: str) -> None:
-        """Initialize validator with schema definitions."""
+    def __init__(self) -> None:
+        """Initialize validator."""
     
-    def validate_persona_config(self, config: Dict[str, Any]) -> ValidationResult:
-        """Validate persona YAML configuration.
+    def validate_agent_yaml(self, yaml_path: str) -> ValidationResult:
+        """Validate agent YAML syntax and required fields.
         
         Args:
-            config: Parsed YAML configuration dictionary
+            yaml_path: Path to YAML file
             
         Returns:
-            ValidationResult with errors and warnings
+            ValidationResult with basic errors
         """
     
-    def validate_trait_config(self, config: Dict[str, Any]) -> ValidationResult:
-        """Validate trait YAML configuration."""
-    
-    def check_agent_boundaries(self, agents: List[Dict]) -> List[BoundaryConflict]:
-        """Check for overlapping agent responsibilities."""
-    
-    def validate_proactive_triggers(self, triggers: Dict) -> List[ValidationError]:
-        """Validate proactive trigger patterns for conflicts."""
+    def validate_required_fields(self, config: Dict[str, Any]) -> List[str]:
+        """Check for required fields in agent configuration."""
 ```
 
 **Usage Example:**
 ```python
 from claude_config.validator import ConfigValidator
-import yaml
 
-validator = ConfigValidator("data/schemas")
+validator = ConfigValidator()
 
-# Load and validate persona config
-with open("data/personas/python-engineer.yaml") as f:
-    config = yaml.safe_load(f)
-
-result = validator.validate_persona_config(config)
+# Validate agent YAML file
+result = validator.validate_agent_yaml("data/personas/python-engineer.yaml")
 if result.is_valid:
-    print("Configuration is valid")
+    print("YAML is valid")
 else:
     for error in result.errors:
         print(f"Error: {error}")
@@ -121,66 +107,44 @@ class ClaudeConfigError(Exception):
     """Base exception for claude-config package."""
 
 class AgentNotFoundError(ClaudeConfigError):
-    """Raised when requested agent configuration doesn't exist."""
+    """Raised when requested agent YAML file doesn't exist."""
 
 class ValidationError(ClaudeConfigError):
-    """Raised when YAML configuration fails validation."""
+    """Raised when YAML syntax or structure is invalid."""
     
-    def __init__(self, message: str, field: str = None):
-        self.field = field
-        super().__init__(message)
-
 class TemplateError(ClaudeConfigError):
     """Raised when template rendering fails."""
-
-class BoundaryConflictError(ClaudeConfigError):
-    """Raised when agent boundaries overlap inappropriately."""
 ```
 
 ### Data Models
 
 #### `claude_config.models`
 
-**Pydantic Models for Configuration**
+**Basic Models for YAML Configuration**
 
 ```python
-from pydantic import BaseModel, Field
 from typing import List, Dict, Optional
 
-class PersonaConfig(BaseModel):
-    """Schema for persona YAML configuration."""
+class AgentConfig:
+    """Basic YAML agent configuration."""
     
-    name: str = Field(..., description="Agent identifier")
-    display_name: str = Field(..., description="Human-readable name")
-    model: Literal["haiku", "sonnet", "opus"] = Field(..., description="Claude model tier")
-    description: str = Field(..., description="Agent purpose and capabilities")
-    
-    context_priming: str = Field(..., description="Mindset and thought patterns")
-    expertise: List[str] = Field(..., description="Technical expertise areas")
-    quality_criteria: Dict[str, List[str]] = Field(..., description="Quality standards")
-    decision_frameworks: Dict[str, Dict] = Field(..., description="Decision guidance")
-    boundaries: Dict[str, List[str]] = Field(..., description="Responsibility boundaries")
-    common_failures: Dict[str, List[str]] = Field(..., description="Known failure patterns")
-    
-    proactive_triggers: Optional[ProactiveTriggers] = Field(None, description="Auto-activation patterns")
-    content_sections: Optional[Dict[str, str]] = Field(None, description="Content file references")
-    custom_instructions: Optional[str] = Field(None, description="Additional instructions")
-    coordination_overrides: Optional[Dict[str, str]] = Field(None, description="Coordination customizations")
+    def __init__(self, yaml_data: Dict):
+        self.name = yaml_data['name']
+        self.display_name = yaml_data['display_name']
+        self.model = yaml_data['model']
+        self.description = yaml_data['description']
+        self.context_priming = yaml_data['context_priming']
+        self.responsibilities = yaml_data.get('responsibilities', [])
+        self.expertise = yaml_data.get('expertise', [])
+        self.proactive_triggers = yaml_data.get('proactive_triggers', {})
 
-class ProactiveTriggers(BaseModel):
-    """Proactive activation patterns."""
+class ValidationResult:
+    """Result of basic YAML validation."""
     
-    file_patterns: List[str] = Field(default_factory=list, description="File glob patterns")
-    project_indicators: List[str] = Field(default_factory=list, description="Project detection keywords")
-    dependency_patterns: List[str] = Field(default_factory=list, description="Package.json/requirements.txt patterns")
-
-class ValidationResult(BaseModel):
-    """Result of configuration validation."""
-    
-    is_valid: bool = Field(..., description="Overall validation status")
-    errors: List[str] = Field(default_factory=list, description="Critical validation errors")
-    warnings: List[str] = Field(default_factory=list, description="Non-critical warnings")
-    suggestions: List[str] = Field(default_factory=list, description="Improvement suggestions")
+    def __init__(self):
+        self.is_valid = True
+        self.errors = []
+        self.warnings = []
 ```
 
 ---
@@ -208,40 +172,16 @@ claude-config build
 
 # Build specific agent
 claude-config build --agent python-engineer
-
-# Build with validation enabled
-claude-config build --validate
-
-# Build to custom output directory
-claude-config build --output-dir /custom/path
-
-# Verbose build output
-claude-config build --verbose
-
-# Clean build (remove existing outputs)
-claude-config build --clean
 ```
 
 ### Validation Commands
 
 ```bash
-# Validate all configurations
+# Validate all YAML files
 claude-config validate
 
 # Validate specific agent
 claude-config validate --agent python-engineer
-
-# Schema validation only
-claude-config validate --schema-only
-
-# Check for agent boundary conflicts
-claude-config validate --check-boundaries
-
-# Validate proactive trigger patterns
-claude-config validate --check-triggers
-
-# Detailed validation output
-claude-config validate --verbose
 ```
 
 ### List Commands
@@ -249,60 +189,30 @@ claude-config validate --verbose
 ```bash
 # List all available agents
 claude-config list-agents
-
-# List agents by model tier
-claude-config list-agents --tier sonnet
-
-# List agents with descriptions
-claude-config list-agents --verbose
-
-# List available traits (future)
-claude-config list-traits
-
-# List content sections for agent
-claude-config list-content --agent python-engineer
 ```
 
 ### Installation Commands
 
 ```bash
-# Install to default Claude Code directory (~/.claude/)
+# Install to ~/.claude/ directory
 claude-config install
-
-# Install to custom directory
-claude-config install --target /custom/path
-
-# Dry run installation (show what would be installed)
-claude-config install --dry-run
-
-# Install with backup of existing files
-claude-config install --backup
-
-# Force installation (overwrite without confirmation)
-claude-config install --force
 ```
 
-### Development Commands
+### Help Commands
 
 ```bash
-# Watch for changes and rebuild
-claude-config watch
+# Show usage information
+claude-config --help
 
-# Start development server (future)
-claude-config serve
-
-# Generate documentation
-claude-config docs
-
-# Check system status
-claude-config status
+# Show command-specific help
+claude-config build --help
 ```
 
 ---
 
 ## Configuration Schema
 
-### Persona Configuration Schema
+### Agent Configuration Schema
 
 **File Location**: `data/personas/{agent-name}.yaml`
 
@@ -319,38 +229,13 @@ context_priming: |             # Multi-line string with agent mindset
   - "[thought pattern 1]"
   - "[thought pattern 2]"
 
+responsibilities:              # List of what agent handles
+- "Primary responsibility"
+- "Secondary responsibility"
+
 expertise:                     # List of technical expertise areas
 - "Technology 1 with specific frameworks"
 - "Technology 2 with specific tools"
-
-quality_criteria:              # Nested dictionary of quality standards
-  code_quality:
-  - "Standard 1 with measurable criteria"
-  - "Standard 2 with specific requirements"
-  performance:
-  - "Performance metric with target"
-  maintainability:
-  - "Maintainability requirement"
-
-decision_frameworks:           # Nested decision guidance
-  category_name:
-    option_1: "When to use option 1"
-    option_2: "When to use option 2"
-  architecture_patterns:
-    small_projects: "Guidance for small projects"
-    large_projects: "Guidance for large projects"
-
-boundaries:                    # Clear responsibility boundaries
-  do_handle:
-  - "Responsibility 1"
-  - "Responsibility 2"
-  coordinate_with:
-  - "other-agent: What to coordinate on"
-
-common_failures:               # Known failure patterns and solutions
-  failure_category:
-  - "Failure pattern (solution approach)"
-  - "Another failure (prevention strategy)"
 
 # Optional fields
 proactive_triggers:            # Auto-activation patterns
@@ -360,265 +245,116 @@ proactive_triggers:            # Auto-activation patterns
   project_indicators:
   - "Django"
   - "FastAPI"
-  dependency_patterns:
-  - "flask"
-  - "django"
-
-content_sections:              # External content file references
-  section_name: personas/{agent-name}/section-file.md
-
-custom_instructions: |         # Additional specific instructions
-  ## Custom Protocol
-  
-  Specific instructions that override defaults.
-
-coordination_overrides:        # Override default coordination patterns
-  testing_framework: "Custom testing approach"
-  deployment_strategy: "Custom deployment approach"
 ```
 
-### Trait Configuration Schema (Future)
 
-**File Location**: `data/traits/{category}/{trait-name}.yaml`
-
-```yaml
-name: string                   # Trait identifier
-category: string               # Trait category (safety, coordination, enhancement)
-display_name: string           # Human-readable name
-description: string            # Trait purpose
-
-implementation: |              # Multi-line implementation details
-  ## Trait Implementation
-  
-  Detailed implementation guidance.
-
-dependencies:                  # Other traits this depends on
-- trait-name-1
-- trait-name-2
-
-conflicts:                     # Traits that conflict with this one
-- conflicting-trait
-
-parameters:                    # Configurable parameters
-  parameter_name:
-    type: string|boolean|integer
-    default: value
-    description: "Parameter description"
-```
 
 ---
 
-## Template API
+## Template System
 
-### Jinja2 Template System
+### Jinja2 Template
 
-**Template Location**: `src/claude_config/templates/`
+**Template Location**: `src/claude_config/templates/agent.md.j2`
 
-#### Main Agent Template
-
-**File**: `agent.md.j2`
+Single template that converts YAML to agent markdown:
 
 ```jinja2
 ---
-name: {{ persona.name }}
-model: {{ persona.model }}
+name: {{ agent.name }}
+model: {{ agent.model }}
 ---
 
-# {{ persona.display_name }}
+# {{ agent.display_name }}
 
-{{ persona.description }}
+{{ agent.description }}
 
 ## Context Priming
 
-{{ persona.context_priming }}
+{{ agent.context_priming }}
 
-## Expertise
+## Responsibilities
 
-{% for item in persona.expertise %}
-- {{ item }}
-{% endfor %}
-
-## Quality Criteria
-
-{% for category, criteria in persona.quality_criteria.items() %}
-### {{ category | title }}
-{% for criterion in criteria %}
-- {{ criterion }}
-{% endfor %}
-{% endfor %}
-
-## Decision Frameworks
-
-{% for framework, options in persona.decision_frameworks.items() %}
-### {{ framework | title }}
-{% for option, guidance in options.items() %}
-**{{ option }}**: {{ guidance }}
-{% endfor %}
-{% endfor %}
-
-## Boundaries
-
-### Direct Responsibilities
-{% for responsibility in persona.boundaries.do_handle %}
+{% for responsibility in agent.responsibilities %}
 - {{ responsibility }}
 {% endfor %}
 
-### Coordination Points
-{% for coordination in persona.boundaries.coordinate_with %}
-- {{ coordination }}
+## Expertise
+
+{% for item in agent.expertise %}
+- {{ item }}
 {% endfor %}
 
-## Common Failures
-
-{% for category, failures in persona.common_failures.items() %}
-### {{ category | title }}
-{% for failure in failures %}
-- {{ failure }}
-{% endfor %}
-{% endfor %}
-
-{% if persona.proactive_triggers %}
+{% if agent.proactive_triggers %}
 ## Proactive Triggers
 
 ### File Patterns
-{% for pattern in persona.proactive_triggers.file_patterns %}
+{% for pattern in agent.proactive_triggers.file_patterns %}
 - `{{ pattern }}`
 {% endfor %}
 
 ### Project Indicators
-{% for indicator in persona.proactive_triggers.project_indicators %}
+{% for indicator in agent.proactive_triggers.project_indicators %}
 - {{ indicator }}
 {% endfor %}
 {% endif %}
-
-{% if persona.content_sections %}
-## Extended Content
-
-{% for section, file_path in persona.content_sections.items() %}
-### {{ section | title }}
-
-{% include file_path %}
-{% endfor %}
-{% endif %}
-
-{% if persona.custom_instructions %}
-{{ persona.custom_instructions }}
-{% endif %}
 ```
 
-#### Template Functions
+#### Basic Template Functions
 
-**Available Functions in Templates**:
+**Available in Templates**:
 
 ```jinja2
-# String formatting
+# Basic string formatting
 {{ value | title }}          # Title Case
 {{ value | upper }}          # UPPERCASE  
 {{ value | lower }}          # lowercase
-{{ value | kebab_case }}     # kebab-case
-{{ value | snake_case }}     # snake_case
 
 # List operations
 {{ items | join(", ") }}     # Join list with separator
-{{ items | length }}         # Get list length
-{{ items | sort }}           # Sort list
 
 # Conditional rendering
 {% if condition %}
 Content when true
 {% endif %}
 
+# Loop over lists
 {% for item in list %}
 - {{ item }}
 {% endfor %}
-
-# Template inheritance
-{% extends "base.md.j2" %}
-{% block content %}
-Agent-specific content
-{% endblock %}
-
-# Including other templates
-{% include "common/safety-protocols.md.j2" %}
 ```
 
 ---
 
-## Validation Framework
+### Basic Validation
 
-### Validation Rules
-
-#### Schema Validation
+#### Validation Rules
 - **YAML Syntax**: Must be valid YAML
-- **Required Fields**: All required fields must be present
-- **Field Types**: Fields must match expected types (string, list, dict)
+- **Required Fields**: name, display_name, model, description must be present
 - **Model Tier**: Must be one of haiku, sonnet, opus
-- **Name Format**: Agent names must be kebab-case
+- **Template Variables**: All variables must be resolvable
 
-#### Content Validation  
-- **File References**: Content section files must exist
-- **Template Variables**: All template variables must be resolvable
-- **Markdown Syntax**: Generated markdown must be valid
-
-#### Semantic Validation
-- **Boundary Conflicts**: Agents shouldn't have overlapping responsibilities
-- **Trigger Conflicts**: File patterns shouldn't conflict between agents
-- **Coordination Integrity**: Referenced agents in coordination must exist
-- **Quality Criteria**: Must be specific and measurable
-
-### Validation Commands
+#### Validation Commands
 
 ```bash
-# Run full validation suite
-make validate
+# Validate all agents
+claude-config validate
 
-# Individual validation types
-claude-config validate --schema              # YAML structure only
-claude-config validate --content             # Content file existence
-claude-config validate --semantic            # Boundary and trigger conflicts
-claude-config validate --template            # Template rendering
+# Validate specific agent
+claude-config validate --agent python-engineer
 ```
 
-### Validation Output Example
+#### Validation Output Example
 
 ```
-✅ Schema validation passed (25/25 agents)
-✅ Content validation passed (all referenced files exist)  
-❌ Semantic validation failed:
-  - Boundary conflict: python-engineer and ai-engineer both handle "API development"
-  - Trigger conflict: *.py pattern matches both python-engineer and ai-engineer
-⚠️  Template warnings:
-  - mobile-engineer.yaml: Referenced content file not found: platform-expertise.md
+✅ YAML syntax validation passed (25/25 agents)
+❌ Required field validation failed:
+  - mobile-engineer.yaml: Missing 'responsibilities' field
+  - data-engineer.yaml: Empty 'expertise' field
 
 Validation Summary:
 - 23 agents valid
-- 2 agents with conflicts  
-- 1 agent with warnings
-- 0 critical errors
-```
-
-### Custom Validation Rules
-
-**Extending Validation**:
-
-```python
-from claude_config.validator import ConfigValidator, ValidationRule
-
-class CustomRule(ValidationRule):
-    """Custom validation rule example."""
-    
-    def validate(self, config: Dict) -> List[ValidationError]:
-        errors = []
-        
-        # Custom validation logic
-        if "custom_field" in config and not config["custom_field"]:
-            errors.append(ValidationError("Custom field cannot be empty"))
-            
-        return errors
-
-# Register custom rule
-validator = ConfigValidator()
-validator.add_rule(CustomRule())
+- 2 agents with errors
 ```
 
 ---
@@ -628,30 +364,15 @@ validator.add_rule(CustomRule())
 ### Common Errors and Solutions
 
 #### `AgentNotFoundError`
-**Cause**: Requested agent configuration file doesn't exist
+**Cause**: Requested agent YAML file doesn't exist
 **Solution**: Check available agents with `claude-config list-agents`
 
 #### `ValidationError`
-**Cause**: YAML configuration doesn't match schema
+**Cause**: YAML syntax or required fields invalid
 **Solution**: Run `claude-config validate --agent <name>` for specific errors
 
 #### `TemplateError`  
 **Cause**: Template rendering failed due to missing variables
-**Solution**: Check template variables match configuration fields
+**Solution**: Check YAML fields match template expectations
 
-#### `BoundaryConflictError`
-**Cause**: Multiple agents claim the same responsibilities
-**Solution**: Run `claude-config validate --check-boundaries` to identify conflicts
-
-### Debug Mode
-
-```bash
-# Enable detailed error output
-claude-config build --debug
-
-# Enable verbose logging
-export CLAUDE_CONFIG_LOG_LEVEL=DEBUG
-claude-config build
-```
-
-This API reference provides comprehensive documentation for all aspects of the claude-config system, enabling developers to effectively use, extend, and contribute to the project.
+This API reference documents the simplified claude-config templating tool for generating Claude Code agent configurations.
