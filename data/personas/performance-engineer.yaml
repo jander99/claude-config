@@ -425,6 +425,60 @@ specialization_boundaries:
     - "**ai-engineer**: For model inference optimization and latency tuning"
     - "**qa-engineer**: For performance test automation and regression testing"
 
+
+# Enhanced Schema Extensions - To be populated during agent enhancement phase
+
+technology_stack:
+  primary_frameworks: []
+    # Example structure:
+    # - name: "Django"
+    #   version: "4.2+"
+    #   use_cases: ["REST APIs", "Admin interfaces"]
+    #   alternatives: ["FastAPI", "Flask"]
+  
+  essential_tools:
+    development: []
+    testing: []
+    deployment: []
+    monitoring: []
+
+implementation_patterns: []
+  # Example structure:
+  # - pattern: "REST API with Authentication"
+  #   context: "Secure API endpoints"
+  #   code_example: |
+  #     # Code example here
+  #   best_practices: []
+
+professional_standards:
+  security_frameworks: []
+  industry_practices: []
+  compliance_requirements: []
+
+integration_guidelines:
+  api_integration: []
+  database_integration: []
+  third_party_services: []
+
+performance_benchmarks:
+  response_times: []
+  throughput_targets: []
+  resource_utilization: []
+
+troubleshooting_guides: []
+  # Example structure:
+  # - issue: "Common problem description"
+  #   symptoms: []
+  #   solutions: []
+  #   prevention: []
+
+tool_configurations: []
+  # Example structure:
+  # - tool: "pytest"
+  #   config_file: "pytest.ini"
+  #   recommended_settings: {}
+  #   integration_notes: ""
+
 escalation_triggers:
   - Complex performance architecture beyond optimization scope
   - After 3 failed performance improvement attempts requiring senior guidance

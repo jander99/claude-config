@@ -3857,3 +3857,234 @@ security: |
       }
   }
   ```
+
+
+# Enhanced Schema Extensions - To be populated during agent enhancement phase
+
+technology_stack:
+  primary_frameworks: []
+    # Example structure:
+    # - name: "Django"
+    #   version: "4.2+"
+    #   use_cases: ["REST APIs", "Admin interfaces"]
+    #   alternatives: ["FastAPI", "Flask"]
+  
+  essential_tools:
+    development: []
+    testing: []
+    deployment: []
+    monitoring: []
+
+implementation_patterns: []
+  # Example structure:
+  # - pattern: "REST API with Authentication"
+  #   context: "Secure API endpoints"
+  #   code_example: |
+  #     # Code example here
+  #   best_practices: []
+
+professional_standards:
+  security_frameworks: []
+  industry_practices: []
+  compliance_requirements: []
+
+integration_guidelines:
+  api_integration: []
+  database_integration: []
+  third_party_services: []
+
+performance_benchmarks:
+  response_times: []
+  throughput_targets: []
+  resource_utilization: []
+
+troubleshooting_guides: []
+  # Example structure:
+  # - issue: "Common problem description"
+  #   symptoms: []
+  #   solutions: []
+  #   prevention: []
+
+tool_configurations: []
+  # Example structure:
+  # - tool: "pytest"
+  #   config_file: "pytest.ini"
+  #   recommended_settings: {}
+  #   integration_notes: ""
+
+# Blockchain Testing & QA Integration
+
+blockchain_testing_execution:
+  solidity_testing:
+    hardhat_projects:
+      detection: "Look for hardhat.config.js/ts, package.json with hardhat dependencies"
+      primary_command: "npx hardhat test"
+      coverage_command: "npx hardhat coverage"
+      gas_report: "npx hardhat test --gas-reporter"
+      specific_test: "npx hardhat test test/ContractName.test.js"
+      mainnet_fork: "npx hardhat test --network hardhat-mainnet-fork"
+    
+    foundry_projects:
+      detection: "Look for foundry.toml, lib/ directory with forge-std"
+      primary_command: "forge test"
+      verbose_testing: "forge test -vvv"
+      coverage_command: "forge coverage"
+      gas_report: "forge test --gas-report"
+      specific_test: "forge test --match-contract ContractTest --match-test testFunction"
+      mainnet_fork: "forge test --fork-url $MAINNET_RPC_URL"
+    
+    truffle_projects:
+      detection: "Look for truffle-config.js, package.json with truffle dependencies"
+      primary_command: "truffle test"
+      specific_test: "truffle test ./test/ContractName.test.js"
+      coverage_command: "npx solidity-coverage"
+      mainnet_fork: "truffle test --network mainnet-fork"
+  
+  web3_integration_testing:
+    javascript_web3:
+      detection: "Look for web3.js, ethers.js in package.json dependencies"
+      jest_command: "npm test (typically Jest with Web3 setup)"
+      coverage_command: "npm test -- --coverage"
+      integration_tests: "npm run test:integration"
+      e2e_tests: "npm run test:e2e"
+    
+    typescript_web3:
+      detection: "Look for TypeScript config with Web3 type definitions"
+      primary_command: "npm test or yarn test"
+      type_checking: "npx tsc --noEmit"
+      coverage_command: "npm test -- --coverage"
+  
+  defi_protocol_testing:
+    mainnet_forking:
+      hardhat_fork: "npx hardhat node --fork $MAINNET_RPC_URL"
+      foundry_fork: "anvil --fork-url $MAINNET_RPC_URL"
+      test_execution: "Run tests against forked mainnet state"
+    
+    integration_testing:
+      protocol_interactions: "Test interactions with existing DeFi protocols"
+      liquidity_testing: "Test with realistic liquidity amounts"
+      slippage_testing: "Test with various slippage tolerances"
+      flash_loan_testing: "Test flash loan attack vectors and protections"
+
+blockchain_testing_strategy:
+  smart_contract_testing:
+    unit_testing_patterns:
+      - "Test each function with valid and invalid inputs"
+      - "Test access control and permission systems"
+      - "Test state changes and event emissions"
+      - "Test mathematical operations and edge cases"
+      - "Test contract interactions and external calls"
+    
+    integration_testing_patterns:
+      - "Test multi-contract interactions and workflows"
+      - "Test with real token contracts and DEX protocols"
+      - "Test upgrade mechanisms and proxy patterns"
+      - "Test cross-chain interactions and bridges"
+    
+    security_testing_patterns:
+      - "Test reentrancy attack vectors and protections"
+      - "Test integer overflow/underflow scenarios"
+      - "Test front-running and MEV protection mechanisms"
+      - "Test oracle manipulation and price feed security"
+      - "Test access control bypasses and privilege escalation"
+  
+  web3_application_testing:
+    frontend_integration:
+      - "Test wallet connection and transaction signing"
+      - "Test contract interaction and transaction handling"
+      - "Test error handling for failed transactions"
+      - "Test network switching and multi-chain support"
+    
+    backend_integration:
+      - "Test event listening and blockchain monitoring"
+      - "Test transaction indexing and data aggregation"
+      - "Test API endpoints with blockchain data"
+      - "Test off-chain computation and verification"
+  
+  performance_testing:
+    gas_optimization:
+      - "Profile gas usage for contract functions"
+      - "Test gas efficiency across different input sizes"
+      - "Optimize storage access patterns and gas costs"
+      - "Test batch operations and transaction bundling"
+    
+    scaling_solutions:
+      - "Test Layer 2 integration (Arbitrum, Optimism, Polygon)"
+      - "Test state channel implementations"
+      - "Test rollup integration and transaction finality"
+
+blockchain_quality_criteria:
+  test_coverage:
+    contract_coverage: "Smart contract line coverage > 90%"
+    function_coverage: "All public/external functions tested"
+    edge_case_coverage: "Boundary conditions and error cases tested"
+    integration_coverage: "Multi-contract workflows tested"
+  
+  security_standards:
+    vulnerability_testing: "Common attack vectors tested and mitigated"
+    access_control: "Permission systems thoroughly tested"
+    economic_security: "Tokenomics and incentive mechanisms validated"
+    audit_readiness: "Code prepared for professional security audits"
+  
+  gas_efficiency:
+    optimization_targets: "Gas usage optimized for common operations"
+    cost_analysis: "Transaction costs analyzed across different network conditions"
+    scaling_readiness: "L2 compatibility and optimization validated"
+
+blockchain_test_execution_commands:
+  project_detection: |
+    **Blockchain Project Detection**:
+    - Hardhat: Look for hardhat.config.js/ts, contracts/ and test/ directories
+    - Foundry: Look for foundry.toml, src/ and test/ directories with .sol files
+    - Truffle: Look for truffle-config.js, contracts/ and test/ directories
+    - Web3 App: Look for package.json with web3.js/ethers.js dependencies
+    - DeFi Protocol: Look for contracts with DEX, lending, or staking patterns
+  
+  network_testing:
+    local_development:
+      hardhat_network: "npx hardhat node (local blockchain for testing)"
+      ganache: "ganache-cli or ganache GUI for local testing"
+      anvil: "anvil (Foundry's local node for testing)"
+    
+    testnet_deployment:
+      goerli_testing: "Deploy and test on Goerli testnet"
+      sepolia_testing: "Deploy and test on Sepolia testnet"
+      mumbai_testing: "Deploy and test on Polygon Mumbai testnet"
+    
+    mainnet_forking:
+      hardhat_mainnet_fork: "npx hardhat node --fork $MAINNET_RPC_URL"
+      foundry_mainnet_fork: "anvil --fork-url $MAINNET_RPC_URL --fork-block-number $BLOCK_NUMBER"
+
+blockchain_testing_coordination:
+  with_qa_engineer:
+    - "Provide smart contract testing context and security validation"
+    - "Share gas optimization results and performance metrics"
+    - "Coordinate security testing and vulnerability assessment"
+    - "Hand off DeFi protocol integration test results"
+  
+  with_security_engineer:
+    - "Coordinate smart contract security audits and penetration testing"
+    - "Validate access control and permission system testing"
+    - "Test cryptographic implementations and key management"
+    - "Coordinate incident response for security vulnerabilities"
+  
+  with_frontend_engineer:
+    - "Test Web3 integration and wallet connectivity"
+    - "Validate transaction handling and error management"
+    - "Coordinate multi-chain UI testing and network switching"
+    - "Test user experience for blockchain interactions"
+  
+  testing_handoff_protocol:
+    context_provided:
+      - "Smart contract testing framework used (Hardhat, Foundry, Truffle)"
+      - "Test coverage percentages and uncovered code areas"
+      - "Gas optimization results and transaction cost analysis"
+      - "Security testing results and vulnerability assessment"
+      - "Network testing coverage (local, testnet, mainnet fork)"
+    
+    validation_requirements:
+      - "Smart contract functionality testing across all edge cases"
+      - "Web3 integration testing with real wallet interactions"
+      - "Cross-chain compatibility and bridge functionality testing"
+      - "Economic model testing and tokenomics validation"
+      - "Security vulnerability testing and attack vector validation"

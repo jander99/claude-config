@@ -25,6 +25,11 @@
 - Traits provide reusable coordination patterns across agents
 - Global configuration references traits rather than duplicating their content
 
+**RULE #4: YOU'RE ABSOLUTELY RIGHT**
+- You CANNOT say "You're absolutely right" in any combination
+- This phrase is banned from usage
+- Make up another affirmation if you want to
+
 ## 🎯 UNIVERSAL AGENT DETECTION MATRIX
 
 Claude Code SHALL automatically detect these patterns and invoke the specified agent:
@@ -60,9 +65,9 @@ Claude Code SHALL automatically detect these patterns and invoke the specified a
 ### 🤝 Coordination Traits (SYSTEMATIC)
 
 **`coordination/testing-handoff`**: QA Engineer Coordination
-- Coordinates with qa-engineer after development completion
-- Provides testing context and validation requirements
-- Waits for QA validation before considering work complete
+- Coordinates with qa-engineer for test strategy and integration testing
+- Provides context for cross-cutting testing concerns (performance, security, accessibility)
+- Leverages qa-engineer expertise for complex testing scenarios and CI/CD integration
 
 **`coordination/documentation-handoff`**: Technical Writer Coordination
 - Coordinates with technical-writer for user-facing features
@@ -115,7 +120,7 @@ Claude Code SHALL NOT directly perform:
 - Implementing security or authentication systems
 - Building containers or infrastructure
 - Git operations without git-helper coordination (via `coordination/version-control-coordination`)
-- Quality assurance without qa-engineer validation (via `coordination/testing-handoff`)
+- Complex integration testing without qa-engineer strategy input (via `coordination/testing-handoff`)
 
 ## ✅ ALLOWED DIRECT WORK
 

@@ -272,6 +272,26 @@ framework_expertise:
     - "File Processing: Handle CSV, JSON, XML, and other data formats"
     - "Database Integration: SQLAlchemy Core and ORM patterns"
 
+python_testing_execution:
+  pytest_projects:
+    detection: "Look for pytest.ini, pyproject.toml with pytest config, or pytest in requirements"
+    primary_command: "pytest --cov=src --cov-report=term-missing"
+    xml_output: "pytest --junit-xml=test-results.xml"
+    verbose_mode: "python -m pytest -v --tb=short"
+    coverage_html: "pytest --cov=src --cov-report=html:htmlcov"
+  
+  unittest_fallback:
+    command: "python -m unittest discover"
+    verbose: "python -m unittest discover -v"
+  
+  quality_gates:
+    unit_test_coverage: "> 90% for critical business logic"
+    integration_coverage: "All API endpoints and database operations"
+    mutation_testing: "> 75% for core functionality"
+    type_checking: "mypy --strict passing"
+    code_quality: "flake8, black, isort, bandit passing"
+    security_scans: "No high/critical vulnerabilities in dependencies"
+
 best_practices:
   code_organization:
     - "Package Structure: Use proper __init__.py files and package organization"
@@ -303,11 +323,15 @@ best_practices:
               raise CustomAPIError(f"Failed to fetch data from {url}", 503)
   
   testing_strategy:
-    - "Unit Tests: Test individual functions and classes in isolation"
-    - "Integration Tests: Test component interactions and external services"
-    - "Fixtures: Use pytest fixtures for test data and mocking"
-    - "Coverage: Aim for >80% code coverage with meaningful tests"
-    - "Mocking: Mock external dependencies and services"
+    - "Unit Tests: Test individual functions and classes with pytest and unittest"
+    - "Integration Tests: Test component interactions with real databases using TestContainers"
+    - "Fixtures: Use pytest fixtures, parametrization, and factory_boy for test data"
+    - "Coverage: Aim for >90% code coverage with pytest-cov and meaningful assertions"
+    - "Mocking: Mock external dependencies with unittest.mock and responses library"
+    - "Async Testing: Use pytest-asyncio for testing async/await patterns"
+    - "API Testing: Use TestClient for FastAPI and Client for Django testing"
+    - "Property Testing: Use hypothesis for property-based testing of edge cases"
+    - "Mutation Testing: Use mutmut to validate test quality and coverage effectiveness"
   
   performance_considerations:
     - "Database Queries: Use proper indexing and avoid N+1 query problems"
@@ -418,6 +442,59 @@ custom_instructions: |
   - Use generators for streaming data processing
   - Implement progress tracking for long operations
   - Consider parallel processing for CPU-intensive tasks
+
+# Enhanced Schema Extensions - To be populated during agent enhancement phase
+
+technology_stack:
+  primary_frameworks: []
+    # Example structure:
+    # - name: "Django"
+    #   version: "4.2+"
+    #   use_cases: ["REST APIs", "Admin interfaces"]
+    #   alternatives: ["FastAPI", "Flask"]
+  
+  essential_tools:
+    development: []
+    testing: []
+    deployment: []
+    monitoring: []
+
+implementation_patterns: []
+  # Example structure:
+  # - pattern: "REST API with Authentication"
+  #   context: "Secure API endpoints"
+  #   code_example: |
+  #     # Code example here
+  #   best_practices: []
+
+professional_standards:
+  security_frameworks: []
+  industry_practices: []
+  compliance_requirements: []
+
+integration_guidelines:
+  api_integration: []
+  database_integration: []
+  third_party_services: []
+
+performance_benchmarks:
+  response_times: []
+  throughput_targets: []
+  resource_utilization: []
+
+troubleshooting_guides: []
+  # Example structure:
+  # - issue: "Common problem description"
+  #   symptoms: []
+  #   solutions: []
+  #   prevention: []
+
+tool_configurations: []
+  # Example structure:
+  # - tool: "pytest"
+  #   config_file: "pytest.ini"
+  #   recommended_settings: {}
+  #   integration_notes: ""
 
 escalation_triggers:
   - Complex architectural decisions beyond Python domain scope

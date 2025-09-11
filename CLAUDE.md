@@ -293,8 +293,8 @@ Agents follow a hierarchical coordination model with clear handoff protocols and
 ### Primary Coordination Flows
 
 **Development Workflow Pattern:**
-1. **Feature Development**: Specialist agents (python-engineer, frontend-engineer, etc.) implement features
-2. **Quality Gates**: qa-engineer validates functionality and performance
+1. **Feature Development**: Specialist agents (python-engineer, frontend-engineer, etc.) implement features with language-specific unit testing
+2. **Integration & Strategy**: qa-engineer provides test strategy, integration testing, and cross-cutting quality concerns
 3. **Documentation**: technical-writer creates user guides and API docs
 4. **Version Control**: git-helper manages branches, merges, and releases
 
@@ -323,7 +323,7 @@ Agents follow a hierarchical coordination model with clear handoff protocols and
 3. database-engineer: PostgreSQL schema design and optimization
 4. security-engineer: Authentication security and data protection
 5. devops-engineer: Docker containerization and deployment
-6. qa-engineer: End-to-end testing across the stack
+6. qa-engineer: Integration testing strategy and cross-stack validation
 7. technical-writer: API documentation and user guides
 8. git-helper: Branch management and PR workflows
 ```
@@ -344,7 +344,7 @@ Agents follow a hierarchical coordination model with clear handoff protocols and
 3. ai-engineer: Model architecture and training implementation
 4. quant-analyst: Financial metrics integration and validation
 5. python-engineer: Model serving infrastructure
-6. qa-engineer: Model testing and validation pipelines
+6. qa-engineer: ML testing strategy and validation pipeline design
 7. technical-writer: Model documentation and API guides
 ```
 

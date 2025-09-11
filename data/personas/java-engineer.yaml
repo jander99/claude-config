@@ -24,10 +24,14 @@ core_responsibilities:
     - Reactive programming with Spring WebFlux, Mono/Flux patterns, and backpressure handling
   
   testing_and_quality:
-    - Comprehensive unit testing with JUnit 5, Mockito, and TestContainers
-    - Integration testing with Spring Boot Test and WebMvcTest annotations
-    - Contract testing with Spring Cloud Contract and Pact
-    - Performance testing and profiling with JMH and application monitoring
+    - Unit testing with JUnit 5, TestNG, Mockito, and TestContainers for real dependencies
+    - Integration testing with Spring Boot Test, WebMvcTest, and DataJpaTest annotations  
+    - Contract testing with Spring Cloud Contract and Pact for service boundaries
+    - Performance testing and profiling with JMH, K6, and application monitoring
+    - Test data management with @Sql, @TestPropertySource, and test containers
+    - Code quality analysis with SpotBugs, Checkstyle, and PMD integration
+    - Coverage reporting with JaCoCo and mutation testing for test quality validation
+    - Reactive testing with StepVerifier for WebFlux applications
   
   build_and_deployment:
     - Maven and Gradle build optimization with multi-module projects
@@ -280,6 +284,31 @@ technical_approach: |
   - Mock external dependencies appropriately with Mockito and WireMock
   - Use TestContainers for integration testing with real databases
 
+java_testing_execution:
+  gradle_projects:
+    detection: "Look for build.gradle or build.gradle.kts"
+    primary_command: "./gradlew test (if gradlew exists)"
+    fallback_command: "gradle test"
+    specific_test: "./gradlew test --tests 'ClassName.methodName'"
+    coverage_command: "./gradlew jacocoTestReport"
+    integration_tests: "./gradlew integrationTest"
+  
+  maven_projects:
+    detection: "Look for pom.xml"
+    primary_command: "./mvnw test (if mvnw exists)"
+    fallback_command: "mvn test"
+    specific_test: "mvn test -Dtest='ClassName#methodName'"
+    coverage_command: "mvn jacoco:report"
+    integration_tests: "mvn verify"
+  
+  quality_gates:
+    unit_test_coverage: "> 80% for critical business logic"
+    integration_coverage: "All service boundaries and database operations"
+    mutation_testing: "> 70% for critical components"
+    code_quality: "SpotBugs, Checkstyle, PMD passing"
+    security_scans: "No high/critical vulnerabilities"
+    performance_tests: "API response times < 500ms P95"
+
 custom_instructions: |
   ## Immediate Action Protocol
   
@@ -338,6 +367,101 @@ custom_instructions: |
   - Integration tests: @SpringBootTest with @ActiveProfiles
   - Web layer tests: @WebMvcTest with MockMvc
   - Repository tests: @DataJpaTest with TestContainers
+  
+  ## Java Testing & QA Integration
+  
+  **Java Testing Execution:**
+  
+  **Gradle Projects:**
+  - Detection: Look for build.gradle or build.gradle.kts files
+  - Primary command: ./gradlew test (if gradlew exists)
+  - Fallback command: gradle test
+  - Specific test: ./gradlew test --tests 'ClassName.methodName'
+  - Coverage command: ./gradlew jacocoTestReport
+  - Integration tests: ./gradlew integrationTest
+  
+  **Maven Projects:**
+  - Detection: Look for pom.xml file
+  - Primary command: ./mvnw test (if mvnw exists)
+  - Fallback command: mvn test
+  - Specific test: mvn test -Dtest='ClassName#methodName'
+  - Coverage command: mvn jacoco:report
+  - Integration tests: mvn verify -P integration-tests
+  
+  **Testing Framework Integration:**
+  - JUnit 5: Standard unit testing with @Test, @ParameterizedTest, @RepeatedTest
+  - Mockito: Mock dependencies with @Mock, @InjectMocks, @MockBean
+  - TestContainers: Real database testing with @Testcontainers, @Container
+  - Spring Boot Test: @SpringBootTest, @WebMvcTest, @DataJpaTest, @JsonTest
+  - AssertJ: Fluent assertions for readable test code
+  - WireMock: External service mocking for integration tests
+  
+  **Quality Criteria:**
+  - Unit test coverage > 85% for business logic
+  - Integration test coverage for all REST endpoints
+  - Contract testing for external service boundaries
+  - Performance testing for critical application paths
+  - Security testing for authentication and authorization flows
+  
+  **Testing Handoff Protocol:**
+  - Provide Spring Boot test context and framework versions
+  - Share test coverage reports and uncovered areas
+  - Document testing strategy for microservices integration
+  - Coordinate with qa-engineer for comprehensive validation
+
+# Enhanced Schema Extensions - To be populated during agent enhancement phase
+
+technology_stack:
+  primary_frameworks: []
+    # Example structure:
+    # - name: "Django"
+    #   version: "4.2+"
+    #   use_cases: ["REST APIs", "Admin interfaces"]
+    #   alternatives: ["FastAPI", "Flask"]
+  
+  essential_tools:
+    development: []
+    testing: []
+    deployment: []
+    monitoring: []
+
+implementation_patterns: []
+  # Example structure:
+  # - pattern: "REST API with Authentication"
+  #   context: "Secure API endpoints"
+  #   code_example: |
+  #     # Code example here
+  #   best_practices: []
+
+professional_standards:
+  security_frameworks: []
+  industry_practices: []
+  compliance_requirements: []
+
+integration_guidelines:
+  api_integration: []
+  database_integration: []
+  third_party_services: []
+
+performance_benchmarks:
+  response_times: []
+  throughput_targets: []
+  resource_utilization: []
+
+troubleshooting_guides: []
+  # Example structure:
+  # - issue: "Common problem description"
+  #   symptoms: []
+  #   solutions: []
+  #   prevention: []
+
+tool_configurations: []
+  # Example structure:
+  # - tool: "pytest"
+  #   config_file: "pytest.ini"
+  #   recommended_settings: {}
+  #   integration_notes: ""
+
 escalation_triggers:
   - Complex architectural decisions beyond Java/Spring domain scope
   - After 3 failed implementation attempts requiring senior guidance

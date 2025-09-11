@@ -225,3 +225,258 @@ success_metrics:
     - User acquisition cost (UAC) efficiency through ASO optimization
     - Feature adoption rates and user engagement improvements
     - Revenue impact from mobile-specific features and optimizations
+
+
+# Enhanced Schema Extensions - To be populated during agent enhancement phase
+
+technology_stack:
+  primary_frameworks: []
+    # Example structure:
+    # - name: "Django"
+    #   version: "4.2+"
+    #   use_cases: ["REST APIs", "Admin interfaces"]
+    #   alternatives: ["FastAPI", "Flask"]
+  
+  essential_tools:
+    development: []
+    testing: []
+    deployment: []
+    monitoring: []
+
+implementation_patterns: []
+  # Example structure:
+  # - pattern: "REST API with Authentication"
+  #   context: "Secure API endpoints"
+  #   code_example: |
+  #     # Code example here
+  #   best_practices: []
+
+professional_standards:
+  security_frameworks: []
+  industry_practices: []
+  compliance_requirements: []
+
+integration_guidelines:
+  api_integration: []
+  database_integration: []
+  third_party_services: []
+
+performance_benchmarks:
+  response_times: []
+  throughput_targets: []
+  resource_utilization: []
+
+troubleshooting_guides: []
+  # Example structure:
+  # - issue: "Common problem description"
+  #   symptoms: []
+  #   solutions: []
+  #   prevention: []
+
+tool_configurations: []
+  # Example structure:
+  # - tool: "pytest"
+  #   config_file: "pytest.ini"
+  #   recommended_settings: {}
+  #   integration_notes: ""
+
+# Mobile Testing & QA Integration
+
+mobile_testing_execution:
+  ios_testing:
+    xcode_unit_tests:
+      detection: "Look for .xcodeproj/.xcworkspace and XCTest framework usage"
+      primary_command: "xcodebuild test -scheme SchemeName -destination 'platform=iOS Simulator,name=iPhone 14'"
+      specific_test: "xcodebuild test -scheme SchemeName -only-testing:TargetName/TestClassName/testMethodName"
+      coverage_command: "xcodebuild test -scheme SchemeName -enableCodeCoverage YES"
+      device_testing: "xcodebuild test -scheme SchemeName -destination 'platform=iOS,name=DeviceName'"
+    
+    swift_testing:
+      unit_tests: "swift test (for Swift Package Manager projects)"
+      coverage_report: "swift test --enable-code-coverage"
+      parallel_testing: "swift test --parallel"
+    
+    ui_testing:
+      xcui_tests: "XCUITest framework for iOS UI automation"
+      primary_command: "xcodebuild test -scheme SchemeName -testPlan UITestPlan"
+      specific_ui_test: "xcodebuild test -scheme SchemeName -only-testing:UITargetName"
+  
+  android_testing:
+    unit_tests:
+      detection: "Look for build.gradle with testImplementation dependencies"
+      gradle_command: "./gradlew test or ./gradlew testDebugUnitTest"
+      specific_test: "./gradlew test --tests 'com.example.TestClass.testMethod'"
+      coverage_command: "./gradlew jacocoTestReport"
+      robolectric: "./gradlew testDebugUnitTest (for Robolectric shadow testing)"
+    
+    instrumented_tests:
+      espresso_command: "./gradlew connectedAndroidTest"
+      specific_test: "./gradlew connectedAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.example.TestClass"
+      device_testing: "adb shell am instrument -w -e class com.example.TestClass com.example.test/androidx.test.runner.AndroidJUnitRunner"
+    
+    ui_testing:
+      espresso_tests: "Espresso framework for Android UI testing"
+      uiautomator_tests: "UI Automator for cross-app Android testing"
+  
+  react_native_testing:
+    unit_testing:
+      detection: "Look for package.json with react-native and testing dependencies"
+      jest_command: "npm test or yarn test (typically Jest with React Native preset)"
+      coverage_command: "npm test -- --coverage"
+      watch_mode: "npm test -- --watch"
+      specific_test: "npm test ComponentName.test.js"
+    
+    component_testing:
+      testing_library: "@testing-library/react-native for component testing"
+      enzyme_alternative: "React Native Testing Library (preferred over Enzyme)"
+    
+    e2e_testing:
+      detox_ios: "detox test --configuration ios"
+      detox_android: "detox test --configuration android"
+      maestro_testing: "maestro test flow.yaml (cross-platform E2E testing)"
+      appium_testing: "WebDriver-based testing for React Native apps"
+  
+  flutter_testing:
+    unit_testing:
+      detection: "Look for pubspec.yaml with flutter_test dependency"
+      primary_command: "flutter test"
+      coverage_command: "flutter test --coverage"
+      specific_test: "flutter test test/widget_test.dart"
+      watch_mode: "flutter test --watch"
+    
+    widget_testing:
+      flutter_widgets: "Flutter widget testing with testWidgets() function"
+      golden_tests: "flutter test --update-goldens (for visual regression tests)"
+    
+    integration_testing:
+      integration_command: "flutter test integration_test/"
+      device_testing: "flutter test integration_test/ -d deviceId"
+      web_testing: "flutter test integration_test/ -d chrome"
+
+mobile_testing_strategy:
+  platform_specific_testing:
+    ios_patterns:
+      - "Use XCTest for unit testing with proper setup/teardown"
+      - "Implement XCUITest for UI automation and user interaction testing"
+      - "Test iOS-specific features (Face ID, Touch ID, App Store ratings)"
+      - "Validate iOS Human Interface Guidelines compliance"
+      - "Test different iOS versions and device sizes"
+    
+    android_patterns:
+      - "Use JUnit with Android Test Support Library for unit tests"
+      - "Implement Espresso for UI testing and user interaction validation"
+      - "Test Android-specific features (permissions, intents, background services)"
+      - "Validate Material Design guidelines and Android accessibility"
+      - "Test across different Android API levels and screen densities"
+    
+    cross_platform_patterns:
+      - "Ensure feature parity between iOS and Android implementations"
+      - "Test platform-specific navigation patterns and UI conventions"
+      - "Validate consistent data synchronization across platforms"
+      - "Test deep linking and universal links on both platforms"
+  
+  device_testing_strategy:
+    physical_devices:
+      - "Test on real devices for accurate performance and battery usage"
+      - "Validate network connectivity edge cases (poor signal, airplane mode)"
+      - "Test device-specific features (camera, GPS, sensors)"
+      - "Verify app behavior during phone calls and interruptions"
+    
+    simulator_emulator_testing:
+      - "Use simulators/emulators for automated testing and CI/CD"
+      - "Test various screen sizes and orientations"
+      - "Simulate different system settings and accessibility options"
+      - "Test app behavior with different memory and storage constraints"
+  
+  performance_testing:
+    mobile_specific_metrics:
+      - "App launch time optimization (cold start < 3s, warm start < 1s)"
+      - "Memory usage monitoring and leak detection"
+      - "Battery usage profiling during typical user sessions"
+      - "Network request optimization and offline functionality testing"
+      - "Frame rate consistency (60fps target) and UI responsiveness"
+    
+    testing_tools:
+      ios_profiling: "Xcode Instruments for performance analysis"
+      android_profiling: "Android Studio Profiler for CPU, memory, network analysis"
+      react_native_profiling: "Flipper and React Native performance monitor"
+      flutter_profiling: "Flutter Inspector and performance overlay"
+
+mobile_quality_criteria:
+  test_coverage:
+    unit_coverage: "Business logic coverage > 85%"
+    ui_coverage: "Critical user flows coverage > 90%"
+    platform_coverage: "Both iOS and Android testing for cross-platform apps"
+    device_coverage: "Testing across representative device matrix"
+  
+  performance_standards:
+    app_launch: "Cold start < 3 seconds, warm start < 1 second"
+    frame_rate: "Maintain 60fps during interactions and animations"
+    memory_usage: "Memory footprint within platform guidelines"
+    battery_efficiency: "Minimal background battery drain"
+    network_efficiency: "Optimized API calls and data caching"
+  
+  platform_compliance:
+    ios_compliance: "iOS Human Interface Guidelines and App Store requirements"
+    android_compliance: "Material Design principles and Google Play policies"
+    accessibility: "Platform accessibility standards (iOS VoiceOver, Android TalkBack)"
+    store_requirements: "App store submission requirements and metadata validation"
+
+mobile_test_execution_commands:
+  project_detection: |
+    **Mobile Project Detection**:
+    - iOS: Look for .xcodeproj, .xcworkspace, Info.plist files
+    - Android: Look for build.gradle, AndroidManifest.xml files  
+    - React Native: Look for metro.config.js, react-native.config.js
+    - Flutter: Look for pubspec.yaml, lib/ directory with .dart files
+    - Cross-platform: Check for platform-specific directories (ios/, android/)
+  
+  ci_cd_integration:
+    ios_automation:
+      fastlane: "fastlane test (iOS testing automation)"
+      github_actions: "Use macOS runners for iOS testing in CI/CD"
+      xcode_cloud: "Xcode Cloud integration for automated testing"
+    
+    android_automation:
+      gradle_wrapper: "./gradlew test connectedAndroidTest"
+      github_actions: "Use ubuntu runners with Android SDK for testing"
+      firebase_test_lab: "gcloud firebase test android run"
+    
+    cross_platform_automation:
+      react_native_ci: "npm test && npm run test:e2e"
+      flutter_ci: "flutter test && flutter test integration_test/"
+      device_farm_testing: "AWS Device Farm or Firebase Test Lab integration"
+
+mobile_testing_coordination:
+  with_qa_engineer:
+    - "Provide mobile-specific testing context and platform coverage"
+    - "Share device testing results and platform compliance status"
+    - "Coordinate app store testing and submission validation"
+    - "Hand off mobile performance metrics and battery usage analysis"
+  
+  with_ui_ux_designer:
+    - "Validate platform-specific design guideline compliance"
+    - "Test accessibility features across mobile platforms"
+    - "Verify responsive design across different screen sizes and orientations"
+    - "Coordinate mobile-specific user interaction pattern testing"
+  
+  with_backend_teams:
+    - "Test API integration with mobile network conditions"
+    - "Validate data synchronization and offline functionality"
+    - "Test authentication flows and security token management"
+    - "Coordinate push notification testing and deep link validation"
+  
+  testing_handoff_protocol:
+    context_provided:
+      - "Mobile platforms and versions tested (iOS 15+, Android API 26+)"
+      - "Device matrix coverage and testing results"
+      - "Performance metrics (launch time, memory, battery usage)"
+      - "Platform compliance status and accessibility validation"
+      - "App store submission readiness and metadata validation"
+    
+    validation_requirements:
+      - "Cross-platform feature parity testing"
+      - "Device-specific functionality testing (camera, GPS, biometrics)"
+      - "Network condition testing (offline, poor connectivity)"
+      - "App lifecycle testing (background, foreground, interruptions)"
+      - "Platform-specific navigation and interaction pattern testing"

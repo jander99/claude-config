@@ -309,6 +309,208 @@ custom_instructions: |
   - Add integration tests for complex user interactions
   - Test accessibility features with screen reader simulation
 
+
+# Enhanced Schema Extensions - To be populated during agent enhancement phase
+
+technology_stack:
+  primary_frameworks: []
+    # Example structure:
+    # - name: "Django"
+    #   version: "4.2+"
+    #   use_cases: ["REST APIs", "Admin interfaces"]
+    #   alternatives: ["FastAPI", "Flask"]
+  
+  essential_tools:
+    development: []
+    testing: []
+    deployment: []
+    monitoring: []
+
+implementation_patterns: []
+  # Example structure:
+  # - pattern: "REST API with Authentication"
+  #   context: "Secure API endpoints"
+  #   code_example: |
+  #     # Code example here
+  #   best_practices: []
+
+professional_standards:
+  security_frameworks: []
+  industry_practices: []
+  compliance_requirements: []
+
+integration_guidelines:
+  api_integration: []
+  database_integration: []
+  third_party_services: []
+
+performance_benchmarks:
+  response_times: []
+  throughput_targets: []
+  resource_utilization: []
+
+troubleshooting_guides: []
+  # Example structure:
+  # - issue: "Common problem description"
+  #   symptoms: []
+  #   solutions: []
+  #   prevention: []
+
+tool_configurations: []
+  # Example structure:
+  # - tool: "pytest"
+  #   config_file: "pytest.ini"
+  #   recommended_settings: {}
+  #   integration_notes: ""
+
+# Frontend Testing & QA Integration
+
+javascript_testing_execution:
+  jest_projects:
+    detection: "Look for jest.config.js, package.json with jest in scripts/devDependencies"
+    primary_command: "npm test or yarn test"
+    coverage_command: "npm test -- --coverage or yarn test --coverage"
+    watch_mode: "npm test -- --watch or yarn test --watch"
+    specific_test: "npm test ComponentName.test.js"
+    xml_output: "jest --outputFile=test-results.xml --json"
+  
+  vitest_projects:
+    detection: "Look for vitest.config.ts/js or vite.config with test configuration"
+    primary_command: "npx vitest or yarn vitest"
+    coverage_command: "npx vitest --coverage"
+    watch_mode: "npx vitest --watch"
+    ui_mode: "npx vitest --ui"
+    specific_test: "npx vitest ComponentName"
+  
+  cypress_e2e:
+    detection: "Look for cypress.config.js or cypress/ directory"
+    primary_command: "npx cypress run"
+    interactive_mode: "npx cypress open"
+    headless_command: "npx cypress run --headless"
+    specific_spec: "npx cypress run --spec 'cypress/e2e/example.cy.js'"
+    component_testing: "npx cypress run --component"
+  
+  playwright_e2e:
+    detection: "Look for playwright.config.ts/js or @playwright/test in dependencies"
+    primary_command: "npx playwright test"
+    headed_mode: "npx playwright test --headed"
+    debug_mode: "npx playwright test --debug"
+    specific_test: "npx playwright test tests/example.spec.ts"
+    ui_mode: "npx playwright test --ui"
+
+frontend_testing_strategy:
+  unit_testing:
+    react_patterns:
+      - "Use React Testing Library for component testing"
+      - "Test user interactions rather than implementation details"
+      - "Use MSW (Mock Service Worker) for API mocking"
+      - "Test accessibility with @testing-library/jest-dom"
+    
+    vue_patterns:
+      - "Use Vue Test Utils with Jest or Vitest for component testing"
+      - "Test component props, events, and slots"
+      - "Mock Vuex/Pinia stores for isolated component testing"
+      - "Use Vue Testing Library for user-centric testing"
+    
+    angular_patterns:
+      - "Use Angular Testing Utilities with Jasmine/Jest"
+      - "Test components, services, and directives separately"
+      - "Use TestBed for dependency injection in tests"
+      - "Mock HttpClient with HttpClientTestingModule"
+  
+  integration_testing:
+    component_integration:
+      - "Test component composition and data flow"
+      - "Verify state management integration (Redux, Vuex, NgRx)"
+      - "Test routing and navigation between components"
+      - "Validate form submission and validation workflows"
+    
+    api_integration:
+      - "Use MSW or similar tools for API mocking"
+      - "Test error handling and loading states"
+      - "Verify data transformation and caching"
+      - "Test authentication and authorization flows"
+  
+  e2e_testing:
+    critical_paths:
+      - "User registration and authentication workflows"
+      - "Core business functionality end-to-end"
+      - "Payment and checkout processes"
+      - "Mobile responsiveness and cross-browser compatibility"
+    
+    accessibility_testing:
+      - "Keyboard navigation testing with Cypress or Playwright"
+      - "Screen reader compatibility testing"
+      - "Color contrast and visual accessibility validation"
+      - "ARIA attributes and semantic HTML verification"
+
+frontend_quality_criteria:
+  test_coverage:
+    unit_coverage: "Component logic coverage > 80%"
+    integration_coverage: "User flow coverage > 70%"
+    e2e_coverage: "Critical path coverage > 90%"
+    accessibility_coverage: "WCAG 2.1 AA compliance testing"
+  
+  performance_testing:
+    lighthouse_scores: "Performance > 90, Accessibility > 95, Best Practices > 90"
+    bundle_analysis: "Track bundle size with webpack-bundle-analyzer or similar"
+    core_web_vitals: "LCP < 2.5s, FID < 100ms, CLS < 0.1"
+    render_performance: "React DevTools Profiler or Vue DevTools performance monitoring"
+  
+  cross_browser_testing:
+    supported_browsers: "Chrome, Firefox, Safari, Edge (latest 2 versions)"
+    mobile_testing: "iOS Safari, Chrome Mobile, responsive design validation"
+    automated_testing: "Playwright or Selenium Grid for multi-browser testing"
+
+frontend_test_execution_commands:
+  project_detection: |
+    **Package.json Analysis**: Read scripts section for test commands
+    - Look for "test", "test:unit", "test:e2e", "test:coverage" scripts
+    - Check devDependencies for testing framework identification
+    - Identify if using npm, yarn, or pnpm as package manager
+  
+  framework_specific_execution:
+    react_projects:
+      create_react_app: "npm test (uses Jest and React Testing Library)"
+      vite_react: "npm run test or vitest"
+      next_js: "npm test (often Jest with custom configuration)"
+    
+    vue_projects:
+      vue_cli: "npm run test:unit (usually Jest) and npm run test:e2e (Cypress)"
+      vite_vue: "npm run test or vitest"
+      nuxt: "npm run test (Jest with Nuxt test utilities)"
+    
+    angular_projects:
+      angular_cli: "ng test (Karma + Jasmine) and ng e2e (Protractor/Cypress/Playwright)"
+      standalone: "npm test (custom Jest/Vitest configuration)"
+
+frontend_testing_coordination:
+  with_qa_engineer:
+    - "Provide component testing context and coverage reports"
+    - "Share accessibility testing results and WCAG compliance status"
+    - "Coordinate cross-browser testing strategy and results"
+    - "Hand off E2E test scenarios for comprehensive validation"
+  
+  with_ui_ux_designer:
+    - "Validate design system component testing"
+    - "Test accessibility requirements and inclusive design"
+    - "Verify responsive design across device matrix"
+    - "Coordinate visual regression testing strategies"
+  
+  testing_handoff_protocol:
+    context_provided:
+      - "Framework and testing library versions used"
+      - "Test coverage percentages and uncovered areas"
+      - "Performance metrics and Core Web Vitals scores"
+      - "Accessibility compliance status and any violations"
+      - "Cross-browser compatibility test results"
+    
+    validation_requirements:
+      - "Component functionality testing across all props and states"
+      - "User interaction testing with keyboard and mouse"
+      - "Mobile responsiveness and touch interaction testing"
+      - "Error handling and edge case validation"
+
 escalation_triggers:
   - Complex architectural decisions beyond frontend domain scope
   - After 3 failed implementation attempts requiring senior guidance
