@@ -7,7 +7,7 @@ data-driven global CLAUDE.md coordination guides.
 """
 
 from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any, Optional, Union
 import yaml
 import logging
 from jinja2 import Environment, FileSystemLoader, select_autoescape
@@ -15,6 +15,71 @@ from pydantic import BaseModel, Field
 
 
 logger = logging.getLogger(__name__)
+
+
+class TechnologyFramework(BaseModel):
+    """Configuration for a technology framework."""
+    name: str
+    version: str = ""
+    use_cases: List[str] = Field(default_factory=list)
+    alternatives: List[str] = Field(default_factory=list)
+    configuration: Optional[str] = None
+    config_language: Optional[str] = None
+
+
+class TechnologyStack(BaseModel):
+    """Technology stack configuration."""
+    primary_frameworks: List[TechnologyFramework] = Field(default_factory=list)
+    essential_tools: Dict[str, List[str]] = Field(default_factory=dict)
+
+
+class ImplementationPattern(BaseModel):
+    """Implementation pattern with code examples."""
+    pattern: str
+    context: str
+    code_example: Optional[str] = None
+    language: str = "python"
+    best_practices: List[str] = Field(default_factory=list)
+    common_pitfalls: List[str] = Field(default_factory=list)
+
+
+class ProfessionalStandards(BaseModel):
+    """Professional standards and compliance."""
+    security_frameworks: List[str] = Field(default_factory=list)
+    industry_practices: List[str] = Field(default_factory=list)
+    compliance_requirements: List[str] = Field(default_factory=list)
+
+
+class IntegrationGuidelines(BaseModel):
+    """Integration guidelines for various services."""
+    api_integration: List[str] = Field(default_factory=list)
+    database_integration: List[str] = Field(default_factory=list)
+    third_party_services: List[str] = Field(default_factory=list)
+
+
+class PerformanceBenchmarks(BaseModel):
+    """Performance benchmarks and targets."""
+    response_times: List[str] = Field(default_factory=list)
+    throughput_targets: List[str] = Field(default_factory=list)
+    resource_utilization: List[str] = Field(default_factory=list)
+
+
+class TroubleshootingGuide(BaseModel):
+    """Troubleshooting guide entry."""
+    issue: str
+    symptoms: List[str] = Field(default_factory=list)
+    solutions: List[str] = Field(default_factory=list)
+    prevention: List[str] = Field(default_factory=list)
+
+
+class ToolConfiguration(BaseModel):
+    """Tool configuration settings."""
+    tool: str
+    config_file: Optional[str] = None
+    recommended_settings: Dict[str, Any] = Field(default_factory=dict)
+    integration_notes: Optional[str] = None
+    setup_commands: List[str] = Field(default_factory=list)
+    format: str = "ini"
 
 
 class TraitConfig(BaseModel):
@@ -46,6 +111,15 @@ class AgentConfig(BaseModel):
     decision_frameworks: Dict[str, Any] = Field(default_factory=dict)
     boundaries: Dict[str, Any] = Field(default_factory=dict)
     common_failures: Dict[str, Any] = Field(default_factory=dict)
+    
+    # Rich content schema fields for comprehensive agent content
+    technology_stack: Optional[TechnologyStack] = None
+    implementation_patterns: List[ImplementationPattern] = Field(default_factory=list)
+    professional_standards: Optional[ProfessionalStandards] = None
+    integration_guidelines: Optional[IntegrationGuidelines] = None
+    performance_benchmarks: Optional[PerformanceBenchmarks] = None
+    troubleshooting_guides: List[TroubleshootingGuide] = Field(default_factory=list)
+    tool_configurations: List[ToolConfiguration] = Field(default_factory=list)
 
 
 
@@ -152,8 +226,9 @@ class AgentComposer:
         
         built_agents = []
         
-        # Process all agent files
-        for persona_file in personas_dir.glob("*.yaml"):
+        # Process all agent files in alphabetical order
+        persona_files = sorted(personas_dir.glob("*.yaml"), key=lambda p: p.stem)
+        for persona_file in persona_files:
             if persona_file.stem not in ["config"]:
                 agent_name = persona_file.stem
                 try:

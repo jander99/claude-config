@@ -26,7 +26,7 @@ The system generates 25+ specialized agents organized by role:
 
 **Quality & Architecture:** `qa-engineer`, `performance-engineer`, `sr-architect`, `integration-architect`, `technical-writer`, `ui-ux-designer`
 
-**Specialized:** `prompt-engineer`, `git-helper`, `customer-success`, `project-coordinator`, `agent-architect`
+**Specialized:** `prompt-engineer`, `git-helper`, `customer-success`, `project-coordinator`, `subagent-generator`
 
 All agents are defined in YAML format in `data/personas/` and converted to markdown via template processing.
 
@@ -281,7 +281,7 @@ The agent ecosystem consists of **25 specialized agents** organized into three p
 - Vendor evaluation and microservices communication patterns
 - Proactive on: API integration, enterprise integration, legacy modernization
 
-**agent-architect** `model: opus`
+**subagent-generator** `model: opus`
 - Meta-level agent system design and coordination protocol development
 - Agent ecosystem optimization and capability gap analysis
 - Proactive on: Agent system design requests, ecosystem improvements

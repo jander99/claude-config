@@ -137,6 +137,212 @@ This agent automatically activates when detecting:
 {% endfor %}
 {% endif %}
 
+{% if agent.technology_stack %}
+## Technology Stack
+
+{% if agent.technology_stack.primary_frameworks %}
+### Primary Frameworks
+{% for framework in agent.technology_stack.primary_frameworks %}
+**{{ framework.name }}**{% if framework.version %} `{{ framework.version }}`{% endif %}
+{% if framework.use_cases %}
+- **Use Cases**: {{ framework.use_cases|join(', ') }}
+{% endif %}
+{% if framework.alternatives %}
+- **Alternatives**: {{ framework.alternatives|join(', ') }}
+{% endif %}
+{% if framework.configuration %}
+- **Configuration**:
+```{{ framework.config_language or 'yaml' }}
+{{ framework.configuration }}
+```
+{% endif %}
+
+{% endfor %}
+{% endif %}
+
+{% if agent.technology_stack.essential_tools %}
+### Essential Tools
+{% for category, tools in agent.technology_stack.essential_tools.items() %}
+**{{ category.replace('_', ' ')|title }}:**
+{% for tool in tools %}
+- {{ tool }}
+{% endfor %}
+
+{% endfor %}
+{% endif %}
+{% endif %}
+
+{% if agent.implementation_patterns %}
+## Implementation Patterns
+
+{% for pattern in agent.implementation_patterns %}
+### {{ pattern.pattern }}
+
+{{ pattern.context }}
+
+{% if pattern.code_example %}
+```{{ pattern.language }}
+{{ pattern.code_example }}
+```
+{% endif %}
+
+{% if pattern.best_practices %}
+**Best Practices:**
+{% for practice in pattern.best_practices %}
+- {{ practice }}
+{% endfor %}
+{% endif %}
+
+{% if pattern.common_pitfalls %}
+**Common Pitfalls:**
+{% for pitfall in pattern.common_pitfalls %}
+- {{ pitfall }}
+{% endfor %}
+{% endif %}
+
+{% endfor %}
+{% endif %}
+
+{% if agent.professional_standards %}
+## Professional Standards
+
+{% if agent.professional_standards.security_frameworks %}
+### Security Frameworks
+{% for framework in agent.professional_standards.security_frameworks %}
+- {{ framework }}
+{% endfor %}
+{% endif %}
+
+{% if agent.professional_standards.industry_practices %}
+### Industry Practices
+{% for practice in agent.professional_standards.industry_practices %}
+- {{ practice }}
+{% endfor %}
+{% endif %}
+
+{% if agent.professional_standards.compliance_requirements %}
+### Compliance Requirements
+{% for requirement in agent.professional_standards.compliance_requirements %}
+- {{ requirement }}
+{% endfor %}
+{% endif %}
+{% endif %}
+
+{% if agent.integration_guidelines %}
+## Integration Guidelines
+
+{% if agent.integration_guidelines.api_integration %}
+### API Integration
+{% for guideline in agent.integration_guidelines.api_integration %}
+- {{ guideline }}
+{% endfor %}
+{% endif %}
+
+{% if agent.integration_guidelines.database_integration %}
+### Database Integration
+{% for guideline in agent.integration_guidelines.database_integration %}
+- {{ guideline }}
+{% endfor %}
+{% endif %}
+
+{% if agent.integration_guidelines.third_party_services %}
+### Third-Party Services
+{% for guideline in agent.integration_guidelines.third_party_services %}
+- {{ guideline }}
+{% endfor %}
+{% endif %}
+{% endif %}
+
+{% if agent.performance_benchmarks %}
+## Performance Benchmarks
+
+{% if agent.performance_benchmarks.response_times %}
+### Response Times
+{% for benchmark in agent.performance_benchmarks.response_times %}
+- {{ benchmark }}
+{% endfor %}
+{% endif %}
+
+{% if agent.performance_benchmarks.throughput_targets %}
+### Throughput Targets
+{% for target in agent.performance_benchmarks.throughput_targets %}
+- {{ target }}
+{% endfor %}
+{% endif %}
+
+{% if agent.performance_benchmarks.resource_utilization %}
+### Resource Utilization
+{% for utilization in agent.performance_benchmarks.resource_utilization %}
+- {{ utilization }}
+{% endfor %}
+{% endif %}
+{% endif %}
+
+{% if agent.troubleshooting_guides %}
+## Troubleshooting Guides
+
+{% for guide in agent.troubleshooting_guides %}
+### {{ guide.issue }}
+
+{% if guide.symptoms %}
+**Symptoms:**
+{% for symptom in guide.symptoms %}
+- {{ symptom }}
+{% endfor %}
+{% endif %}
+
+{% if guide.solutions %}
+**Solutions:**
+{% for solution in guide.solutions %}
+- {{ solution }}
+{% endfor %}
+{% endif %}
+
+{% if guide.prevention %}
+**Prevention:**
+{% for prevention in guide.prevention %}
+- {{ prevention }}
+{% endfor %}
+{% endif %}
+
+{% endfor %}
+{% endif %}
+
+{% if agent.tool_configurations %}
+## Tool Configurations
+
+{% for config in agent.tool_configurations %}
+### {{ config.tool }}
+
+{% if config.config_file %}
+**Configuration File:** `{{ config.config_file }}`
+{% endif %}
+
+{% if config.recommended_settings %}
+**Recommended Settings:**
+```{{ config.format }}
+{% for key, value in config.recommended_settings.items() %}
+{{ key }} = {{ value }}
+{% endfor %}
+```
+{% endif %}
+
+{% if config.integration_notes %}
+{{ config.integration_notes }}
+{% endif %}
+
+{% if config.setup_commands %}
+**Setup Commands:**
+```bash
+{% for command in config.setup_commands %}
+{{ command }}
+{% endfor %}
+```
+{% endif %}
+
+{% endfor %}
+{% endif %}
+
 {% for trait in traits %}
 ---
 

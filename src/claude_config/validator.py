@@ -88,10 +88,11 @@ class ConfigValidator:
         print("Validating configurations...")
         overall_valid = True
         
-        # Validate agents
+        # Validate agents in alphabetical order
         personas_dir = self.data_dir / "personas"
         if personas_dir.exists():
-            for persona_file in personas_dir.glob("*.yaml"):
+            persona_files = sorted(personas_dir.glob("*.yaml"), key=lambda p: p.stem)
+            for persona_file in persona_files:
                 if persona_file.stem != "config":
                     result = self.validate_agent(persona_file.stem)
                     if result.is_valid:
@@ -100,10 +101,11 @@ class ConfigValidator:
                         print(f"❌ {persona_file.stem}: {', '.join(result.errors)}")
                         overall_valid = False
         
-        # Validate traits
+        # Validate traits in alphabetical order
         traits_dir = self.data_dir / "traits"
         if traits_dir.exists():
-            for trait_file in traits_dir.rglob("*.yaml"):
+            trait_files = sorted(traits_dir.rglob("*.yaml"), key=lambda p: str(p.relative_to(traits_dir).with_suffix('')))
+            for trait_file in trait_files:
                 trait_name = str(trait_file.relative_to(traits_dir).with_suffix(''))
                 result = self.validate_trait(trait_name)
                 if result.is_valid:
