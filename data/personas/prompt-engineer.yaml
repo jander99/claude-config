@@ -232,52 +232,1265 @@ coordination_patterns:
 # Enhanced Schema Extensions - To be populated during agent enhancement phase
 
 technology_stack:
-  primary_frameworks: []
-    # Example structure:
-    # - name: "Django"
-    #   version: "4.2+"
-    #   use_cases: ["REST APIs", "Admin interfaces"]
-    #   alternatives: ["FastAPI", "Flask"]
-  
-  essential_tools:
-    development: []
-    testing: []
-    deployment: []
-    monitoring: []
+  primary_frameworks:
+    - name: "LangChain"
+      version: "^0.1.0"
+      use_cases: ["LLM application development", "Chain orchestration", "Agent frameworks", "Vector store integration"]
+      alternatives: ["LlamaIndex", "Semantic Kernel", "Guidance"]
+      configuration: |
+        # LangChain application with custom prompt templates
+        from langchain.prompts import PromptTemplate, ChatPromptTemplate
+        from langchain.chains import LLMChain, SequentialChain
+        from langchain.llms import OpenAI
+        from langchain.memory import ConversationBufferMemory
+        from langchain.agents import initialize_agent, Tool
+        from langchain.callbacks import StreamingStdOutCallbackHandler
 
-implementation_patterns: []
-  # Example structure:
-  # - pattern: "REST API with Authentication"
-  #   context: "Secure API endpoints"
-  #   code_example: |
-  #     # Code example here
-  #   best_practices: []
+        # Advanced prompt template with validation
+        analysis_prompt = ChatPromptTemplate.from_messages([
+            ("system", """You are an expert {domain} analyst. Follow these steps:
+            1. Analyze the input from a {domain} perspective
+            2. Identify key patterns and insights
+            3. Provide actionable recommendations
+            4. Rate confidence (1-10) and explain reasoning
+
+            Always structure your response as:
+            Analysis: [detailed analysis]
+            Insights: [key findings]
+            Recommendations: [specific actions]
+            Confidence: [1-10 with explanation]"""),
+            ("human", "Analyze this {domain} scenario: {input}")
+        ])
+
+        # Chain with memory and error handling
+        memory = ConversationBufferMemory(
+            memory_key="chat_history",
+            return_messages=True
+        )
+
+        analysis_chain = LLMChain(
+            llm=OpenAI(temperature=0.1, callbacks=[StreamingStdOutCallbackHandler()]),
+            prompt=analysis_prompt,
+            memory=memory,
+            verbose=True
+        )
+
+        # Multi-step reasoning chain
+        reasoning_chain = SequentialChain(
+            chains=[analysis_chain],
+            input_variables=["domain", "input"],
+            output_variables=["analysis", "confidence"],
+            verbose=True
+        )
+      config_language: "python"
+
+    - name: "OpenAI API"
+      version: "^1.0.0"
+      use_cases: ["GPT-4 integration", "Function calling", "Embeddings", "Fine-tuning"]
+      alternatives: ["Anthropic Claude", "Google PaLM", "Azure OpenAI"]
+      configuration: |
+        # Production-ready OpenAI integration with error handling
+        import openai
+        import asyncio
+        import logging
+        from tenacity import retry, stop_after_attempt, wait_exponential
+        from typing import Dict, List, Optional, Any
+        import json
+
+        class OpenAIClient:
+            def __init__(self, api_key: str, model: str = "gpt-4-turbo-preview"):
+                self.client = openai.AsyncOpenAI(api_key=api_key)
+                self.model = model
+                self.logger = logging.getLogger(__name__)
+
+            @retry(
+                stop=stop_after_attempt(3),
+                wait=wait_exponential(multiplier=1, min=1, max=10),
+                reraise=True
+            )
+            async def chat_completion(
+                self,
+                messages: List[Dict[str, str]],
+                temperature: float = 0.1,
+                max_tokens: Optional[int] = None,
+                functions: Optional[List[Dict]] = None
+            ) -> Dict[str, Any]:
+                try:
+                    response = await self.client.chat.completions.create(
+                        model=self.model,
+                        messages=messages,
+                        temperature=temperature,
+                        max_tokens=max_tokens,
+                        functions=functions,
+                        function_call="auto" if functions else None
+                    )
+
+                    self.logger.info(f"Tokens used: {response.usage.total_tokens}")
+                    return {
+                        "content": response.choices[0].message.content,
+                        "function_call": getattr(response.choices[0].message, 'function_call', None),
+                        "usage": response.usage.model_dump()
+                    }
+                except openai.RateLimitError as e:
+                    self.logger.warning(f"Rate limit exceeded: {e}")
+                    raise
+                except openai.APIError as e:
+                    self.logger.error(f"OpenAI API error: {e}")
+                    raise
+                except Exception as e:
+                    self.logger.error(f"Unexpected error: {e}")
+                    raise
+
+            async def function_calling_example(self, user_query: str) -> str:
+                functions = [
+                    {
+                        "name": "analyze_data",
+                        "description": "Analyze data and provide insights",
+                        "parameters": {
+                            "type": "object",
+                            "properties": {
+                                "data_type": {"type": "string"},
+                                "analysis_level": {"type": "string", "enum": ["basic", "detailed", "expert"]},
+                                "metrics": {"type": "array", "items": {"type": "string"}}
+                            },
+                            "required": ["data_type", "analysis_level"]
+                        }
+                    }
+                ]
+
+                messages = [
+                    {"role": "system", "content": "You are a data analysis expert. Use the analyze_data function when appropriate."},
+                    {"role": "user", "content": user_query}
+                ]
+
+                response = await self.chat_completion(messages, functions=functions)
+
+                if response.get("function_call"):
+                    function_result = self.handle_function_call(response["function_call"])
+                    return f"Analysis result: {function_result}"
+                else:
+                    return response["content"]
+
+            def handle_function_call(self, function_call) -> str:
+                function_name = function_call.name
+                arguments = json.loads(function_call.arguments)
+
+                if function_name == "analyze_data":
+                    return f"Analyzed {arguments['data_type']} at {arguments['analysis_level']} level"
+
+                return "Unknown function"
+      config_language: "python"
+
+    - name: "Anthropic Claude"
+      version: "^0.8.0"
+      use_cases: ["Constitutional AI", "Long-form analysis", "Safe AI applications", "Complex reasoning"]
+      alternatives: ["OpenAI GPT-4", "Google Gemini", "Cohere Command"]
+      configuration: |
+        # Anthropic Claude integration with constitutional AI principles
+        import anthropic
+        import asyncio
+        from typing import List, Dict, Optional
+        from dataclasses import dataclass
+
+        @dataclass
+        class ConstitutionalPrinciple:
+            name: str
+            description: str
+            critique_request: str
+            revision_request: str
+
+        class ClaudeClient:
+            def __init__(self, api_key: str, model: str = "claude-3-opus-20240229"):
+                self.client = anthropic.AsyncAnthropic(api_key=api_key)
+                self.model = model
+
+                # Constitutional AI principles for safe outputs
+                self.principles = [
+                    ConstitutionalPrinciple(
+                        name="Helpful and Harmless",
+                        description="Provide helpful information while avoiding harmful content",
+                        critique_request="Identify any potentially harmful advice or information",
+                        revision_request="Revise to be helpful while removing any harmful elements"
+                    ),
+                    ConstitutionalPrinciple(
+                        name="Truthful and Accurate",
+                        description="Ensure information is factual and well-sourced",
+                        critique_request="Check for any factual inaccuracies or unsupported claims",
+                        revision_request="Correct any inaccuracies and add appropriate caveats"
+                    )
+                ]
+
+            async def constitutional_completion(
+                self,
+                prompt: str,
+                max_tokens: int = 1000,
+                apply_constitutional_ai: bool = True
+            ) -> Dict[str, str]:
+                try:
+                    # Initial response
+                    initial_response = await self.client.messages.create(
+                        model=self.model,
+                        max_tokens=max_tokens,
+                        messages=[{"role": "user", "content": prompt}]
+                    )
+
+                    initial_content = initial_response.content[0].text
+
+                    if not apply_constitutional_ai:
+                        return {"content": initial_content, "constitutional_review": None}
+
+                    # Constitutional review and revision
+                    reviewed_content = await self._apply_constitutional_review(initial_content)
+
+                    return {
+                        "content": reviewed_content,
+                        "initial_content": initial_content,
+                        "constitutional_review": "Applied"
+                    }
+
+                except anthropic.APIError as e:
+                    raise Exception(f"Claude API error: {e}")
+
+            async def _apply_constitutional_review(self, content: str) -> str:
+                for principle in self.principles:
+                    critique_prompt = f"""
+                    Content to review: {content}
+
+                    Principle: {principle.name}
+                    Description: {principle.description}
+
+                    {principle.critique_request}
+                    Provide specific feedback if issues are found.
+                    """
+
+                    critique = await self.client.messages.create(
+                        model=self.model,
+                        max_tokens=500,
+                        messages=[{"role": "user", "content": critique_prompt}]
+                    )
+
+                    if "issue" in critique.content[0].text.lower():
+                        revision_prompt = f"""
+                        Original content: {content}
+                        Issue identified: {critique.content[0].text}
+
+                        {principle.revision_request}
+                        Provide the revised content.
+                        """
+
+                        revision = await self.client.messages.create(
+                            model=self.model,
+                            max_tokens=1000,
+                            messages=[{"role": "user", "content": revision_prompt}]
+                        )
+
+                        content = revision.content[0].text
+
+                return content
+      config_language: "python"
+
+    - name: "Guidance"
+      version: "^0.1.0"
+      use_cases: ["Structured generation", "Prompt templates", "Grammar-guided generation", "Local model integration"]
+      alternatives: ["LangChain", "Promptify", "OutLines"]
+      configuration: |
+        # Guidance for structured prompt engineering
+        import guidance
+        from guidance import models, gen, select, system, user, assistant
+        import json
+        from typing import Dict, List, Any
+
+        class GuidancePromptEngine:
+            def __init__(self, model_name: str = "gpt-3.5-turbo"):
+                self.model = models.OpenAI(model_name)
+
+            def structured_analysis(self, topic: str, data: str) -> Dict[str, Any]:
+                with guidance(self.model) as guided:
+                    guided += system(f"""You are an expert analyst specializing in {topic}.
+                    Provide structured analysis following the exact format specified.""")
+
+                    guided += user(f"Analyze this {topic} data: {data}")
+
+                    guided += assistant()
+                    guided += "Analysis Type: " + select([
+                        "Quantitative", "Qualitative", "Mixed-Methods", "Comparative"
+                    ], name="analysis_type")
+
+                    guided += "\n\nKey Findings:\n"
+                    for i in range(3):
+                        guided += f"{i+1}. " + gen(name=f"finding_{i+1}", max_tokens=100, stop="\n")
+                        guided += "\n"
+
+                    guided += "\nConfidence Level: " + select([
+                        "High (80-100%)", "Medium (60-79%)", "Low (40-59%)", "Very Low (<40%)"
+                    ], name="confidence")
+
+                    guided += "\n\nRecommendations:\n"
+                    guided += gen(name="recommendations", max_tokens=200, stop="\n\n")
+
+                    guided += "\n\nRisk Assessment: " + select([
+                        "Low Risk", "Medium Risk", "High Risk", "Critical Risk"
+                    ], name="risk_level")
+
+                return {
+                    "analysis_type": guided["analysis_type"],
+                    "findings": [guided[f"finding_{i+1}"] for i in range(3)],
+                    "confidence": guided["confidence"],
+                    "recommendations": guided["recommendations"],
+                    "risk_level": guided["risk_level"]
+                }
+
+            def json_generation(self, schema: Dict[str, Any], prompt: str) -> Dict[str, Any]:
+                with guidance(self.model) as guided:
+                    guided += system("Generate valid JSON matching the provided schema exactly.")
+                    guided += user(f"Schema: {json.dumps(schema)}\nPrompt: {prompt}")
+                    guided += assistant()
+                    guided += gen(name="json_output", regex=r'\{.*\}', max_tokens=500)
+
+                return json.loads(guided["json_output"])
+
+            def chain_of_thought_reasoning(self, problem: str) -> Dict[str, str]:
+                with guidance(self.model) as guided:
+                    guided += system("""Solve problems using clear step-by-step reasoning.
+                    Break down complex problems into manageable steps.""")
+
+                    guided += user(f"Problem: {problem}")
+                    guided += assistant()
+
+                    guided += "Let me think through this step by step:\n\n"
+                    guided += "Step 1: Understanding the problem\n"
+                    guided += gen(name="step1", max_tokens=150, stop="\n\n")
+
+                    guided += "\n\nStep 2: Identifying key components\n"
+                    guided += gen(name="step2", max_tokens=150, stop="\n\n")
+
+                    guided += "\n\nStep 3: Analyzing relationships\n"
+                    guided += gen(name="step3", max_tokens=150, stop="\n\n")
+
+                    guided += "\n\nStep 4: Solution approach\n"
+                    guided += gen(name="step4", max_tokens=150, stop="\n\n")
+
+                    guided += "\n\nFinal Answer: "
+                    guided += gen(name="final_answer", max_tokens=200)
+
+                return {
+                    "step1": guided["step1"],
+                    "step2": guided["step2"],
+                    "step3": guided["step3"],
+                    "step4": guided["step4"],
+                    "final_answer": guided["final_answer"]
+                }
+      config_language: "python"
+
+  essential_tools:
+    development:
+      - "LangSmith ^0.1.0 - LangChain debugging, tracing, and evaluation platform for prompt optimization"
+      - "Weights & Biases ^0.16.0 - Experiment tracking, model versioning, and prompt performance monitoring"
+      - "Promptfoo ^0.35.0 - Prompt testing and evaluation framework with automated benchmarking"
+      - "LiteLLM ^1.17.0 - Universal LLM API interface supporting 100+ models with unified interface"
+      - "Tiktoken ^0.5.0 - Token counting and text splitting for accurate cost estimation and optimization"
+
+    testing:
+      - "Pytest-LLM ^0.1.0 - Specialized testing framework for LLM applications with assertion helpers"
+      - "DeepEval ^0.20.0 - LLM evaluation framework with metrics for factual accuracy and relevance"
+      - "PromptTest ^1.0.0 - A/B testing framework for prompt optimization and performance comparison"
+      - "LangTest ^1.5.0 - Comprehensive testing suite for robustness, bias, and safety evaluation"
+      - "Red-Team-LLM ^0.1.0 - Automated red-teaming tools for prompt injection and security testing"
+
+    deployment:
+      - "Modal ^0.56.0 - Serverless deployment platform optimized for AI applications and GPU workloads"
+      - "BentoML ^1.1.0 - Model serving framework with auto-scaling and monitoring for production LLM deployments"
+      - "Ray Serve ^2.8.0 - Scalable model serving with advanced routing and load balancing capabilities"
+      - "Triton Inference Server ^2.40.0 - High-performance model serving platform with dynamic batching"
+      - "LangServe ^0.0.30 - Production-ready deployment framework specifically designed for LangChain applications"
+
+    monitoring:
+      - "Arize AI ^7.0.0 - LLM monitoring platform with drift detection, performance tracking, and bias monitoring"
+      - "Phoenix ^3.0.0 - Open-source LLM observability with tracing, evaluation, and troubleshooting tools"
+      - "Helicone ^1.0.0 - LLM observability platform with cost tracking, latency monitoring, and usage analytics"
+      - "LangFuse ^2.0.0 - Open-source LLM engineering platform with prompt management and performance tracking"
+      - "Humanloop ^4.0.0 - Prompt management and optimization platform with collaborative editing and version control"
+
+implementation_patterns:
+  - pattern: "Chain-of-Thought Prompt Engineering"
+    context: "Complex reasoning tasks requiring step-by-step logical progression and explicit reasoning traces"
+    code_example: |
+      # Advanced Chain-of-Thought implementation with validation
+      from typing import Dict, List, Any, Optional
+      import re
+      import json
+
+      class ChainOfThoughtPrompt:
+          def __init__(self, model_client, domain: str):
+              self.model = model_client
+              self.domain = domain
+              self.reasoning_template = """
+              You are an expert {domain} problem solver. Follow these exact steps:
+
+              1. **Problem Understanding**: Clearly restate the problem in your own words
+              2. **Information Extraction**: Identify all given information and constraints
+              3. **Strategy Planning**: Outline your approach and reasoning method
+              4. **Step-by-Step Solution**: Work through the solution systematically
+              5. **Verification**: Check your answer and reasoning for errors
+              6. **Final Answer**: Provide a clear, concise final answer
+
+              Problem: {problem}
+
+              Let me work through this step by step:
+              """
+
+          async def solve_with_reasoning(self, problem: str) -> Dict[str, Any]:
+              # Initial reasoning attempt
+              reasoning_prompt = self.reasoning_template.format(
+                  domain=self.domain,
+                  problem=problem
+              )
+
+              initial_response = await self.model.chat_completion([
+                  {"role": "user", "content": reasoning_prompt}
+              ], temperature=0.1)
+
+              # Extract reasoning steps
+              reasoning_steps = self._extract_reasoning_steps(initial_response["content"])
+
+              # Validate reasoning quality
+              validation_result = await self._validate_reasoning(problem, reasoning_steps)
+
+              if not validation_result["is_valid"]:
+                  # Retry with corrective feedback
+                  corrective_prompt = f"""
+                  Original problem: {problem}
+                  Previous reasoning: {initial_response["content"]}
+                  Issues found: {validation_result["issues"]}
+
+                  Please provide a corrected step-by-step solution addressing these issues:
+                  """
+
+                  corrected_response = await self.model.chat_completion([
+                      {"role": "user", "content": corrective_prompt}
+                  ], temperature=0.1)
+
+                  reasoning_steps = self._extract_reasoning_steps(corrected_response["content"])
+
+              return {
+                  "problem": problem,
+                  "reasoning_steps": reasoning_steps,
+                  "final_answer": reasoning_steps.get("final_answer", ""),
+                  "confidence": await self._assess_confidence(reasoning_steps),
+                  "validation": validation_result
+              }
+
+          def _extract_reasoning_steps(self, response: str) -> Dict[str, str]:
+              steps = {}
+              step_patterns = {
+                  "problem_understanding": r"(?:1\.|Problem Understanding:)(.*?)(?=2\.|Information Extraction:|$)",
+                  "information_extraction": r"(?:2\.|Information Extraction:)(.*?)(?=3\.|Strategy Planning:|$)",
+                  "strategy_planning": r"(?:3\.|Strategy Planning:)(.*?)(?=4\.|Step-by-Step Solution:|$)",
+                  "solution_steps": r"(?:4\.|Step-by-Step Solution:)(.*?)(?=5\.|Verification:|$)",
+                  "verification": r"(?:5\.|Verification:)(.*?)(?=6\.|Final Answer:|$)",
+                  "final_answer": r"(?:6\.|Final Answer:)(.*?)$"
+              }
+
+              for step_name, pattern in step_patterns.items():
+                  match = re.search(pattern, response, re.DOTALL | re.IGNORECASE)
+                  steps[step_name] = match.group(1).strip() if match else ""
+
+              return steps
+
+          async def _validate_reasoning(self, problem: str, steps: Dict[str, str]) -> Dict[str, Any]:
+              validation_prompt = f"""
+              Evaluate this reasoning for logical consistency and completeness:
+
+              Problem: {problem}
+              Reasoning Steps: {json.dumps(steps, indent=2)}
+
+              Check for:
+              1. Logical consistency between steps
+              2. Completeness of the reasoning process
+              3. Accuracy of calculations or logical deductions
+              4. Clarity and coherence of explanations
+
+              Respond with JSON:
+              {{
+                  "is_valid": true/false,
+                  "issues": ["list of specific issues found"],
+                  "strengths": ["list of strong points"],
+                  "overall_quality": "score from 1-10"
+              }}
+              """
+
+              response = await self.model.chat_completion([
+                  {"role": "user", "content": validation_prompt}
+              ], temperature=0)
+
+              try:
+                  return json.loads(response["content"])
+              except json.JSONDecodeError:
+                  return {"is_valid": False, "issues": ["Validation parsing failed"]}
+
+          async def _assess_confidence(self, steps: Dict[str, str]) -> float:
+              confidence_prompt = f"""
+              Rate the confidence level (0-1) for this reasoning based on:
+              - Logical consistency
+              - Completeness of reasoning
+              - Quality of verification
+              - Clarity of final answer
+
+              Reasoning: {json.dumps(steps, indent=2)}
+
+              Respond with only a number between 0 and 1.
+              """
+
+              response = await self.model.chat_completion([
+                  {"role": "user", "content": confidence_prompt}
+              ], temperature=0)
+
+              try:
+                  return float(response["content"].strip())
+              except ValueError:
+                  return 0.5  # Default medium confidence
+
+      # Usage example
+      async def solve_math_problem():
+          from openai_client import OpenAIClient  # From technology_stack example
+
+          client = OpenAIClient("your-api-key")
+          math_solver = ChainOfThoughtPrompt(client, "mathematics")
+
+          result = await math_solver.solve_with_reasoning(
+              "A train leaves Station A at 2 PM traveling 60 mph. Another train leaves Station B at 3 PM traveling 80 mph toward Station A. If the stations are 400 miles apart, when do the trains meet?"
+          )
+
+          print(f"Final Answer: {result['final_answer']}")
+          print(f"Confidence: {result['confidence']}")
+    best_practices:
+      - "Use explicit step markers (1., 2., 3.) to structure reasoning clearly"
+      - "Include verification steps to catch and correct reasoning errors"
+      - "Validate reasoning quality with separate evaluation prompts"
+      - "Implement retry mechanisms with corrective feedback for improved accuracy"
+      - "Extract structured reasoning components for programmatic analysis"
+    common_pitfalls:
+      - "Skipping verification steps leading to undetected errors"
+      - "Using overly complex templates that confuse the model"
+      - "Not providing domain-specific reasoning frameworks"
+
+  - pattern: "Few-Shot Learning with Dynamic Examples"
+    context: "Tasks requiring format consistency and domain adaptation with context-aware example selection"
+    code_example: |
+      # Dynamic few-shot learning with intelligent example selection
+      import numpy as np
+      from sklearn.feature_extraction.text import TfidfVectorizer
+      from sklearn.metrics.pairwise import cosine_similarity
+      from typing import List, Dict, Any, Tuple
+
+      class DynamicFewShotPrompt:
+          def __init__(self, model_client, task_type: str):
+              self.model = model_client
+              self.task_type = task_type
+              self.example_bank = []
+              self.vectorizer = TfidfVectorizer(max_features=1000, stop_words='english')
+              self.example_vectors = None
+
+          def add_examples(self, examples: List[Dict[str, str]]):
+              """Add examples to the example bank with input-output pairs"""
+              self.example_bank.extend(examples)
+
+              # Vectorize examples for similarity matching
+              if self.example_bank:
+                  example_texts = [ex["input"] for ex in self.example_bank]
+                  self.example_vectors = self.vectorizer.fit_transform(example_texts)
+
+          def select_best_examples(self, query: str, num_examples: int = 3) -> List[Dict[str, str]]:
+              """Select most relevant examples based on semantic similarity"""
+              if not self.example_bank or self.example_vectors is None:
+                  return self.example_bank[:num_examples]
+
+              # Vectorize the query
+              query_vector = self.vectorizer.transform([query])
+
+              # Calculate similarities
+              similarities = cosine_similarity(query_vector, self.example_vectors)[0]
+
+              # Get top examples
+              top_indices = np.argsort(similarities)[-num_examples:][::-1]
+
+              return [self.example_bank[i] for i in top_indices]
+
+          async def generate_with_examples(self, input_text: str, num_examples: int = 3) -> Dict[str, Any]:
+              # Select best examples
+              selected_examples = self.select_best_examples(input_text, num_examples)
+
+              # Build few-shot prompt
+              prompt_parts = [
+                  f"You are an expert at {self.task_type}. Here are some examples:",
+                  ""
+              ]
+
+              # Add examples
+              for i, example in enumerate(selected_examples, 1):
+                  prompt_parts.extend([
+                      f"Example {i}:",
+                      f"Input: {example['input']}",
+                      f"Output: {example['output']}",
+                      ""
+                  ])
+
+              # Add current task
+              prompt_parts.extend([
+                  "Now, please complete this task following the same pattern:",
+                  f"Input: {input_text}",
+                  "Output:"
+              ])
+
+              prompt = "\n".join(prompt_parts)
+
+              # Generate response
+              response = await self.model.chat_completion([
+                  {"role": "user", "content": prompt}
+              ], temperature=0.1)
+
+              # Quality assessment
+              quality_score = await self._assess_output_quality(
+                  input_text, response["content"], selected_examples
+              )
+
+              return {
+                  "input": input_text,
+                  "output": response["content"],
+                  "examples_used": selected_examples,
+                  "quality_score": quality_score,
+                  "token_usage": response.get("usage", {})
+              }
+
+          async def _assess_output_quality(self, input_text: str, output: str, examples: List[Dict]) -> float:
+              """Assess output quality based on consistency with examples"""
+              quality_prompt = f"""
+              Rate the quality of this output (0-1 scale) based on:
+              1. Consistency with example patterns
+              2. Appropriateness for the input
+              3. Clarity and completeness
+
+              Examples used:
+              {json.dumps(examples, indent=2)}
+
+              Current task:
+              Input: {input_text}
+              Output: {output}
+
+              Respond with only a number between 0 and 1.
+              """
+
+              response = await self.model.chat_completion([
+                  {"role": "user", "content": quality_prompt}
+              ], temperature=0)
+
+              try:
+                  return float(response["content"].strip())
+              except ValueError:
+                  return 0.5
+
+          async def optimize_examples(self, test_cases: List[Dict[str, str]]) -> Dict[str, Any]:
+              """Optimize example selection through evaluation on test cases"""
+              results = []
+
+              for test_case in test_cases:
+                  result = await self.generate_with_examples(test_case["input"])
+
+                  # Compare with expected output
+                  accuracy = await self._calculate_accuracy(
+                      test_case["expected_output"],
+                      result["output"]
+                  )
+
+                  results.append({
+                      "test_case": test_case,
+                      "result": result,
+                      "accuracy": accuracy
+                  })
+
+              average_accuracy = np.mean([r["accuracy"] for r in results])
+
+              return {
+                  "average_accuracy": average_accuracy,
+                  "individual_results": results,
+                  "optimization_suggestions": await self._suggest_improvements(results)
+              }
+
+          async def _calculate_accuracy(self, expected: str, actual: str) -> float:
+              """Calculate accuracy between expected and actual outputs"""
+              comparison_prompt = f"""
+              Compare these outputs and rate their similarity (0-1 scale):
+
+              Expected: {expected}
+              Actual: {actual}
+
+              Consider semantic meaning, not just exact text match.
+              Respond with only a number between 0 and 1.
+              """
+
+              response = await self.model.chat_completion([
+                  {"role": "user", "content": comparison_prompt}
+              ], temperature=0)
+
+              try:
+                  return float(response["content"].strip())
+              except ValueError:
+                  return 0.0
+
+          async def _suggest_improvements(self, results: List[Dict]) -> List[str]:
+              """Analyze results and suggest improvements"""
+              low_accuracy_cases = [r for r in results if r["accuracy"] < 0.7]
+
+              if not low_accuracy_cases:
+                  return ["Performance is good - no major improvements needed"]
+
+              improvement_prompt = f"""
+              Analyze these low-performing cases and suggest improvements:
+
+              {json.dumps(low_accuracy_cases[:3], indent=2)}
+
+              Suggest specific improvements for:
+              1. Example selection strategy
+              2. Prompt template structure
+              3. Additional examples needed
+
+              Provide 3-5 specific, actionable suggestions.
+              """
+
+              response = await self.model.chat_completion([
+                  {"role": "user", "content": improvement_prompt}
+              ], temperature=0.2)
+
+              return response["content"].split("\n")
+
+      # Usage example for text classification
+      async def setup_classification_system():
+          client = OpenAIClient("your-api-key")
+          classifier = DynamicFewShotPrompt(client, "sentiment analysis")
+
+          # Add training examples
+          examples = [
+              {"input": "I love this product! It works perfectly.", "output": "Positive"},
+              {"input": "Terrible service, would not recommend.", "output": "Negative"},
+              {"input": "It's okay, nothing special but functional.", "output": "Neutral"},
+              {"input": "Amazing quality and fast shipping!", "output": "Positive"},
+              {"input": "Disappointed with the poor build quality.", "output": "Negative"}
+          ]
+
+          classifier.add_examples(examples)
+
+          # Test with new input
+          result = await classifier.generate_with_examples(
+              "The product exceeded my expectations in every way!"
+          )
+
+          print(f"Classification: {result['output']}")
+          print(f"Quality Score: {result['quality_score']}")
+    best_practices:
+      - "Use semantic similarity for intelligent example selection rather than random sampling"
+      - "Include diversity in examples to cover edge cases and variations"
+      - "Implement quality assessment to validate example effectiveness"
+      - "Regularly optimize example sets based on performance metrics"
+      - "Balance example specificity with generalizability"
+    common_pitfalls:
+      - "Using too many examples that confuse rather than clarify"
+      - "Selecting examples that are too similar to each other"
+      - "Not validating example quality and relevance to current tasks"
+
+  - pattern: "Multi-Agent Conversation Orchestration"
+    context: "Complex tasks requiring multiple specialized AI agents with different roles and expertise areas"
+    code_example: |
+      # Multi-agent conversation system with role specialization
+      import asyncio
+      import json
+      from typing import Dict, List, Any, Optional
+      from dataclasses import dataclass
+      from enum import Enum
+
+      class AgentRole(Enum):
+          COORDINATOR = "coordinator"
+          ANALYST = "analyst"
+          CRITIC = "critic"
+          SYNTHESIZER = "synthesizer"
+          VALIDATOR = "validator"
+
+      @dataclass
+      class AgentMessage:
+          sender: AgentRole
+          recipient: Optional[AgentRole]
+          content: str
+          message_type: str
+          metadata: Dict[str, Any]
+          timestamp: float
+
+      class MultiAgentOrchestrator:
+          def __init__(self, model_client):
+              self.model = model_client
+              self.conversation_history: List[AgentMessage] = []
+              self.agent_configs = self._initialize_agent_configs()
+              self.task_state = {}
+
+          def _initialize_agent_configs(self) -> Dict[AgentRole, Dict[str, str]]:
+              return {
+                  AgentRole.COORDINATOR: {
+                      "system_prompt": """You are the Coordinator agent. Your role is to:
+                      1. Break down complex tasks into manageable subtasks
+                      2. Assign tasks to appropriate specialist agents
+                      3. Monitor progress and ensure task completion
+                      4. Facilitate communication between agents
+                      5. Make final decisions when agents disagree
+
+                      Always be clear about task assignments and deadlines.""",
+                      "expertise": "Task management, delegation, conflict resolution"
+                  },
+                  AgentRole.ANALYST: {
+                      "system_prompt": """You are the Analyst agent. Your role is to:
+                      1. Perform detailed analysis of data and information
+                      2. Identify patterns, trends, and insights
+                      3. Provide evidence-based recommendations
+                      4. Support other agents with analytical insights
+                      5. Validate assumptions with data
+
+                      Always support your analysis with clear reasoning and evidence.""",
+                      "expertise": "Data analysis, pattern recognition, evidence evaluation"
+                  },
+                  AgentRole.CRITIC: {
+                      "system_prompt": """You are the Critic agent. Your role is to:
+                      1. Identify potential flaws and weaknesses
+                      2. Challenge assumptions and proposals
+                      3. Suggest improvements and alternatives
+                      4. Ensure quality and rigor in all outputs
+                      5. Play devil's advocate when necessary
+
+                      Be constructive in your criticism and always suggest improvements.""",
+                      "expertise": "Quality assurance, risk assessment, alternative thinking"
+                  },
+                  AgentRole.SYNTHESIZER: {
+                      "system_prompt": """You are the Synthesizer agent. Your role is to:
+                      1. Combine insights from multiple agents
+                      2. Create coherent narratives from diverse inputs
+                      3. Identify connections between different perspectives
+                      4. Resolve conflicts between different viewpoints
+                      5. Create unified conclusions and recommendations
+
+                      Focus on creating comprehensive, integrated solutions.""",
+                      "expertise": "Integration, synthesis, narrative creation"
+                  },
+                  AgentRole.VALIDATOR: {
+                      "system_prompt": """You are the Validator agent. Your role is to:
+                      1. Verify facts and claims made by other agents
+                      2. Check logical consistency of arguments
+                      3. Validate methodologies and approaches
+                      4. Ensure completeness of solutions
+                      5. Provide final quality assurance
+
+                      Be thorough and systematic in your validation process.""",
+                      "expertise": "Fact-checking, logical validation, quality control"
+                  }
+              }
+
+          async def execute_task(self, task: str, required_agents: List[AgentRole]) -> Dict[str, Any]:
+              """Execute a complex task using multiple agents"""
+
+              # Initialize task state
+              self.task_state = {
+                  "task": task,
+                  "agents": required_agents,
+                  "status": "in_progress",
+                  "results": {}
+              }
+
+              # Coordinator breaks down the task
+              coordinator_response = await self._agent_turn(
+                  AgentRole.COORDINATOR,
+                  f"Break down this complex task into specific subtasks for the available agents: {task}\nAvailable agents: {[agent.value for agent in required_agents]}"
+              )
+
+              # Parse subtasks
+              subtasks = await self._extract_subtasks(coordinator_response.content)
+
+              # Execute subtasks
+              for subtask in subtasks:
+                  assigned_agent = subtask.get("assigned_agent")
+                  if assigned_agent and AgentRole(assigned_agent) in required_agents:
+                      result = await self._agent_turn(
+                          AgentRole(assigned_agent),
+                          subtask["description"]
+                      )
+                      self.task_state["results"][assigned_agent] = result.content
+
+              # Critic reviews the results
+              if AgentRole.CRITIC in required_agents:
+                  critique = await self._agent_turn(
+                      AgentRole.CRITIC,
+                      f"Review and critique these results: {json.dumps(self.task_state['results'], indent=2)}"
+                  )
+                  self.task_state["critique"] = critique.content
+
+              # Synthesizer creates final output
+              if AgentRole.SYNTHESIZER in required_agents:
+                  synthesis = await self._agent_turn(
+                      AgentRole.SYNTHESIZER,
+                      f"Synthesize these agent outputs into a comprehensive solution: {json.dumps(self.task_state['results'], indent=2)}"
+                  )
+                  self.task_state["final_output"] = synthesis.content
+
+              # Validator performs final validation
+              if AgentRole.VALIDATOR in required_agents:
+                  validation = await self._agent_turn(
+                      AgentRole.VALIDATOR,
+                      f"Validate this solution for completeness and accuracy: {self.task_state.get('final_output', 'No synthesis available')}"
+                  )
+                  self.task_state["validation"] = validation.content
+
+              self.task_state["status"] = "completed"
+              return self.task_state
+
+          async def _agent_turn(self, agent_role: AgentRole, task: str) -> AgentMessage:
+              """Execute a single agent turn"""
+              agent_config = self.agent_configs[agent_role]
+
+              # Build context from conversation history
+              context = self._build_context_for_agent(agent_role)
+
+              # Create messages for the LLM
+              messages = [
+                  {"role": "system", "content": agent_config["system_prompt"]},
+                  {"role": "user", "content": f"Context: {context}\n\nTask: {task}"}
+              ]
+
+              # Get response from LLM
+              response = await self.model.chat_completion(messages, temperature=0.2)
+
+              # Create agent message
+              agent_message = AgentMessage(
+                  sender=agent_role,
+                  recipient=None,
+                  content=response["content"],
+                  message_type="task_response",
+                  metadata={"task": task, "usage": response.get("usage", {})},
+                  timestamp=asyncio.get_event_loop().time()
+              )
+
+              # Add to conversation history
+              self.conversation_history.append(agent_message)
+
+              return agent_message
+
+          def _build_context_for_agent(self, agent_role: AgentRole) -> str:
+              """Build relevant context from conversation history"""
+              relevant_messages = [
+                  msg for msg in self.conversation_history[-10:]  # Last 10 messages
+                  if msg.sender != agent_role  # Exclude agent's own messages
+              ]
+
+              context_parts = []
+              for msg in relevant_messages:
+                  context_parts.append(f"{msg.sender.value}: {msg.content[:200]}...")
+
+              return "\n".join(context_parts) if context_parts else "No previous context"
+
+          async def _extract_subtasks(self, coordinator_response: str) -> List[Dict[str, str]]:
+              """Extract structured subtasks from coordinator response"""
+              extraction_prompt = f"""
+              Extract subtasks from this coordinator response and format as JSON:
+
+              {coordinator_response}
+
+              Format as a list of objects with 'description' and 'assigned_agent' fields.
+              Valid agents: {[role.value for role in self.agent_configs.keys()]}
+
+              Example:
+              [
+                {{"description": "Analyze market data", "assigned_agent": "analyst"}},
+                {{"description": "Identify risks", "assigned_agent": "critic"}}
+              ]
+              """
+
+              response = await self.model.chat_completion([
+                  {"role": "user", "content": extraction_prompt}
+              ], temperature=0)
+
+              try:
+                  return json.loads(response["content"])
+              except json.JSONDecodeError:
+                  # Fallback to simple parsing
+                  return [{"description": coordinator_response, "assigned_agent": "analyst"}]
+
+          async def get_conversation_summary(self) -> str:
+              """Generate a summary of the entire conversation"""
+              if not self.conversation_history:
+                  return "No conversation history available"
+
+              summary_prompt = f"""
+              Summarize this multi-agent conversation, highlighting:
+              1. Key decisions made
+              2. Different perspectives presented
+              3. Final outcomes
+              4. Quality of collaboration
+
+              Conversation:
+              {json.dumps([{"agent": msg.sender.value, "content": msg.content} for msg in self.conversation_history], indent=2)}
+              """
+
+              response = await self.model.chat_completion([
+                  {"role": "user", "content": summary_prompt}
+              ], temperature=0.1)
+
+              return response["content"]
+
+      # Usage example
+      async def solve_business_problem():
+          client = OpenAIClient("your-api-key")
+          orchestrator = MultiAgentOrchestrator(client)
+
+          task = "Develop a strategy for entering the sustainable energy market"
+          required_agents = [
+              AgentRole.COORDINATOR,
+              AgentRole.ANALYST,
+              AgentRole.CRITIC,
+              AgentRole.SYNTHESIZER,
+              AgentRole.VALIDATOR
+          ]
+
+          result = await orchestrator.execute_task(task, required_agents)
+
+          print("Final Result:")
+          print(result.get("final_output", "No final output"))
+
+          print("\nValidation:")
+          print(result.get("validation", "No validation"))
+
+          summary = await orchestrator.get_conversation_summary()
+          print(f"\nConversation Summary:\n{summary}")
+    best_practices:
+      - "Define clear roles and responsibilities for each agent to avoid overlap"
+      - "Implement coordination mechanisms to manage agent interactions effectively"
+      - "Use structured communication protocols for consistent agent exchanges"
+      - "Include validation and quality control agents in complex workflows"
+      - "Maintain conversation context to enable coherent multi-turn discussions"
+    common_pitfalls:
+      - "Creating too many agents with overlapping responsibilities"
+      - "Not implementing proper coordination and conflict resolution mechanisms"
+      - "Allowing agent conversations to become circular or unproductive"
 
 professional_standards:
-  security_frameworks: []
-  industry_practices: []
-  compliance_requirements: []
+  security_frameworks:
+    - "OWASP AI Security Top 10 - Comprehensive framework addressing LLM injection attacks, training data poisoning, model denial of service, model theft, supply chain vulnerabilities, sensitive information disclosure, insecure plugin design, excessive agency, overreliance, and model system prompt leakage"
+    - "NIST AI Risk Management Framework (AI RMF 1.0) - Systematic approach to identifying, assessing, and managing AI-related risks with governance, mapping, measuring, and management functions"
+    - "ISO/IEC 23053:2022 - Framework for AI systems using machine learning (ML) with focus on trustworthy AI development and deployment practices"
+    - "Microsoft Responsible AI Standard v2 - Comprehensive guidelines for responsible AI development including fairness, reliability, safety, privacy, inclusiveness, transparency, and accountability"
+    - "Partnership on AI Tenets - Industry collaboration framework for beneficial AI development with emphasis on safety, transparency, and social benefit"
+
+  industry_practices:
+    - "Prompt Injection Prevention - Input sanitization, output filtering, role separation, and context isolation to prevent malicious prompt manipulation"
+    - "Model Output Validation - Structured output validation, content filtering, bias detection, and quality assurance for production LLM systems"
+    - "Version Control for Prompts - Systematic versioning, A/B testing, rollback capabilities, and change management for prompt template systems"
+    - "Cost Optimization Strategies - Token usage monitoring, model selection optimization, caching strategies, and batch processing for cost-effective LLM operations"
+    - "Performance Monitoring - Latency tracking, quality metrics, user satisfaction measurement, and continuous improvement for LLM-powered applications"
+    - "Ethical AI Guidelines - Bias mitigation, fairness assessment, transparency requirements, and responsible AI deployment practices"
+
+  compliance_requirements:
+    - "GDPR AI Processing - Data minimization for training data, right to explanation for AI decisions, consent management for AI processing, and privacy-by-design for LLM applications"
+    - "SOX AI Controls - Financial data processing controls, AI model audit trails, access management for financial AI systems, and compliance reporting for AI-driven financial processes"
+    - "HIPAA AI Healthcare - PHI protection in AI training data, de-identification requirements, access controls for healthcare AI, and audit logging for medical AI applications"
+    - "FTC AI Disclosure - Algorithm transparency requirements, consumer protection in AI applications, fair lending compliance for AI systems, and advertising truth-in-AI requirements"
+    - "EU AI Act Compliance - High-risk AI system requirements, quality management systems, risk assessment procedures, and conformity assessment for AI applications"
 
 integration_guidelines:
-  api_integration: []
-  database_integration: []
-  third_party_services: []
+  api_integration:
+    - "LLM API Rate Limiting - Exponential backoff strategies, request queuing, circuit breaker patterns, and graceful degradation for API reliability"
+    - "Multi-Model Orchestration - Model routing based on task complexity, cost optimization through model cascading, and fallback strategies for model unavailability"
+    - "Authentication & Authorization - API key management, OAuth2 integration, role-based access control, and secure credential storage for LLM services"
+    - "Error Handling Patterns - Retry logic with jitter, timeout management, partial failure handling, and user-friendly error messaging"
+    - "Response Caching - Semantic caching for similar queries, TTL management, cache invalidation strategies, and distributed caching for scalability"
+
+  database_integration:
+    - "Vector Database Integration - Embedding storage and retrieval, similarity search optimization, index management, and vector database scaling strategies"
+    - "Conversation History Storage - Session management, conversation threading, memory optimization, and efficient retrieval for context maintenance"
+    - "Prompt Template Storage - Version control, template categorization, usage analytics, and collaborative editing for prompt management systems"
+    - "Performance Metrics Storage - Response time tracking, quality score storage, user feedback collection, and analytics data warehousing"
+    - "Audit Logging - Comprehensive request logging, compliance reporting, data lineage tracking, and security event monitoring"
+
+  third_party_services:
+    - "Monitoring Integration - APM tools (DataDog, New Relic), custom metrics collection, alerting systems, and performance dashboards for LLM applications"
+    - "Content Moderation - Integration with content filtering services, toxic content detection, brand safety measures, and automated content review systems"
+    - "Knowledge Base Integration - RAG (Retrieval-Augmented Generation) patterns, document processing pipelines, knowledge graph integration, and semantic search systems"
+    - "Workflow Orchestration - Integration with workflow engines (Temporal, Prefect), task scheduling, dependency management, and automated pipeline execution"
+    - "Business Intelligence - Integration with BI tools, usage analytics, ROI tracking, and business impact measurement for LLM initiatives"
 
 performance_benchmarks:
-  response_times: []
-  throughput_targets: []
-  resource_utilization: []
+  response_times:
+    - "Simple Queries: P50 < 500ms, P95 < 1.5s, P99 < 3s for straightforward question-answering and basic text generation tasks"
+    - "Complex Reasoning: P50 < 2s, P95 < 8s, P99 < 15s for chain-of-thought reasoning, multi-step analysis, and complex problem-solving prompts"
+    - "Document Analysis: P50 < 3s, P95 < 12s, P99 < 25s for document summarization, analysis, and content extraction from large texts"
+    - "Code Generation: P50 < 1s, P95 < 4s, P99 < 8s for code completion, bug fixing, and code explanation tasks"
 
-troubleshooting_guides: []
-  # Example structure:
-  # - issue: "Common problem description"
-  #   symptoms: []
-  #   solutions: []
-  #   prevention: []
+  throughput_targets:
+    - "API Gateway: >500 concurrent requests with proper load balancing and request routing for high-traffic LLM applications"
+    - "Batch Processing: >1000 prompts/hour for bulk content generation, data processing, and automated analysis workflows"
+    - "Real-time Chat: >100 concurrent conversations with context maintenance and response streaming capabilities"
+    - "Document Processing: >200 documents/hour for automated document analysis, summarization, and content extraction pipelines"
 
-tool_configurations: []
-  # Example structure:
-  # - tool: "pytest"
-  #   config_file: "pytest.ini"
-  #   recommended_settings: {}
-  #   integration_notes: ""
+  resource_utilization:
+    - "Token Usage Efficiency: <80% of model context window utilization for optimal performance and cost management"
+    - "Memory Footprint: <4GB per worker process for production deployment with concurrent request handling"
+    - "CPU Utilization: <70% average load with burst capacity for peak traffic handling and request processing"
+    - "Cost Per Query: <$0.10 for complex reasoning tasks through optimization techniques and efficient model selection"
+
+troubleshooting_guides:
+  - issue: "High LLM API Latency and Timeout Errors"
+    symptoms:
+      - "API responses taking >10 seconds consistently"
+      - "Frequent timeout errors (504 Gateway Timeout)"
+      - "User complaints about slow AI-powered features"
+      - "High error rates during peak usage periods"
+    solutions:
+      - "Implement request batching to reduce API call overhead and improve throughput efficiency"
+      - "Add response caching for frequently asked questions and common prompt patterns"
+      - "Implement model cascade pattern: fast model for simple queries, complex model for edge cases"
+      - "Add circuit breaker pattern to prevent cascade failures during API service degradation"
+    prevention:
+      - "Monitor API response time metrics and set up alerting for performance degradation"
+      - "Implement proper timeout handling with exponential backoff and retry logic"
+      - "Use content-based routing to direct queries to appropriate model tiers"
+
+  - issue: "Prompt Injection Attacks and Security Vulnerabilities"
+    symptoms:
+      - "Unexpected AI behavior bypassing intended constraints"
+      - "Users receiving inappropriate or harmful content from AI responses"
+      - "AI revealing system prompts or internal instructions"
+      - "AI performing actions outside intended scope or permissions"
+    solutions:
+      - "Implement input sanitization with allowlist validation for user inputs"
+      - "Use role separation: separate system prompts from user inputs with clear boundaries"
+      - "Add output filtering to detect and block inappropriate content before user delivery"
+      - "Implement context isolation to prevent cross-contamination between user sessions"
+    prevention:
+      - "Regular security audits of prompt templates and system instructions"
+      - "User input validation with pattern recognition for potential injection attempts"
+      - "Implement rate limiting and abuse detection for suspicious usage patterns"
+
+  - issue: "Inconsistent AI Output Quality and Response Variation"
+    symptoms:
+      - "Significant variation in response quality for similar inputs"
+      - "AI sometimes providing incomplete or irrelevant answers"
+      - "Inconsistent formatting and structure in AI responses"
+      - "Users reporting unreliable AI behavior and decreased satisfaction"
+    solutions:
+      - "Implement few-shot learning with high-quality examples for consistent output formatting"
+      - "Add response validation and quality scoring before delivering results to users"
+      - "Use temperature control and deterministic settings for consistent response patterns"
+      - "Implement fallback prompts and retry logic for low-quality initial responses"
+    prevention:
+      - "Regular prompt testing with diverse input scenarios and edge cases"
+      - "Quality metrics tracking and automated alerts for response quality degradation"
+      - "A/B testing for prompt improvements and response quality optimization"
+
+  - issue: "Excessive Token Usage and Cost Overruns"
+    symptoms:
+      - "Monthly LLM API costs exceeding budget by >50%"
+      - "Token usage metrics showing inefficient prompt designs"
+      - "Slow response times due to oversized prompts and context windows"
+      - "Frequent context length exceeded errors for long conversations"
+    solutions:
+      - "Implement prompt compression techniques to reduce token usage while maintaining quality"
+      - "Add intelligent context truncation with priority-based content retention"
+      - "Use model selection based on task complexity: cheaper models for simple tasks"
+      - "Implement conversation summarization for long-running chat sessions"
+    prevention:
+      - "Token usage monitoring with cost alerts and budget controls"
+      - "Regular prompt audit for unnecessary verbosity and redundant instructions"
+      - "Implement caching strategies for repeated queries and common response patterns"
+
+  - issue: "Multi-Agent System Coordination Failures"
+    symptoms:
+      - "Agents providing conflicting or contradictory responses"
+      - "Circular conversations between agents without resolution"
+      - "Some agents not receiving proper context or task assignments"
+      - "Final output lacking coherence despite individual agent quality"
+    solutions:
+      - "Implement explicit coordination protocols with clear handoff mechanisms"
+      - "Add conflict resolution agent to mediate disagreements and provide final decisions"
+      - "Use structured communication formats with standardized message types and metadata"
+      - "Implement conversation state management to track progress and prevent loops"
+    prevention:
+      - "Clear role definitions and responsibility boundaries for each agent type"
+      - "Regular testing of multi-agent workflows with complex scenario validation"
+      - "Monitoring and alerting for conversation loop detection and resolution failures"
+
+tool_configurations:
+  - tool: "LangSmith"
+    config_file: "langsmith.yaml"
+    recommended_settings:
+      tracing:
+        enabled: true
+        sample_rate: 0.1
+        include_inputs: true
+        include_outputs: true
+      evaluation:
+        datasets: ["production_samples", "test_cases", "edge_cases"]
+        metrics: ["accuracy", "relevance", "coherence", "safety"]
+        frequency: "daily"
+      debugging:
+        log_level: "INFO"
+        capture_exceptions: true
+        performance_profiling: true
+    integration_notes: "Essential for LangChain debugging and prompt optimization. Provides comprehensive tracing for multi-step chains and agent workflows."
+
+  - tool: "Weights & Biases"
+    config_file: "wandb.yaml"
+    recommended_settings:
+      project: "prompt-engineering"
+      experiment_tracking:
+        log_prompts: true
+        log_responses: true
+        log_metrics: ["latency", "token_usage", "quality_score"]
+      hyperparameter_sweeps:
+        temperature: [0.0, 0.1, 0.2, 0.3]
+        max_tokens: [100, 500, 1000]
+        top_p: [0.9, 0.95, 1.0]
+      artifacts:
+        prompt_templates: true
+        model_outputs: true
+        evaluation_results: true
+    integration_notes: "Comprehensive experiment tracking for prompt optimization and A/B testing. Ideal for systematic prompt improvement workflows."
+
+  - tool: "Promptfoo"
+    config_file: "promptfoo.yaml"
+    recommended_settings:
+      providers:
+        - openai:gpt-4-turbo-preview
+        - openai:gpt-3.5-turbo
+        - anthropic:claude-3-opus
+      evaluators:
+        - type: accuracy
+          threshold: 0.8
+        - type: relevance
+          threshold: 0.7
+        - type: coherence
+          threshold: 0.9
+      test_cases:
+        source: "./test_cases.json"
+        batch_size: 10
+      output:
+        format: ["json", "html"]
+        include_full_outputs: true
+    integration_notes: "Automated prompt testing and evaluation framework. Essential for regression testing and prompt performance validation."
+
+  - tool: "LiteLLM"
+    config_file: "litellm.yaml"
+    recommended_settings:
+      model_routing:
+        simple_tasks: ["gpt-3.5-turbo", "claude-3-haiku"]
+        complex_tasks: ["gpt-4-turbo", "claude-3-opus"]
+        fallback_models: ["gpt-3.5-turbo-16k"]
+      cost_optimization:
+        enable_caching: true
+        max_budget_per_day: 1000
+        alert_threshold: 0.8
+      rate_limiting:
+        requests_per_minute: 100
+        tokens_per_minute: 150000
+        retry_policy: "exponential_backoff"
+    integration_notes: "Universal LLM interface for multi-provider deployments. Enables seamless switching between different LLM providers for cost and performance optimization."

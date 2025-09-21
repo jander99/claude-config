@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Dict, List, Any, Optional, Union
 import yaml
 import logging
+import re
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from pydantic import BaseModel, Field
 
@@ -92,6 +93,15 @@ class TraitConfig(BaseModel):
     coordination_patterns: List[Dict[str, Any]] = Field(default_factory=list)
 
 
+class TraitContent(BaseModel):
+    """Parsed trait content from markdown files."""
+    name: str
+    category: str
+    description: str
+    content: str
+    metadata: Dict[str, Any] = Field(default_factory=dict)
+
+
 class AgentConfig(BaseModel):
     """Unified agent configuration combining persona and composition."""
     name: str
@@ -104,6 +114,11 @@ class AgentConfig(BaseModel):
     traits: List[str] = Field(default_factory=list)
     custom_instructions: str = ""
     coordination_overrides: Dict[str, str] = Field(default_factory=dict)
+
+    # Enhanced trait import support
+    imports: Dict[str, List[str]] = Field(default_factory=dict)  # e.g., {"coordination": ["standard-safety"], "tools": ["python-ml-stack"]}
+    custom_coordination: Dict[str, str] = Field(default_factory=dict)  # Agent-specific overrides
+    custom_tools: List[ToolConfiguration] = Field(default_factory=list)  # Additional tools
     
     # Enhanced structured fields for data-driven agent behavior
     context_priming: Optional[str] = ""
@@ -124,19 +139,139 @@ class AgentConfig(BaseModel):
 
 
 
+class TraitProcessor:
+    """Processes trait imports and merges content for agents."""
+
+    def __init__(self, traits_dir: Path):
+        """Initialize trait processor with traits directory."""
+        self.traits_dir = traits_dir
+        self._trait_cache: Dict[str, TraitContent] = {}
+
+    def load_trait_markdown(self, trait_path: str) -> TraitContent:
+        """Load and parse a trait markdown file."""
+        if trait_path in self._trait_cache:
+            return self._trait_cache[trait_path]
+
+        # Support both category/trait-name and direct trait-name paths
+        full_path = self.traits_dir / f"{trait_path}.md"
+        if not full_path.exists():
+            raise FileNotFoundError(f"Trait not found: {full_path}")
+
+        with open(full_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+
+        # Parse YAML frontmatter if present
+        metadata = {}
+        if content.startswith('---'):
+            try:
+                parts = content.split('---', 2)
+                if len(parts) >= 3:
+                    frontmatter = parts[1].strip()
+                    if frontmatter:
+                        metadata = yaml.safe_load(frontmatter)
+                    content = parts[2].strip()
+            except yaml.YAMLError:
+                # If frontmatter parsing fails, treat as regular markdown
+                pass
+
+        # Extract trait name and category from path or metadata
+        trait_name = metadata.get('name', trait_path.split('/')[-1])
+        category = metadata.get('category', trait_path.split('/')[0] if '/' in trait_path else 'general')
+        description = metadata.get('description', self._extract_description_from_content(content))
+
+        trait_content = TraitContent(
+            name=trait_name,
+            category=category,
+            description=description,
+            content=content,
+            metadata=metadata
+        )
+
+        self._trait_cache[trait_path] = trait_content
+        return trait_content
+
+    def _extract_description_from_content(self, content: str) -> str:
+        """Extract description from content if no frontmatter description."""
+        # Look for ## Description section
+        desc_match = re.search(r'## Description\n\n(.+?)(?:\n## |\Z)', content, re.DOTALL)
+        if desc_match:
+            return desc_match.group(1).strip()
+
+        # Fallback to first paragraph
+        lines = content.split('\n')
+        for line in lines:
+            line = line.strip()
+            if line and not line.startswith('#'):
+                return line
+
+        return "No description available"
+
+    def process_agent_imports(self, agent_config: AgentConfig) -> Dict[str, Any]:
+        """Process trait imports for an agent and return merged content."""
+        merged_content = {
+            'coordination_traits': {},
+            'tool_traits': {},
+            'safety_traits': {},
+            'enhancement_traits': {},
+            'custom_coordination': agent_config.custom_coordination,
+            'custom_tools': agent_config.custom_tools
+        }
+
+        # Process imports by category
+        for category, trait_names in agent_config.imports.items():
+            trait_content = {}
+
+            for trait_name in trait_names:
+                try:
+                    trait_path = f"{category}/{trait_name}"
+                    trait = self.load_trait_markdown(trait_path)
+                    trait_content[trait_name] = {
+                        'name': trait.name,
+                        'description': trait.description,
+                        'content': trait.content,
+                        'metadata': trait.metadata
+                    }
+                except FileNotFoundError:
+                    logger.warning(f"Trait not found: {trait_path} for agent {agent_config.name}")
+                    trait_content[trait_name] = {
+                        'name': trait_name,
+                        'description': f"Missing trait: {trait_name}",
+                        'content': f"<!-- Trait {trait_name} not found at {trait_path} -->",
+                        'metadata': {}
+                    }
+
+            # Map category to appropriate content section
+            if category == 'coordination':
+                merged_content['coordination_traits'] = trait_content
+            elif category == 'tools':
+                merged_content['tool_traits'] = trait_content
+            elif category == 'safety':
+                merged_content['safety_traits'] = trait_content
+            elif category == 'enhancement':
+                merged_content['enhancement_traits'] = trait_content
+            else:
+                # Handle custom categories
+                merged_content[f"{category}_traits"] = trait_content
+
+        return merged_content
+
+
 class AgentComposer:
     """Agent composition engine for building Claude Code agents from unified configurations."""
-    
-    def __init__(self, 
-                 data_dir: Path = None, 
+
+    def __init__(self,
+                 data_dir: Path = None,
                  template_dir: Path = None,
                  output_dir: Path = None):
         """Initialize the composer with directory paths and enhanced capabilities."""
         self.data_dir = data_dir or Path("data")
         self.template_dir = template_dir or Path("src/claude_config/templates")
         self.output_dir = output_dir or Path("dist")
-        
-        
+
+        # Initialize trait processor
+        traits_dir = Path("src/claude_config/traits")
+        self.trait_processor = TraitProcessor(traits_dir)
+
         # Initialize Jinja2 environment
         self.jinja_env = Environment(
             loader=FileSystemLoader(str(self.template_dir)),
@@ -181,18 +316,35 @@ class AgentComposer:
     
     def compose_agent(self, agent_config: AgentConfig) -> str:
         """Generate complete agent markdown from unified configuration."""
-        # Load traits referenced by the agent
-        traits = [self.load_trait(trait) for trait in agent_config.traits]
-        
+        # Load legacy traits referenced by the agent (for backward compatibility)
+        legacy_traits = []
+        if agent_config.traits:
+            try:
+                legacy_traits = [self.load_trait(trait) for trait in agent_config.traits]
+            except Exception as e:
+                logger.warning(f"Failed to load legacy traits for {agent_config.name}: {e}")
+
+        # Process new trait imports
+        imported_traits = {}
+        if agent_config.imports:
+            try:
+                imported_traits = self.trait_processor.process_agent_imports(agent_config)
+            except Exception as e:
+                logger.error(f"Failed to process trait imports for {agent_config.name}: {e}")
+                # Continue with empty imported traits rather than failing
+
         # Get the agent template
         template = self.jinja_env.get_template('agent.md.j2')
-        
-        # Render the agent with context
+
+        # Render the agent with enhanced context
         render_context = {
             'agent': agent_config,
-            'traits': traits
+            'traits': legacy_traits,  # Legacy trait support
+            'imported_traits': imported_traits,  # New trait import system
+            'has_imports': bool(agent_config.imports),
+            'has_legacy_traits': bool(agent_config.traits)
         }
-        
+
         return template.render(**render_context)
     
 

@@ -1,7 +1,20 @@
 name: ai-engineer
 display_name: AI Engineer
 model: sonnet
-description: Expert AI/ML developer specializing in PyTorch, transformers, and data science with production-ready model deployment capabilities. Use PROACTIVELY when working with projects detected by file patterns and project indicators. Coordinates with other agents for validation and specialized tasks. MUST check branch status before development work.
+description: Expert AI/ML developer specializing in PyTorch, transformers, and data science with production-ready model deployment capabilities.
+
+# Import common traits for standardized capabilities
+imports:
+  coordination:
+    - standard-safety-protocols
+    - qa-testing-handoff
+  tools:
+    - python-development-stack
+
+# Custom coordination patterns specific to AI/ML development
+custom_coordination:
+  ai_researcher_coordination: "Coordinates with ai-researcher for complex methodology guidance, research implementation, and statistical validation"
+  model_validation_coordination: "Self-managed model testing with comprehensive benchmarks, performance metrics, and bias analysis"
 
 context_priming: |
   You are a senior AI/ML engineer with deep expertise in modern deep learning. Your mindset:
@@ -371,10 +384,24 @@ technology_stack:
     #   alternatives: ["FastAPI", "Flask"]
   
   essential_tools:
+    # Core Python development tools inherited from python-development-stack trait
     development: []
     testing: []
     deployment: []
     monitoring: []
+
+    # ML/AI specific tools
+    ml_frameworks:
+      - "PyTorch ^2.1.0 - Deep learning framework with dynamic computation graphs"
+      - "Transformers ^4.35.0 - HuggingFace library for pre-trained models"
+      - "TensorFlow ^2.15.0 - Google's ML framework for production deployment"
+      - "Scikit-learn ^1.3.0 - Classical machine learning algorithms and utilities"
+
+    ml_experimentation:
+      - "MLflow ^2.8.0 - Experiment tracking and model versioning"
+      - "Weights & Biases - Advanced experiment tracking with visualization"
+      - "TensorBoard - Training visualization and model debugging"
+      - "Optuna ^3.4.0 - Hyperparameter optimization framework"
 
 implementation_patterns: []
   # Example structure:

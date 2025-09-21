@@ -184,29 +184,731 @@ quality_assurance:
     - Investment committee presentation and recommendation formats
 
 
-# Enhanced Schema Extensions - To be populated during agent enhancement phase
+# Enhanced Schema Extensions - Institutional Quantitative Finance Expertise
 
 technology_stack:
-  primary_frameworks: []
-    # Example structure:
-    # - name: "Django"
-    #   version: "4.2+"
-    #   use_cases: ["REST APIs", "Admin interfaces"]
-    #   alternatives: ["FastAPI", "Flask"]
-  
-  essential_tools:
-    development: []
-    testing: []
-    deployment: []
-    monitoring: []
+  primary_frameworks:
+    - name: "QuantLib"
+      version: "1.32+"
+      use_cases: ["Derivative pricing", "Risk management", "Fixed income analytics", "Monte Carlo simulation"]
+      alternatives: ["FinancialToolbox", "RQuantLib", "PyQL"]
+      configuration: |
+        # QuantLib Python implementation for institutional derivative pricing
+        import QuantLib as ql
+        import numpy as np
+        import pandas as pd
+        from typing import Dict, List, Tuple, Optional
+        from datetime import datetime, date
 
-implementation_patterns: []
-  # Example structure:
-  # - pattern: "REST API with Authentication"
-  #   context: "Secure API endpoints"
-  #   code_example: |
-  #     # Code example here
-  #   best_practices: []
+        class InstitutionalPricingEngine:
+            def __init__(self, evaluation_date: date = None):
+                self.evaluation_date = evaluation_date or date.today()
+                ql.Settings.instance().evaluationDate = ql.Date(self.evaluation_date)
+                self.curves = {}
+                self.vol_surfaces = {}
+
+            def build_yield_curve(self, currency: str, market_data: Dict) -> ql.YieldTermStructure:
+                """Build multi-currency yield curves with market data"""
+                # Deposit rates
+                deposits = [ql.DepositRateHelper(
+                    ql.QuoteHandle(ql.SimpleQuote(rate)),
+                    ql.Period(tenor),
+                    2,  # settlement days
+                    ql.TARGET(),
+                    ql.ModifiedFollowing,
+                    True,
+                    ql.Actual360()
+                ) for tenor, rate in market_data['deposits'].items()]
+
+                # Swap rates
+                swaps = [ql.SwapRateHelper(
+                    ql.QuoteHandle(ql.SimpleQuote(rate)),
+                    ql.Period(tenor),
+                    ql.TARGET(),
+                    ql.Annual,
+                    ql.ModifiedFollowing,
+                    ql.Thirty360(),
+                    ql.Euribor6M()
+                ) for tenor, rate in market_data['swaps'].items()]
+
+                # Build curve
+                helpers = deposits + swaps
+                curve = ql.PiecewiseLinearZero(
+                    0,  # settlement days
+                    ql.TARGET(),
+                    helpers,
+                    ql.Actual365Fixed()
+                )
+                curve.enableExtrapolation()
+
+                self.curves[currency] = ql.YieldTermStructureHandle(curve)
+                return curve
+
+            def european_option_pricing(self,
+                                      option_type: str,
+                                      underlying: float,
+                                      strike: float,
+                                      expiry: date,
+                                      volatility: float,
+                                      dividend_yield: float = 0.0) -> Dict[str, float]:
+                """Price European options with Greeks calculation"""
+                # Market data setup
+                spot_handle = ql.QuoteHandle(ql.SimpleQuote(underlying))
+                vol_handle = ql.BlackVolTermStructureHandle(
+                    ql.BlackConstantVol(0, ql.TARGET(), volatility, ql.Actual365Fixed())
+                )
+                dividend_handle = ql.YieldTermStructureHandle(
+                    ql.FlatForward(0, ql.TARGET(), dividend_yield, ql.Actual365Fixed())
+                )
+
+                # Process and engine
+                process = ql.BlackScholesMertonProcess(
+                    spot_handle,
+                    dividend_handle,
+                    self.curves.get('USD', ql.YieldTermStructureHandle(
+                        ql.FlatForward(0, ql.TARGET(), 0.05, ql.Actual365Fixed())
+                    )),
+                    vol_handle
+                )
+
+                engine = ql.AnalyticEuropeanEngine(process)
+
+                # Option setup
+                expiry_ql = ql.Date(expiry)
+                exercise = ql.EuropeanExercise(expiry_ql)
+                payoff = ql.PlainVanillaPayoff(
+                    ql.Option.Call if option_type.lower() == 'call' else ql.Option.Put,
+                    strike
+                )
+                option = ql.VanillaOption(payoff, exercise)
+                option.setPricingEngine(engine)
+
+                # Calculate Greeks
+                return {
+                    'npv': option.NPV(),
+                    'delta': option.delta(),
+                    'gamma': option.gamma(),
+                    'theta': option.theta(),
+                    'vega': option.vega(),
+                    'rho': option.rho()
+                }
+
+            def monte_carlo_var(self,
+                              portfolio_returns: np.ndarray,
+                              confidence_level: float = 0.95,
+                              time_horizon: int = 1,
+                              simulations: int = 100000) -> Dict[str, float]:
+                """Calculate VaR using Monte Carlo simulation"""
+                # Portfolio statistics
+                mean_return = np.mean(portfolio_returns)
+                volatility = np.std(portfolio_returns)
+
+                # Generate scenarios
+                random_shocks = np.random.normal(0, 1, simulations)
+                simulated_returns = mean_return * time_horizon + volatility * np.sqrt(time_horizon) * random_shocks
+
+                # Calculate VaR and Expected Shortfall
+                var_percentile = (1 - confidence_level) * 100
+                var = np.percentile(simulated_returns, var_percentile)
+                expected_shortfall = np.mean(simulated_returns[simulated_returns <= var])
+
+                return {
+                    'var_1d': var,
+                    'expected_shortfall': expected_shortfall,
+                    'var_10d': var * np.sqrt(10),
+                    'confidence_level': confidence_level,
+                    'simulations': simulations
+                }
+      config_language: "python"
+
+    - name: "NumPy/SciPy Financial Stack"
+      version: "1.25+/1.11+"
+      use_cases: ["High-performance numerical computing", "Optimization", "Statistical analysis", "Linear algebra"]
+      alternatives: ["MATLAB Financial Toolbox", "R quantmod", "Julia QuantLib"]
+      configuration: |
+        # Advanced numerical methods for quantitative finance
+        import numpy as np
+        import scipy.optimize as opt
+        import scipy.stats as stats
+        import scipy.linalg as linalg
+        from scipy.integrate import quad
+        from typing import Tuple, Callable, Dict, Any
+
+        class AdvancedQuantMethods:
+            def __init__(self):
+                self.calibration_cache = {}
+                self.risk_metrics_cache = {}
+
+            def heston_calibration(self,
+                                 market_prices: np.ndarray,
+                                 strikes: np.ndarray,
+                                 expiries: np.ndarray,
+                                 spot: float,
+                                 rate: float) -> Dict[str, float]:
+                """Calibrate Heston stochastic volatility model"""
+                def heston_price(params: np.ndarray, K: float, T: float, S: float, r: float) -> float:
+                    v0, kappa, theta, sigma, rho = params
+
+                    # Heston characteristic function
+                    def char_func(u):
+                        xi = kappa - sigma * rho * u * 1j
+                        d = np.sqrt(xi**2 + sigma**2 * (u**2 + u * 1j))
+
+                        g1 = (xi + d) / (xi - d)
+                        g2 = 1 / g1
+
+                        C = r * u * 1j * T + (kappa * theta / sigma**2) * ((xi + d) * T - 2 * np.log((1 - g2 * np.exp(d * T)) / (1 - g2)))
+                        D = ((xi + d) / sigma**2) * ((1 - np.exp(d * T)) / (1 - g2 * np.exp(d * T)))
+
+                        return np.exp(C + D * v0)
+
+                    # Price using Fourier inversion
+                    def integrand(u):
+                        phi = char_func(u - 1j)
+                        return np.real(np.exp(-1j * u * np.log(K)) * phi / (1j * u))
+
+                    integral, _ = quad(integrand, 0.01, 100)
+                    return S * np.exp(-r * T) - K * np.exp(-r * T) * integral / np.pi
+
+                def objective(params):
+                    if any(params < 0) or params[4] < -1 or params[4] > 1:  # Parameter bounds
+                        return 1e6
+
+                    model_prices = np.array([
+                        heston_price(params, K, T, spot, rate)
+                        for K, T in zip(strikes, expiries)
+                    ])
+
+                    return np.sum((model_prices - market_prices)**2)
+
+                # Initial guess
+                x0 = np.array([0.04, 2.0, 0.04, 0.3, -0.7])  # v0, kappa, theta, sigma, rho
+
+                # Optimize
+                result = opt.minimize(objective, x0, method='L-BFGS-B',
+                                    bounds=[(0.001, 1), (0.1, 10), (0.001, 1), (0.01, 2), (-0.99, 0.99)])
+
+                return {
+                    'v0': result.x[0],
+                    'kappa': result.x[1],
+                    'theta': result.x[2],
+                    'sigma': result.x[3],
+                    'rho': result.x[4],
+                    'calibration_error': result.fun,
+                    'success': result.success
+                }
+
+            def portfolio_optimization_cvx(self,
+                                         returns: np.ndarray,
+                                         target_return: float = None,
+                                         max_weight: float = 0.1,
+                                         transaction_costs: np.ndarray = None) -> Dict[str, Any]:
+                """Advanced portfolio optimization with transaction costs"""
+                import cvxpy as cp
+
+                n_assets = returns.shape[1]
+                mean_returns = np.mean(returns, axis=0)
+                cov_matrix = np.cov(returns.T)
+
+                # Variables
+                weights = cp.Variable(n_assets)
+
+                # Objective: minimize risk with transaction costs
+                risk = cp.quad_form(weights, cov_matrix)
+
+                if transaction_costs is not None:
+                    total_cost = cp.sum(cp.multiply(transaction_costs, cp.abs(weights)))
+                    objective = cp.Minimize(risk + total_cost)
+                else:
+                    objective = cp.Minimize(risk)
+
+                # Constraints
+                constraints = [
+                    cp.sum(weights) == 1,  # Fully invested
+                    weights >= 0,  # Long only
+                    weights <= max_weight  # Position limits
+                ]
+
+                if target_return is not None:
+                    constraints.append(mean_returns.T @ weights >= target_return)
+
+                # Solve
+                problem = cp.Problem(objective, constraints)
+                problem.solve()
+
+                return {
+                    'optimal_weights': weights.value,
+                    'expected_return': float(mean_returns.T @ weights.value),
+                    'portfolio_risk': float(np.sqrt(weights.value.T @ cov_matrix @ weights.value)),
+                    'sharpe_ratio': float((mean_returns.T @ weights.value) / np.sqrt(weights.value.T @ cov_matrix @ weights.value)),
+                    'optimization_status': problem.status
+                }
+
+            def credit_migration_matrix(self,
+                                      historical_ratings: pd.DataFrame,
+                                      time_horizon: int = 12) -> np.ndarray:
+                """Estimate credit migration transition matrix"""
+                rating_categories = ['AAA', 'AA', 'A', 'BBB', 'BB', 'B', 'CCC', 'D']
+                n_ratings = len(rating_categories)
+
+                transition_matrix = np.zeros((n_ratings, n_ratings))
+
+                for i, from_rating in enumerate(rating_categories):
+                    from_entities = historical_ratings[historical_ratings['start_rating'] == from_rating]
+
+                    if len(from_entities) == 0:
+                        continue
+
+                    for j, to_rating in enumerate(rating_categories):
+                        transitions = len(from_entities[from_entities['end_rating'] == to_rating])
+                        transition_matrix[i, j] = transitions / len(from_entities)
+
+                return transition_matrix
+      config_language: "python"
+
+    - name: "R Financial Analytics"
+      version: "4.3+"
+      use_cases: ["Econometric modeling", "Time series analysis", "Performance analytics", "Risk modeling"]
+      alternatives: ["Python statsmodels", "MATLAB Econometrics", "SAS/ETS"]
+      configuration: |
+        # R configuration for institutional quantitative analysis
+        library(quantmod)
+        library(PerformanceAnalytics)
+        library(tidyquant)
+        library(RQuantLib)
+        library(rugarch)
+        library(rmgarch)
+        library(fPortfolio)
+        library(timeDate)
+        library(timeSeries)
+
+        # Advanced portfolio analytics function
+        institutional_portfolio_analysis <- function(returns_data, benchmark_returns = NULL) {
+          # Convert to xts if needed
+          if (!is.xts(returns_data)) {
+            returns_data <- as.xts(returns_data)
+          }
+
+          # Performance metrics
+          performance_metrics <- table.AnnualizedReturns(returns_data)
+          drawdown_metrics <- table.Drawdowns(returns_data)
+
+          # Risk metrics
+          var_metrics <- VaR(returns_data, p = c(0.95, 0.99), method = "historical")
+          es_metrics <- ES(returns_data, p = c(0.95, 0.99), method = "historical")
+
+          # Style analysis if benchmark provided
+          style_analysis <- NULL
+          if (!is.null(benchmark_returns)) {
+            style_analysis <- Return.level(returns_data, benchmark_returns)
+          }
+
+          # GARCH volatility modeling
+          garch_spec <- ugarchspec(
+            variance.model = list(model = "sGARCH", garchOrder = c(1, 1)),
+            mean.model = list(armaOrder = c(1, 1)),
+            distribution.model = "std"
+          )
+
+          garch_fit <- ugarchfit(spec = garch_spec, data = returns_data[, 1])
+
+          return(list(
+            performance = performance_metrics,
+            drawdowns = drawdown_metrics,
+            var = var_metrics,
+            expected_shortfall = es_metrics,
+            style_analysis = style_analysis,
+            volatility_model = garch_fit
+          ))
+        }
+
+        # Multi-asset momentum strategy
+        momentum_strategy <- function(price_data, lookback_period = 252, rebalance_freq = 21) {
+          # Calculate returns
+          returns <- ROC(price_data, n = 1, type = "discrete")
+
+          # Momentum scores
+          momentum_scores <- rollapply(
+            returns,
+            width = lookback_period,
+            FUN = function(x) prod(1 + x, na.rm = TRUE) - 1,
+            align = "right",
+            fill = NA
+          )
+
+          # Generate signals
+          signals <- momentum_scores
+          signals[] <- 0
+
+          # Long top quartile, short bottom quartile
+          for (i in (lookback_period + 1):nrow(momentum_scores)) {
+            if (i %% rebalance_freq == 0) {
+              scores <- momentum_scores[i, ]
+              top_quartile <- scores >= quantile(scores, 0.75, na.rm = TRUE)
+              bottom_quartile <- scores <= quantile(scores, 0.25, na.rm = TRUE)
+
+              signals[i, top_quartile] <- 1
+              signals[i, bottom_quartile] <- -1
+            } else {
+              signals[i, ] <- signals[i - 1, ]
+            }
+          }
+
+          # Calculate strategy returns
+          strategy_returns <- rowSums(signals * returns, na.rm = TRUE)
+
+          return(list(
+            signals = signals,
+            returns = strategy_returns,
+            momentum_scores = momentum_scores
+          ))
+        }
+      config_language: "r"
+
+  essential_tools:
+    development:
+      - "Bloomberg Terminal API ^3.19.0 - Professional market data, news, and analytics platform integration"
+      - "Refinitiv Eikon ^1.1.0 - Thomson Reuters market data and fundamental analysis platform"
+      - "MSCI Barra ^8.0 - Multi-factor risk models and portfolio analytics for institutional clients"
+      - "Axioma Portfolio Optimizer ^6.4 - Enterprise portfolio optimization and risk management"
+      - "FactSet API ^2.1.0 - Comprehensive financial data and analytics platform integration"
+
+    testing:
+      - "pytest-benchmark ^4.0.0 - Performance testing for computational finance algorithms"
+      - "hypothesis ^6.88.0 - Property-based testing for financial models and risk calculations"
+      - "NumPy testing ^1.25.0 - Numerical accuracy testing for quantitative finance computations"
+      - "pandas-market-calendars ^4.3.0 - Business day and trading calendar validation"
+      - "QuantLib test suite - Comprehensive derivative pricing and risk model validation"
+
+    deployment:
+      - "Docker ^24.0.0 - Containerized deployment for quantitative research and production systems"
+      - "Kubernetes ^1.28.0 - Orchestration for high-availability quantitative trading systems"
+      - "Apache Airflow ^2.7.0 - Workflow orchestration for daily risk and P&L calculations"
+      - "Redis ^7.2.0 - High-performance caching for market data and calculation results"
+      - "Nginx ^1.25.0 - Load balancing and API gateway for quantitative finance services"
+
+    monitoring:
+      - "Prometheus ^2.47.0 - Metrics collection for trading system performance and risk monitoring"
+      - "Grafana ^10.1.0 - Visualization dashboards for portfolio performance and risk metrics"
+      - "ELK Stack ^8.9.0 - Log aggregation and analysis for trading system audit trails"
+      - "Datadog ^7.47.0 - Application performance monitoring for financial computation systems"
+      - "PagerDuty ^2.6.0 - Incident management and alerting for critical trading system failures"
+
+implementation_patterns:
+  - pattern: "Institutional Risk Management System"
+    context: "Enterprise-grade risk monitoring and reporting system for multi-billion dollar portfolios with real-time risk metrics and regulatory reporting"
+    code_example: |
+      # Comprehensive institutional risk management framework
+      import numpy as np
+      import pandas as pd
+      from typing import Dict, List, Tuple, Optional, Union
+      from dataclasses import dataclass
+      from datetime import datetime, date, timedelta
+      import asyncio
+      import logging
+      from abc import ABC, abstractmethod
+
+      @dataclass
+      class RiskLimit:
+          metric_name: str
+          limit_value: float
+          warning_threshold: float
+          currency: str
+          portfolio_id: str
+          effective_date: date
+          expiry_date: Optional[date] = None
+
+      @dataclass
+      class RiskMetric:
+          metric_name: str
+          value: float
+          currency: str
+          portfolio_id: str
+          calculation_time: datetime
+          confidence_level: Optional[float] = None
+          time_horizon: Optional[int] = None
+
+      class RiskCalculationEngine(ABC):
+          @abstractmethod
+          async def calculate_var(self, portfolio_data: pd.DataFrame, confidence_level: float) -> float:
+              pass
+
+          @abstractmethod
+          async def calculate_expected_shortfall(self, portfolio_data: pd.DataFrame, confidence_level: float) -> float:
+              pass
+
+      class HistoricalSimulationEngine(RiskCalculationEngine):
+          def __init__(self, lookback_days: int = 250):
+              self.lookback_days = lookback_days
+              self.logger = logging.getLogger(__name__)
+
+          async def calculate_var(self, portfolio_returns: pd.Series, confidence_level: float = 0.95) -> float:
+              """Calculate Value-at-Risk using historical simulation"""
+              if len(portfolio_returns) < self.lookback_days:
+                  raise ValueError(f"Insufficient data: {len(portfolio_returns)} < {self.lookback_days}")
+
+              recent_returns = portfolio_returns.tail(self.lookback_days)
+              percentile = (1 - confidence_level) * 100
+              var = np.percentile(recent_returns, percentile)
+
+              self.logger.info(f"VaR calculated: {var:.4f} at {confidence_level:.1%} confidence")
+              return var
+
+          async def calculate_expected_shortfall(self, portfolio_returns: pd.Series, confidence_level: float = 0.95) -> float:
+              """Calculate Expected Shortfall (Conditional VaR)"""
+              var = await self.calculate_var(portfolio_returns, confidence_level)
+              recent_returns = portfolio_returns.tail(self.lookback_days)
+
+              # Expected shortfall is the mean of returns below VaR
+              tail_returns = recent_returns[recent_returns <= var]
+              expected_shortfall = tail_returns.mean() if len(tail_returns) > 0 else var
+
+              return expected_shortfall
+
+      class MonteCarloEngine(RiskCalculationEngine):
+          def __init__(self, simulations: int = 100000, random_seed: int = 42):
+              self.simulations = simulations
+              self.random_seed = random_seed
+              np.random.seed(random_seed)
+
+          async def calculate_var(self, portfolio_data: pd.DataFrame, confidence_level: float = 0.95) -> float:
+              """Monte Carlo VaR calculation"""
+              returns = portfolio_data['returns']
+              weights = portfolio_data['weights']
+
+              # Estimate parameters
+              mean_return = returns.mean()
+              volatility = returns.std()
+
+              # Generate random scenarios
+              random_returns = np.random.normal(mean_return, volatility, self.simulations)
+              portfolio_returns = np.dot(random_returns.reshape(-1, 1), weights.values.reshape(1, -1))
+
+              # Calculate VaR
+              percentile = (1 - confidence_level) * 100
+              var = np.percentile(portfolio_returns, percentile)
+
+              return var
+
+          async def calculate_expected_shortfall(self, portfolio_data: pd.DataFrame, confidence_level: float = 0.95) -> float:
+              """Monte Carlo Expected Shortfall"""
+              var = await self.calculate_var(portfolio_data, confidence_level)
+
+              returns = portfolio_data['returns']
+              weights = portfolio_data['weights']
+              mean_return = returns.mean()
+              volatility = returns.std()
+
+              random_returns = np.random.normal(mean_return, volatility, self.simulations)
+              portfolio_returns = np.dot(random_returns.reshape(-1, 1), weights.values.reshape(1, -1))
+
+              tail_returns = portfolio_returns[portfolio_returns <= var]
+              expected_shortfall = np.mean(tail_returns) if len(tail_returns) > 0 else var
+
+              return expected_shortfall
+
+      class InstitutionalRiskManager:
+          def __init__(self):
+              self.risk_engines = {
+                  'historical': HistoricalSimulationEngine(),
+                  'monte_carlo': MonteCarloEngine()
+              }
+              self.risk_limits = {}
+              self.risk_metrics_history = []
+              self.logger = logging.getLogger(__name__)
+
+          async def add_risk_limit(self, limit: RiskLimit) -> None:
+              """Add or update risk limit"""
+              key = f"{limit.portfolio_id}_{limit.metric_name}"
+              self.risk_limits[key] = limit
+              self.logger.info(f"Risk limit added: {limit.metric_name} = {limit.limit_value} for {limit.portfolio_id}")
+
+          async def calculate_portfolio_risk(self,
+                                           portfolio_id: str,
+                                           portfolio_data: pd.DataFrame,
+                                           calculation_method: str = 'historical') -> Dict[str, RiskMetric]:
+              """Calculate comprehensive risk metrics for a portfolio"""
+              if calculation_method not in self.risk_engines:
+                  raise ValueError(f"Unknown calculation method: {calculation_method}")
+
+              engine = self.risk_engines[calculation_method]
+              calculation_time = datetime.now()
+
+              # Standard risk metrics
+              risk_metrics = {}
+
+              # VaR calculations at different confidence levels
+              for confidence in [0.95, 0.99]:
+                  var_1d = await engine.calculate_var(portfolio_data, confidence)
+                  es_1d = await engine.calculate_expected_shortfall(portfolio_data, confidence)
+
+                  # Scale to different time horizons
+                  var_10d = var_1d * np.sqrt(10)
+                  var_1m = var_1d * np.sqrt(21)
+
+                  risk_metrics[f'var_1d_{int(confidence*100)}'] = RiskMetric(
+                      metric_name=f'VaR_1D_{int(confidence*100)}',
+                      value=var_1d,
+                      currency='USD',
+                      portfolio_id=portfolio_id,
+                      calculation_time=calculation_time,
+                      confidence_level=confidence,
+                      time_horizon=1
+                  )
+
+                  risk_metrics[f'es_1d_{int(confidence*100)}'] = RiskMetric(
+                      metric_name=f'ES_1D_{int(confidence*100)}',
+                      value=es_1d,
+                      currency='USD',
+                      portfolio_id=portfolio_id,
+                      calculation_time=calculation_time,
+                      confidence_level=confidence,
+                      time_horizon=1
+                  )
+
+              # Additional risk metrics
+              portfolio_volatility = portfolio_data['returns'].std() * np.sqrt(252)
+              max_drawdown = self._calculate_max_drawdown(portfolio_data['cumulative_returns'])
+
+              risk_metrics['annual_volatility'] = RiskMetric(
+                  metric_name='Annual_Volatility',
+                  value=portfolio_volatility,
+                  currency='USD',
+                  portfolio_id=portfolio_id,
+                  calculation_time=calculation_time
+              )
+
+              risk_metrics['max_drawdown'] = RiskMetric(
+                  metric_name='Maximum_Drawdown',
+                  value=max_drawdown,
+                  currency='USD',
+                  portfolio_id=portfolio_id,
+                  calculation_time=calculation_time
+              )
+
+              # Store metrics
+              self.risk_metrics_history.extend(risk_metrics.values())
+
+              return risk_metrics
+
+          async def check_risk_limits(self, risk_metrics: Dict[str, RiskMetric]) -> Dict[str, Dict[str, Union[bool, float]]]:
+              """Check risk metrics against defined limits"""
+              limit_breaches = {}
+
+              for metric_name, metric in risk_metrics.items():
+                  limit_key = f"{metric.portfolio_id}_{metric.metric_name}"
+
+                  if limit_key in self.risk_limits:
+                      limit = self.risk_limits[limit_key]
+
+                      breach_status = {
+                          'limit_breached': abs(metric.value) > limit.limit_value,
+                          'warning_breached': abs(metric.value) > limit.warning_threshold,
+                          'current_value': metric.value,
+                          'limit_value': limit.limit_value,
+                          'utilization_pct': (abs(metric.value) / limit.limit_value) * 100
+                      }
+
+                      limit_breaches[metric_name] = breach_status
+
+                      if breach_status['limit_breached']:
+                          self.logger.warning(
+                              f"RISK LIMIT BREACH: {metric.metric_name} = {metric.value:.4f} "
+                              f"exceeds limit {limit.limit_value:.4f} for portfolio {metric.portfolio_id}"
+                          )
+
+              return limit_breaches
+
+          def _calculate_max_drawdown(self, cumulative_returns: pd.Series) -> float:
+              """Calculate maximum drawdown from cumulative returns"""
+              peak = cumulative_returns.expanding().max()
+              drawdown = (cumulative_returns - peak) / peak
+              return drawdown.min()
+
+          async def generate_risk_report(self, portfolio_id: str, report_date: date = None) -> Dict[str, any]:
+              """Generate comprehensive risk report"""
+              if report_date is None:
+                  report_date = date.today()
+
+              # Filter metrics for portfolio and date
+              portfolio_metrics = [
+                  metric for metric in self.risk_metrics_history
+                  if metric.portfolio_id == portfolio_id and metric.calculation_time.date() == report_date
+              ]
+
+              if not portfolio_metrics:
+                  return {'error': f'No risk metrics found for portfolio {portfolio_id} on {report_date}'}
+
+              # Organize metrics by type
+              var_metrics = [m for m in portfolio_metrics if 'VaR' in m.metric_name]
+              es_metrics = [m for m in portfolio_metrics if 'ES' in m.metric_name]
+              other_metrics = [m for m in portfolio_metrics if 'VaR' not in m.metric_name and 'ES' not in m.metric_name]
+
+              return {
+                  'portfolio_id': portfolio_id,
+                  'report_date': report_date.isoformat(),
+                  'var_metrics': {m.metric_name: m.value for m in var_metrics},
+                  'expected_shortfall_metrics': {m.metric_name: m.value for m in es_metrics},
+                  'other_risk_metrics': {m.metric_name: m.value for m in other_metrics},
+                  'total_metrics_calculated': len(portfolio_metrics),
+                  'calculation_methods_used': list(set([m.calculation_time.strftime('%H:%M:%S') for m in portfolio_metrics]))
+              }
+
+      # Usage example for institutional risk management
+      async def institutional_risk_workflow():
+          # Initialize risk manager
+          risk_manager = InstitutionalRiskManager()
+
+          # Define risk limits
+          var_limit = RiskLimit(
+              metric_name='VaR_1D_95',
+              limit_value=10000000,  # $10M VaR limit
+              warning_threshold=8000000,  # $8M warning
+              currency='USD',
+              portfolio_id='EQUITY_FUND_1',
+              effective_date=date.today()
+          )
+
+          await risk_manager.add_risk_limit(var_limit)
+
+          # Sample portfolio data
+          portfolio_data = pd.DataFrame({
+              'returns': np.random.normal(0.0008, 0.02, 250),  # Daily returns
+              'weights': np.array([0.6, 0.4])  # Portfolio weights
+          })
+          portfolio_data['cumulative_returns'] = (1 + portfolio_data['returns']).cumprod()
+
+          # Calculate risk metrics
+          risk_metrics = await risk_manager.calculate_portfolio_risk(
+              portfolio_id='EQUITY_FUND_1',
+              portfolio_data=portfolio_data,
+              calculation_method='historical'
+          )
+
+          # Check against limits
+          limit_breaches = await risk_manager.check_risk_limits(risk_metrics)
+
+          # Generate report
+          risk_report = await risk_manager.generate_risk_report('EQUITY_FUND_1')
+
+          return {
+              'risk_metrics': {name: metric.value for name, metric in risk_metrics.items()},
+              'limit_breaches': limit_breaches,
+              'risk_report': risk_report
+          }
+
+      # Run the institutional risk workflow
+      # result = asyncio.run(institutional_risk_workflow())
+    best_practices:
+      - "Implement multiple risk calculation methodologies for model validation and cross-verification"
+      - "Establish clear risk limit hierarchies with warning thresholds and escalation procedures"
+      - "Maintain comprehensive audit trails for all risk calculations and limit changes"
+      - "Use asynchronous processing for real-time risk monitoring of large portfolios"
+      - "Implement robust error handling and fallback mechanisms for critical risk calculations"
+    common_pitfalls:
+      - "Not accounting for correlation breakdown during market stress periods"
+      - "Using insufficient historical data periods for risk model calibration"
+      - "Failing to implement proper model validation and backtesting procedures"
 
 professional_standards:
   security_frameworks: []

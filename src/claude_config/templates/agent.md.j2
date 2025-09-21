@@ -343,6 +343,7 @@ This agent automatically activates when detecting:
 {% endfor %}
 {% endif %}
 
+{# Legacy trait support #}
 {% for trait in traits %}
 ---
 
@@ -368,12 +369,157 @@ This agent automatically activates when detecting:
 
 {% endfor %}
 
+{# New trait import system #}
+{% if has_imports and imported_traits %}
+---
+
+## Imported Traits
+
+This agent uses the following trait imports for enhanced capabilities:
+
+{% if imported_traits.coordination_traits %}
+### Coordination Traits
+
+{% for trait_name, trait_data in imported_traits.coordination_traits.items() %}
+#### {{ trait_data.name|title|replace('-', ' ') }}
+
+{{ trait_data.description }}
+
+{{ trait_data.content }}
+
+{% endfor %}
+{% endif %}
+
+{% if imported_traits.tool_traits %}
+### Tool Stack Traits
+
+{% for trait_name, trait_data in imported_traits.tool_traits.items() %}
+#### {{ trait_data.name|title|replace('-', ' ') }}
+
+{{ trait_data.description }}
+
+{{ trait_data.content }}
+
+{% endfor %}
+{% endif %}
+
+{% if imported_traits.safety_traits %}
+### Safety Protocol Traits
+
+{% for trait_name, trait_data in imported_traits.safety_traits.items() %}
+#### {{ trait_data.name|title|replace('-', ' ') }}
+
+{{ trait_data.description }}
+
+{{ trait_data.content }}
+
+{% endfor %}
+{% endif %}
+
+{% if imported_traits.enhancement_traits %}
+### Enhancement Traits
+
+{% for trait_name, trait_data in imported_traits.enhancement_traits.items() %}
+#### {{ trait_data.name|title|replace('-', ' ') }}
+
+{{ trait_data.description }}
+
+{{ trait_data.content }}
+
+{% endfor %}
+{% endif %}
+
+{% if imported_traits.custom_coordination %}
+### Custom Coordination Overrides
+
+{% for coord_name, coord_value in imported_traits.custom_coordination.items() %}
+**{{ coord_name|replace('_', ' ')|title }}:**
+{{ coord_value }}
+
+{% endfor %}
+{% endif %}
+
+{% if imported_traits.custom_tools %}
+### Custom Tools
+
+{% for tool in imported_traits.custom_tools %}
+#### {{ tool.tool }}
+
+{% if tool.config_file %}
+**Configuration File:** `{{ tool.config_file }}`
+{% endif %}
+
+{% if tool.recommended_settings %}
+**Recommended Settings:**
+{% for setting, value in tool.recommended_settings.items() %}
+- {{ setting }}: {{ value }}
+{% endfor %}
+{% endif %}
+
+{% endfor %}
+{% endif %}
+
+{% endif %}
+
 {% if agent.custom_instructions %}
 ---
 
 ## Custom Instructions
 
 {{ agent.custom_instructions }}
+{% endif %}
+
+{% if has_imports and imported_traits %}
+---
+
+## Imported Coordination and Compliance Patterns
+
+{% for category, traits in imported_traits.items() %}
+{% if traits and category not in ['custom_coordination', 'custom_tools'] %}
+### {{ category.replace('_', ' ')|title }}
+
+{% for trait_name, trait_data in traits.items() %}
+#### {{ trait_data.name }}
+
+{{ trait_data.content }}
+
+{% endfor %}
+{% endif %}
+{% endfor %}
+
+{% if imported_traits.custom_coordination %}
+### Custom Coordination Patterns
+
+{% for pattern_name, pattern_content in imported_traits.custom_coordination.items() %}
+**{{ pattern_name|replace('_', ' ')|title }}**: {{ pattern_content }}
+
+{% endfor %}
+{% endif %}
+
+{% if imported_traits.custom_tools %}
+### Custom Tool Configurations
+
+{% for tool in imported_traits.custom_tools %}
+#### {{ tool.tool }}
+{{ tool.description }}
+
+{% if tool.config_file %}
+**Configuration**: `{{ tool.config_file }}`
+{% endif %}
+
+{% if tool.recommended_settings %}
+**Settings**:
+{% for setting, value in tool.recommended_settings.items() %}
+- {{ setting }}: {{ value }}
+{% endfor %}
+{% endif %}
+
+{% if tool.integration_notes %}
+**Integration**: {{ tool.integration_notes }}
+{% endif %}
+
+{% endfor %}
+{% endif %}
 {% endif %}
 
 {% if agent.coordination_overrides %}

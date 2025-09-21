@@ -72,67 +72,991 @@ specialization:
     - Ethical data usage with privacy compliance considerations
 
 
-# Enhanced Schema Extensions - To be populated during agent enhancement phase
+# Enhanced Schema Extensions - Comprehensive Business Intelligence and Analytics Expertise
 
 technology_stack:
-  primary_frameworks: []
-    # Example structure:
-    # - name: "Django"
-    #   version: "4.2+"
-    #   use_cases: ["REST APIs", "Admin interfaces"]
-    #   alternatives: ["FastAPI", "Flask"]
-  
-  essential_tools:
-    development: []
-    testing: []
-    deployment: []
-    monitoring: []
+  primary_frameworks:
+    - name: "Tableau"
+      version: "2023.3+"
+      use_cases: ["Executive dashboards", "Interactive data visualization", "Self-service analytics", "Enterprise reporting"]
+      alternatives: ["Power BI", "Looker", "Qlik Sense"]
+      configuration: |
+        # Tableau dashboard with advanced calculations and parameters
+        # Calculated fields for business metrics
 
-implementation_patterns: []
-  # Example structure:
-  # - pattern: "REST API with Authentication"
-  #   context: "Secure API endpoints"
-  #   code_example: |
-  #     # Code example here
-  #   best_practices: []
+        // Revenue Growth Rate
+        (SUM([Current Period Revenue]) - SUM([Previous Period Revenue])) / SUM([Previous Period Revenue])
+
+        // Customer Acquisition Cost (CAC)
+        SUM([Marketing Spend]) / COUNT([New Customers])
+
+        // Customer Lifetime Value (CLV)
+        AVG([Annual Revenue per Customer]) * AVG([Customer Lifespan Years])
+
+        // Market Share Calculation
+        SUM([Company Revenue]) / SUM([Total Market Revenue])
+
+        // Dynamic date parameters for flexible reporting
+        IF [Date] >= [Start Date Parameter] AND [Date] <= [End Date Parameter]
+        THEN [Revenue] END
+
+        // Cohort analysis for customer retention
+        DATEDIFF('month', [First Purchase Date], [Current Date])
+      config_language: "tableau"
+
+    - name: "Power BI"
+      version: "Latest"
+      use_cases: ["Microsoft ecosystem integration", "Real-time dashboards", "Automated reporting", "Mobile analytics"]
+      alternatives: ["Tableau", "Looker Studio", "QlikSense"]
+      configuration: |
+        // Power BI DAX formulas for business intelligence
+
+        // Revenue Growth Measure
+        Revenue Growth % =
+        VAR CurrentRevenue = SUM(Sales[Revenue])
+        VAR PreviousRevenue = CALCULATE(
+            SUM(Sales[Revenue]),
+            DATEADD(Calendar[Date], -1, YEAR)
+        )
+        RETURN DIVIDE(CurrentRevenue - PreviousRevenue, PreviousRevenue, 0)
+
+        // Customer Segmentation
+        Customer Segment =
+        SWITCH(
+            TRUE(),
+            Sales[Annual Value] >= 10000, "Premium",
+            Sales[Annual Value] >= 5000, "Standard",
+            Sales[Annual Value] >= 1000, "Basic",
+            "Entry"
+        )
+
+        // Market Penetration Rate
+        Market Penetration =
+        DIVIDE(
+            DISTINCTCOUNT(Customers[CustomerID]),
+            CALCULATE(
+                DISTINCTCOUNT(Market[TotalCustomers]),
+                ALL(Market)
+            ),
+            0
+        )
+
+        // Churn Rate Calculation
+        Monthly Churn Rate =
+        VAR CustomersStartMonth = CALCULATE(
+            DISTINCTCOUNT(Customers[CustomerID]),
+            DATEADD(Calendar[Date], -1, MONTH)
+        )
+        VAR ChurnedCustomers = CALCULATE(
+            DISTINCTCOUNT(Churn[CustomerID]),
+            Calendar[Date] = MAX(Calendar[Date])
+        )
+        RETURN DIVIDE(ChurnedCustomers, CustomersStartMonth, 0)
+      config_language: "dax"
+
+    - name: "Python for Business Analytics"
+      version: "3.11+"
+      use_cases: ["Statistical analysis", "Predictive modeling", "Data preprocessing", "Advanced analytics"]
+      alternatives: ["R", "SAS", "SPSS"]
+      configuration: |
+        # Python business analytics framework
+        import pandas as pd
+        import numpy as np
+        import matplotlib.pyplot as plt
+        import seaborn as sns
+        from sklearn.ensemble import RandomForestRegressor
+        from sklearn.model_selection import train_test_split
+        from sklearn.metrics import mean_absolute_error, r2_score
+        import plotly.express as px
+        import plotly.graph_objects as go
+        from datetime import datetime, timedelta
+
+        class BusinessAnalytics:
+            def __init__(self, data_source):
+                self.data = pd.read_csv(data_source) if isinstance(data_source, str) else data_source
+                self.insights = {}
+
+            def customer_segmentation(self, features=['revenue', 'frequency', 'recency']):
+                """RFM Analysis for customer segmentation"""
+                from sklearn.cluster import KMeans
+                from sklearn.preprocessing import StandardScaler
+
+                # Prepare RFM data
+                scaler = StandardScaler()
+                scaled_features = scaler.fit_transform(self.data[features])
+
+                # K-means clustering
+                kmeans = KMeans(n_clusters=4, random_state=42)
+                self.data['segment'] = kmeans.fit_predict(scaled_features)
+
+                # Segment analysis
+                segment_analysis = self.data.groupby('segment').agg({
+                    'revenue': ['mean', 'sum', 'count'],
+                    'frequency': 'mean',
+                    'recency': 'mean'
+                }).round(2)
+
+                self.insights['customer_segments'] = segment_analysis
+                return segment_analysis
+
+            def revenue_forecasting(self, date_column, revenue_column, periods=12):
+                """Time series forecasting for revenue prediction"""
+                from statsmodels.tsa.seasonal import seasonal_decompose
+                from statsmodels.tsa.holtwinters import ExponentialSmoothing
+
+                # Prepare time series data
+                ts_data = self.data.set_index(date_column)[revenue_column].resample('M').sum()
+
+                # Seasonal decomposition
+                decomposition = seasonal_decompose(ts_data, model='additive')
+
+                # Exponential smoothing forecast
+                model = ExponentialSmoothing(
+                    ts_data,
+                    trend='add',
+                    seasonal='add',
+                    seasonal_periods=12
+                )
+                fitted_model = model.fit()
+                forecast = fitted_model.forecast(periods)
+
+                self.insights['revenue_forecast'] = {
+                    'forecast': forecast,
+                    'trend': decomposition.trend.iloc[-12:].mean(),
+                    'seasonality': decomposition.seasonal.iloc[-12:].to_dict()
+                }
+
+                return forecast
+
+            def cohort_analysis(self, customer_id, date_column, revenue_column):
+                """Customer cohort retention and revenue analysis"""
+                # Define cohorts by first purchase month
+                self.data['first_purchase'] = self.data.groupby(customer_id)[date_column].transform('min')
+                self.data['cohort_month'] = pd.to_datetime(self.data['first_purchase']).dt.to_period('M')
+                self.data['period_number'] = (
+                    pd.to_datetime(self.data[date_column]).dt.to_period('M') -
+                    self.data['cohort_month']
+                ).apply(attrgetter('n'))
+
+                # Cohort table creation
+                cohort_data = self.data.groupby(['cohort_month', 'period_number'])[customer_id].nunique().reset_index()
+                cohort_table = cohort_data.pivot(index='cohort_month', columns='period_number', values=customer_id)
+
+                # Retention rates
+                cohort_sizes = self.data.groupby('cohort_month')[customer_id].nunique()
+                retention_table = cohort_table.divide(cohort_sizes, axis=0)
+
+                self.insights['cohort_retention'] = retention_table
+                return retention_table
+
+            def competitive_analysis(self, competitor_data, metrics=['market_share', 'growth_rate']):
+                """Competitive positioning analysis"""
+                # Market share calculation
+                total_market = competitor_data[metrics[0]].sum()
+                competitor_data['relative_share'] = competitor_data[metrics[0]] / total_market
+
+                # Growth vs market share quadrant analysis
+                fig = px.scatter(
+                    competitor_data,
+                    x=metrics[0],
+                    y=metrics[1],
+                    size='revenue',
+                    hover_name='company',
+                    title='Competitive Positioning Matrix'
+                )
+
+                self.insights['competitive_position'] = {
+                    'market_leaders': competitor_data[competitor_data[metrics[0]] > competitor_data[metrics[0]].median()],
+                    'high_growth': competitor_data[competitor_data[metrics[1]] > competitor_data[metrics[1]].median()],
+                    'visualization': fig
+                }
+
+                return self.insights['competitive_position']
+      config_language: "python"
+
+    - name: "SQL for Business Intelligence"
+      version: "PostgreSQL 15+"
+      use_cases: ["Data extraction", "Business metrics calculation", "Report automation", "Data warehouse queries"]
+      alternatives: ["MySQL", "SQL Server", "BigQuery"]
+      configuration: |
+        -- Advanced SQL patterns for business intelligence
+
+        -- Customer Lifetime Value Calculation
+        WITH customer_metrics AS (
+            SELECT
+                customer_id,
+                MIN(order_date) as first_purchase,
+                MAX(order_date) as last_purchase,
+                COUNT(*) as total_orders,
+                SUM(order_value) as total_revenue,
+                AVG(order_value) as avg_order_value,
+                EXTRACT(DAYS FROM (MAX(order_date) - MIN(order_date))) as customer_lifespan_days
+            FROM orders
+            GROUP BY customer_id
+        ),
+        clv_calculation AS (
+            SELECT
+                customer_id,
+                total_revenue,
+                total_orders,
+                avg_order_value,
+                customer_lifespan_days,
+                CASE
+                    WHEN customer_lifespan_days > 0 THEN
+                        (total_revenue / customer_lifespan_days) * 365
+                    ELSE total_revenue
+                END as annual_value,
+                total_revenue as lifetime_value
+            FROM customer_metrics
+        )
+        SELECT
+            AVG(lifetime_value) as avg_clv,
+            PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY lifetime_value) as median_clv,
+            COUNT(*) as total_customers
+        FROM clv_calculation;
+
+        -- Monthly Recurring Revenue (MRR) Trend
+        WITH monthly_revenue AS (
+            SELECT
+                DATE_TRUNC('month', order_date) as month,
+                SUM(order_value) as monthly_revenue,
+                COUNT(DISTINCT customer_id) as active_customers
+            FROM orders
+            WHERE order_date >= CURRENT_DATE - INTERVAL '12 months'
+            GROUP BY DATE_TRUNC('month', order_date)
+        ),
+        revenue_growth AS (
+            SELECT
+                month,
+                monthly_revenue,
+                active_customers,
+                LAG(monthly_revenue) OVER (ORDER BY month) as prev_month_revenue,
+                (monthly_revenue - LAG(monthly_revenue) OVER (ORDER BY month)) /
+                LAG(monthly_revenue) OVER (ORDER BY month) * 100 as growth_rate
+            FROM monthly_revenue
+        )
+        SELECT
+            month,
+            monthly_revenue,
+            active_customers,
+            COALESCE(growth_rate, 0) as month_over_month_growth
+        FROM revenue_growth
+        ORDER BY month;
+
+        -- Customer Cohort Analysis
+        WITH first_purchases AS (
+            SELECT
+                customer_id,
+                MIN(DATE_TRUNC('month', order_date)) as cohort_month
+            FROM orders
+            GROUP BY customer_id
+        ),
+        customer_activities AS (
+            SELECT
+                fp.customer_id,
+                fp.cohort_month,
+                DATE_TRUNC('month', o.order_date) as activity_month,
+                EXTRACT(MONTH FROM AGE(DATE_TRUNC('month', o.order_date), fp.cohort_month)) as period_number
+            FROM first_purchases fp
+            JOIN orders o ON fp.customer_id = o.customer_id
+        )
+        SELECT
+            cohort_month,
+            period_number,
+            COUNT(DISTINCT customer_id) as customers,
+            COUNT(DISTINCT customer_id) * 100.0 /
+                FIRST_VALUE(COUNT(DISTINCT customer_id)) OVER (
+                    PARTITION BY cohort_month ORDER BY period_number
+                    ROWS UNBOUNDED PRECEDING
+                ) as retention_rate
+        FROM customer_activities
+        GROUP BY cohort_month, period_number
+        ORDER BY cohort_month, period_number;
+      config_language: "sql"
+
+  essential_tools:
+    development:
+      - "Jupyter Lab ^4.0.0 - Interactive analytics environment with notebook sharing and collaboration features"
+      - "VS Code ^1.85.0 - Code editor with business intelligence extensions and SQL query tools"
+      - "Git ^2.40.0 - Version control for analytics projects, dashboard configurations, and business models"
+      - "Docker ^24.0.0 - Containerized analytics environments and reproducible business intelligence workflows"
+      - "Anaconda ^23.0.0 - Python package management with pre-configured data science libraries"
+
+    testing:
+      - "Great Expectations ^0.18.0 - Data quality validation and automated testing for business metrics"
+      - "Pytest ^7.4.0 - Unit testing for analytics functions and business logic validation"
+      - "DBT ^1.7.0 - Data transformation testing and business logic validation in SQL"
+      - "Pandera ^0.17.0 - Statistical data validation and schema testing for business datasets"
+      - "Hypothesis ^6.88.0 - Property-based testing for business rule validation and edge case discovery"
+
+    deployment:
+      - "Streamlit ^1.28.0 - Rapid deployment of interactive business intelligence applications"
+      - "Heroku ^22 - Cloud deployment platform for business analytics dashboards and tools"
+      - "AWS QuickSight - Enterprise business intelligence platform with auto-scaling capabilities"
+      - "Tableau Server - Enterprise dashboard deployment with security and governance features"
+      - "Power BI Service - Microsoft cloud platform for business intelligence sharing and collaboration"
+
+    monitoring:
+      - "Google Analytics ^4 - Web analytics and user behavior tracking for digital business insights"
+      - "Mixpanel ^2.47.0 - Product analytics and user engagement measurement platform"
+      - "Amplitude ^8.21.0 - Digital optimization platform for user behavior analysis and conversion tracking"
+      - "Hotjar ^1.3.0 - User experience analytics with heatmaps and session recordings"
+      - "Datadog ^7.49.0 - Infrastructure and application monitoring for business intelligence systems"
+
+implementation_patterns:
+  - pattern: "Comprehensive Market Analysis Framework"
+    context: "Systematic competitive intelligence and market opportunity assessment for strategic business decisions"
+    code_example: |
+      # Comprehensive market analysis with competitive intelligence
+      import pandas as pd
+      import numpy as np
+      import matplotlib.pyplot as plt
+      import seaborn as sns
+      from sklearn.cluster import KMeans
+      from sklearn.preprocessing import StandardScaler
+      import plotly.express as px
+      import requests
+      from typing import Dict, List, Any
+
+      class MarketAnalysisFramework:
+          def __init__(self):
+              self.market_data = {}
+              self.competitive_intel = {}
+              self.analysis_results = {}
+
+          def collect_market_data(self, industry: str, region: str) -> Dict[str, Any]:
+              """Collect comprehensive market data from multiple sources"""
+              market_metrics = {
+                  'market_size': self._calculate_market_size(industry, region),
+                  'growth_rate': self._analyze_growth_trends(industry, region),
+                  'key_players': self._identify_competitors(industry, region),
+                  'market_segments': self._segment_analysis(industry),
+                  'barriers_to_entry': self._assess_barriers(industry),
+                  'regulatory_environment': self._regulatory_analysis(industry, region)
+              }
+
+              self.market_data[f"{industry}_{region}"] = market_metrics
+              return market_metrics
+
+          def competitive_positioning_analysis(self, competitors: List[Dict]) -> Dict[str, Any]:
+              """Analyze competitive positioning using multiple frameworks"""
+              # Prepare competitive data
+              comp_df = pd.DataFrame(competitors)
+
+              # Porter's Five Forces Analysis
+              five_forces = self._porters_five_forces_analysis(comp_df)
+
+              # SWOT Analysis for each competitor
+              swot_analysis = self._competitor_swot_analysis(comp_df)
+
+              # Market positioning matrix
+              positioning_matrix = self._create_positioning_matrix(comp_df)
+
+              # Competitive advantage assessment
+              competitive_advantages = self._assess_competitive_advantages(comp_df)
+
+              analysis_result = {
+                  'five_forces': five_forces,
+                  'swot_analysis': swot_analysis,
+                  'positioning_matrix': positioning_matrix,
+                  'competitive_advantages': competitive_advantages,
+                  'market_share_analysis': self._market_share_analysis(comp_df),
+                  'pricing_analysis': self._pricing_strategy_analysis(comp_df)
+              }
+
+              self.competitive_intel['positioning'] = analysis_result
+              return analysis_result
+
+          def opportunity_assessment(self, market_data: Dict, competitive_data: Dict) -> Dict[str, Any]:
+              """Identify and prioritize market opportunities"""
+              opportunities = []
+
+              # Market gap analysis
+              market_gaps = self._identify_market_gaps(market_data, competitive_data)
+
+              # Customer needs analysis
+              unmet_needs = self._analyze_customer_needs(market_data)
+
+              # Technology disruption opportunities
+              tech_opportunities = self._assess_tech_disruption(market_data)
+
+              # Geographic expansion opportunities
+              geo_opportunities = self._geographic_expansion_analysis(market_data)
+
+              # Prioritization matrix (Impact vs Effort)
+              opportunity_matrix = self._create_opportunity_matrix([
+                  market_gaps, unmet_needs, tech_opportunities, geo_opportunities
+              ])
+
+              return {
+                  'market_gaps': market_gaps,
+                  'unmet_needs': unmet_needs,
+                  'technology_opportunities': tech_opportunities,
+                  'geographic_opportunities': geo_opportunities,
+                  'prioritization_matrix': opportunity_matrix,
+                  'recommended_focus': self._recommend_focus_areas(opportunity_matrix)
+              }
+
+          def financial_impact_modeling(self, opportunity: Dict, assumptions: Dict) -> Dict[str, Any]:
+              """Model financial impact of market opportunities"""
+              # Revenue projection model
+              revenue_model = self._build_revenue_model(opportunity, assumptions)
+
+              # Cost structure analysis
+              cost_model = self._build_cost_model(opportunity, assumptions)
+
+              # ROI calculation
+              roi_analysis = self._calculate_roi(revenue_model, cost_model)
+
+              # Sensitivity analysis
+              sensitivity = self._sensitivity_analysis(revenue_model, cost_model)
+
+              # Risk assessment
+              risk_factors = self._assess_market_risks(opportunity)
+
+              return {
+                  'revenue_projections': revenue_model,
+                  'cost_projections': cost_model,
+                  'roi_analysis': roi_analysis,
+                  'sensitivity_analysis': sensitivity,
+                  'risk_assessment': risk_factors,
+                  'break_even_analysis': self._break_even_analysis(revenue_model, cost_model),
+                  'scenario_planning': self._scenario_planning(revenue_model, cost_model)
+              }
+
+          def _calculate_market_size(self, industry: str, region: str) -> Dict[str, float]:
+              """Calculate Total Addressable Market (TAM), Serviceable Available Market (SAM), and Serviceable Obtainable Market (SOM)"""
+              # Placeholder for actual market size calculation
+              # In practice, this would integrate with market research APIs
+              return {
+                  'tam': 10000000000,  # $10B example
+                  'sam': 1000000000,   # $1B example
+                  'som': 100000000     # $100M example
+              }
+
+          def _porters_five_forces_analysis(self, competitors_df: pd.DataFrame) -> Dict[str, float]:
+              """Analyze industry using Porter's Five Forces framework"""
+              return {
+                  'competitive_rivalry': self._assess_competitive_rivalry(competitors_df),
+                  'supplier_power': self._assess_supplier_power(),
+                  'buyer_power': self._assess_buyer_power(),
+                  'threat_of_substitutes': self._assess_substitutes_threat(),
+                  'threat_of_new_entrants': self._assess_new_entrants_threat()
+              }
+
+          def generate_executive_summary(self) -> str:
+              """Generate executive summary of market analysis"""
+              summary = f"""
+              MARKET ANALYSIS EXECUTIVE SUMMARY
+
+              Market Opportunity:
+              - Total Addressable Market: ${self.market_data.get('market_size', {}).get('tam', 0):,.0f}
+              - Key Growth Drivers: {', '.join(self.analysis_results.get('growth_drivers', []))}
+              - Market Growth Rate: {self.market_data.get('growth_rate', 0):.1%}
+
+              Competitive Landscape:
+              - Number of Major Competitors: {len(self.competitive_intel.get('positioning', {}).get('key_players', []))}
+              - Market Concentration: {self.competitive_intel.get('positioning', {}).get('market_concentration', 'Moderate')}
+              - Competitive Intensity: {self.competitive_intel.get('positioning', {}).get('five_forces', {}).get('competitive_rivalry', 'Medium')}
+
+              Strategic Recommendations:
+              - Primary Opportunity: {self.analysis_results.get('top_opportunity', 'Market expansion')}
+              - Recommended Strategy: {self.analysis_results.get('recommended_strategy', 'Differentiation focus')}
+              - Investment Priority: {self.analysis_results.get('investment_priority', 'Product development')}
+
+              Financial Projections:
+              - 3-Year Revenue Potential: ${self.analysis_results.get('revenue_projection', 0):,.0f}
+              - Estimated ROI: {self.analysis_results.get('roi_estimate', 0):.1%}
+              - Break-even Timeline: {self.analysis_results.get('break_even_months', 24)} months
+              """
+              return summary
+
+      # Usage example
+      analyzer = MarketAnalysisFramework()
+      market_data = analyzer.collect_market_data("SaaS", "North America")
+      competitive_analysis = analyzer.competitive_positioning_analysis(competitors)
+      opportunities = analyzer.opportunity_assessment(market_data, competitive_analysis)
+      financial_model = analyzer.financial_impact_modeling(opportunities['top_opportunity'], assumptions)
+      executive_summary = analyzer.generate_executive_summary()
+    best_practices:
+      - "Use multiple data sources to validate market size and growth assumptions"
+      - "Conduct primary research (surveys, interviews) to supplement secondary data"
+      - "Apply multiple analytical frameworks (Porter's Five Forces, SWOT, BCG Matrix) for comprehensive analysis"
+      - "Include sensitivity analysis and scenario planning in financial models"
+      - "Regularly update competitive intelligence as market conditions change"
+    common_pitfalls:
+      - "Relying solely on outdated market research reports without validation"
+      - "Underestimating competitive response to market entry strategies"
+      - "Overestimating market adoption rates for new products or services"
+
+  - pattern: "Customer Journey Analytics and Optimization"
+    context: "End-to-end customer experience analysis with data-driven optimization recommendations for conversion and retention"
+    code_example: |
+      # Customer journey analytics with conversion optimization
+      import pandas as pd
+      import numpy as np
+      from sklearn.preprocessing import LabelEncoder
+      from sklearn.ensemble import RandomForestClassifier
+      from sklearn.model_selection import train_test_split
+      import plotly.graph_objects as go
+      import plotly.express as px
+      from datetime import datetime, timedelta
+
+      class CustomerJourneyAnalytics:
+          def __init__(self, customer_data: pd.DataFrame, touchpoint_data: pd.DataFrame):
+              self.customer_data = customer_data
+              self.touchpoint_data = touchpoint_data
+              self.journey_insights = {}
+
+          def map_customer_journeys(self) -> Dict[str, Any]:
+              """Create comprehensive customer journey maps with touchpoint analysis"""
+              # Merge customer and touchpoint data
+              journey_data = pd.merge(
+                  self.customer_data,
+                  self.touchpoint_data,
+                  on='customer_id',
+                  how='inner'
+              )
+
+              # Sequence analysis
+              journey_sequences = self._analyze_journey_sequences(journey_data)
+
+              # Conversion funnel analysis
+              conversion_funnels = self._build_conversion_funnels(journey_data)
+
+              # Touchpoint effectiveness
+              touchpoint_impact = self._analyze_touchpoint_effectiveness(journey_data)
+
+              # Customer segment journey differences
+              segment_journeys = self._segment_journey_analysis(journey_data)
+
+              journey_map = {
+                  'common_paths': journey_sequences['common_paths'],
+                  'conversion_rates': conversion_funnels['stage_conversion_rates'],
+                  'drop_off_points': conversion_funnels['major_drop_offs'],
+                  'touchpoint_effectiveness': touchpoint_impact,
+                  'segment_differences': segment_journeys,
+                  'journey_length_analysis': self._analyze_journey_length(journey_data)
+              }
+
+              self.journey_insights['journey_map'] = journey_map
+              return journey_map
+
+          def attribution_modeling(self) -> Dict[str, Any]:
+              """Multi-touch attribution analysis for marketing effectiveness"""
+              # First-touch attribution
+              first_touch = self._first_touch_attribution()
+
+              # Last-touch attribution
+              last_touch = self._last_touch_attribution()
+
+              # Linear attribution
+              linear_attribution = self._linear_attribution()
+
+              # Time-decay attribution
+              time_decay = self._time_decay_attribution()
+
+              # Data-driven attribution (using machine learning)
+              ml_attribution = self._ml_attribution_modeling()
+
+              attribution_results = {
+                  'first_touch': first_touch,
+                  'last_touch': last_touch,
+                  'linear': linear_attribution,
+                  'time_decay': time_decay,
+                  'data_driven': ml_attribution,
+                  'attribution_comparison': self._compare_attribution_models([
+                      first_touch, last_touch, linear_attribution, time_decay, ml_attribution
+                  ])
+              }
+
+              self.journey_insights['attribution'] = attribution_results
+              return attribution_results
+
+          def churn_prediction_analysis(self) -> Dict[str, Any]:
+              """Predict customer churn with journey-based features"""
+              # Feature engineering from journey data
+              churn_features = self._engineer_churn_features()
+
+              # Build churn prediction model
+              churn_model = self._build_churn_model(churn_features)
+
+              # Risk scoring
+              risk_scores = self._calculate_churn_risk_scores(churn_model, churn_features)
+
+              # Intervention recommendations
+              interventions = self._recommend_retention_interventions(risk_scores)
+
+              churn_analysis = {
+                  'churn_probability_distribution': risk_scores['distribution'],
+                  'high_risk_customers': risk_scores['high_risk_segment'],
+                  'churn_indicators': churn_model['feature_importance'],
+                  'intervention_strategies': interventions,
+                  'model_performance': churn_model['performance_metrics']
+              }
+
+              self.journey_insights['churn_prediction'] = churn_analysis
+              return churn_analysis
+
+          def personalization_opportunities(self) -> Dict[str, Any]:
+              """Identify personalization opportunities based on journey patterns"""
+              # Segment-specific journey preferences
+              segment_preferences = self._analyze_segment_preferences()
+
+              # Content personalization opportunities
+              content_opportunities = self._identify_content_personalization()
+
+              # Timing optimization
+              optimal_timing = self._optimize_communication_timing()
+
+              # Channel preferences
+              channel_optimization = self._analyze_channel_preferences()
+
+              personalization = {
+                  'segment_preferences': segment_preferences,
+                  'content_personalization': content_opportunities,
+                  'optimal_timing': optimal_timing,
+                  'channel_preferences': channel_optimization,
+                  'personalization_impact_estimate': self._estimate_personalization_impact()
+              }
+
+              self.journey_insights['personalization'] = personalization
+              return personalization
+
+          def optimization_recommendations(self) -> List[Dict[str, Any]]:
+              """Generate prioritized optimization recommendations"""
+              recommendations = []
+
+              # Journey friction points
+              friction_points = self._identify_friction_points()
+
+              # Conversion optimization opportunities
+              conversion_opportunities = self._identify_conversion_opportunities()
+
+              # Customer experience improvements
+              cx_improvements = self._recommend_cx_improvements()
+
+              # Prioritize recommendations by impact and effort
+              all_recommendations = friction_points + conversion_opportunities + cx_improvements
+              prioritized = self._prioritize_recommendations(all_recommendations)
+
+              return prioritized
+
+          def _analyze_journey_sequences(self, journey_data: pd.DataFrame) -> Dict[str, Any]:
+              """Analyze common customer journey sequences"""
+              # Group by customer and create sequences
+              sequences = journey_data.groupby('customer_id')['touchpoint'].apply(list)
+
+              # Find most common sequences
+              sequence_counts = sequences.value_counts().head(20)
+
+              return {
+                  'common_paths': sequence_counts.to_dict(),
+                  'average_journey_length': sequences.apply(len).mean(),
+                  'unique_sequences': len(sequences.unique())
+              }
+
+          def _build_conversion_funnels(self, journey_data: pd.DataFrame) -> Dict[str, Any]:
+              """Build conversion funnel analysis"""
+              # Define funnel stages
+              funnel_stages = ['awareness', 'consideration', 'intent', 'purchase', 'retention']
+
+              # Calculate conversion rates between stages
+              conversion_rates = {}
+              for i in range(len(funnel_stages) - 1):
+                  current_stage = funnel_stages[i]
+                  next_stage = funnel_stages[i + 1]
+
+                  current_customers = set(journey_data[journey_data['stage'] == current_stage]['customer_id'])
+                  next_customers = set(journey_data[journey_data['stage'] == next_stage]['customer_id'])
+
+                  conversion_rate = len(next_customers) / len(current_customers) if current_customers else 0
+                  conversion_rates[f"{current_stage}_to_{next_stage}"] = conversion_rate
+
+              return {
+                  'stage_conversion_rates': conversion_rates,
+                  'major_drop_offs': {k: v for k, v in conversion_rates.items() if v < 0.5}
+              }
+
+          def generate_journey_dashboard_data(self) -> Dict[str, Any]:
+              """Generate data for executive dashboard"""
+              return {
+                  'key_metrics': {
+                      'avg_journey_length': self.journey_insights.get('journey_map', {}).get('journey_length_analysis', {}).get('average', 0),
+                      'conversion_rate': self.journey_insights.get('journey_map', {}).get('conversion_rates', {}).get('overall', 0),
+                      'churn_risk_customers': len(self.journey_insights.get('churn_prediction', {}).get('high_risk_customers', [])),
+                      'top_friction_point': self.journey_insights.get('optimization', {}).get('top_friction_point', 'Unknown')
+                  },
+                  'visualizations': {
+                      'journey_flow_diagram': self._create_journey_flow_viz(),
+                      'conversion_funnel_chart': self._create_funnel_viz(),
+                      'attribution_comparison': self._create_attribution_viz(),
+                      'churn_risk_heatmap': self._create_churn_risk_viz()
+                  },
+                  'actionable_insights': self.optimization_recommendations()
+              }
+
+      # Usage example
+      journey_analyzer = CustomerJourneyAnalytics(customer_df, touchpoint_df)
+      journey_map = journey_analyzer.map_customer_journeys()
+      attribution = journey_analyzer.attribution_modeling()
+      churn_analysis = journey_analyzer.churn_prediction_analysis()
+      recommendations = journey_analyzer.optimization_recommendations()
+      dashboard_data = journey_analyzer.generate_journey_dashboard_data()
+    best_practices:
+      - "Track customer journeys across all touchpoints and channels for complete visibility"
+      - "Use multiple attribution models to understand marketing effectiveness from different perspectives"
+      - "Implement real-time journey tracking to enable immediate optimization opportunities"
+      - "Segment journey analysis by customer value and behavior patterns"
+      - "Combine quantitative journey data with qualitative customer feedback"
+    common_pitfalls:
+      - "Focusing only on digital touchpoints while ignoring offline interactions"
+      - "Using single-touch attribution models that oversimplify customer behavior"
+      - "Not accounting for external factors that influence customer journey progression"
 
 professional_standards:
-  security_frameworks: []
-  industry_practices: []
-  compliance_requirements: []
+  security_frameworks:
+    - "GDPR Data Protection Framework - Comprehensive data privacy compliance for customer analytics, including consent management, data minimization, right to erasure, and privacy-by-design for business intelligence systems"
+    - "SOX Compliance for Financial Reporting - Internal controls for financial data accuracy, audit trails for business metrics, segregation of duties in financial analysis, and documentation requirements for publicly traded companies"
+    - "ISO 27001 Information Security - Systematic approach to managing sensitive business information, risk assessment for data assets, security controls for business intelligence systems, and incident response procedures"
+    - "NIST Cybersecurity Framework - Risk-based approach to protecting business data assets with identify, protect, detect, respond, and recover functions for business intelligence infrastructure"
+    - "PCI DSS for Payment Data - Security standards for handling payment information in customer analytics, secure data transmission, access controls, and monitoring requirements"
+
+  industry_practices:
+    - "Business Intelligence Best Practices - Data governance, metadata management, self-service analytics enablement, and enterprise data architecture for scalable BI solutions"
+    - "Market Research Standards - Primary and secondary research methodologies, statistical significance testing, bias mitigation techniques, and ethical research practices"
+    - "Financial Modeling Excellence - Scenario planning, sensitivity analysis, Monte Carlo simulation, and model validation for accurate business forecasting"
+    - "Customer Analytics Ethics - Privacy-preserving analytics, algorithmic fairness assessment, transparent data usage policies, and consent-based personalization"
+    - "Competitive Intelligence Guidelines - Legal intelligence gathering, ethical competitive analysis, source verification, and intellectual property respect"
+    - "ROI Measurement Standards - Attribution modeling, baseline establishment, incremental impact analysis, and long-term value measurement"
+
+  compliance_requirements:
+    - "CCPA Consumer Privacy Rights - Consumer data rights management, opt-out mechanisms, data deletion procedures, and privacy notice requirements for California residents"
+    - "HIPAA Healthcare Analytics - Protected health information safeguards, minimum necessary standard, business associate agreements, and audit logging for healthcare business intelligence"
+    - "FERPA Educational Records - Student data privacy protections, consent requirements, directory information handling, and disclosure limitations for educational analytics"
+    - "Financial Services Regulations - KYC requirements, anti-money laundering compliance, fair lending analysis, and consumer protection in financial product analytics"
+    - "Industry-Specific Data Governance - Sector-specific regulatory requirements, data retention policies, cross-border data transfer restrictions, and regulatory reporting obligations"
 
 integration_guidelines:
-  api_integration: []
-  database_integration: []
-  third_party_services: []
+  api_integration:
+    - "Business Intelligence Platform APIs - RESTful integration with Tableau Server, Power BI Service, Looker, and QlikSense for automated dashboard deployment and data refresh"
+    - "Marketing Analytics APIs - Integration with Google Analytics, Adobe Analytics, Mixpanel, and Amplitude for comprehensive customer journey tracking and attribution analysis"
+    - "CRM and Sales APIs - Salesforce, HubSpot, and Pipedrive integration for sales performance analysis, lead scoring, and revenue attribution modeling"
+    - "Financial Data APIs - QuickBooks, Xero, and ERP system integration for automated financial reporting, budget variance analysis, and profitability insights"
+    - "Survey and Feedback APIs - SurveyMonkey, Typeform, and Qualtrics integration for customer satisfaction analysis and market research data collection"
+
+  database_integration:
+    - "Data Warehouse Architecture - Snowflake, Redshift, and BigQuery integration for scalable business intelligence with proper dimensional modeling and ETL pipelines"
+    - "Operational Database Integration - PostgreSQL, MySQL, and SQL Server connectivity for real-time business metrics and operational reporting"
+    - "Customer Data Platforms - Segment, mParticle, and Tealium integration for unified customer view and cross-channel analytics"
+    - "Time Series Databases - InfluxDB and TimescaleDB integration for real-time business metrics, performance monitoring, and trend analysis"
+    - "NoSQL Integration - MongoDB and Elasticsearch connectivity for unstructured data analysis, text analytics, and flexible schema requirements"
+
+  third_party_services:
+    - "Market Research Services - Nielsen, Gartner, and IBISWorld integration for industry benchmarking, market sizing, and competitive intelligence"
+    - "Credit and Risk Services - Dun & Bradstreet, Experian, and Equifax integration for customer creditworthiness analysis and risk assessment"
+    - "Social Media Analytics - Brandwatch, Sprout Social, and Hootsuite integration for brand sentiment analysis and social listening"
+    - "Economic Data Services - FRED API, Yahoo Finance, and Alpha Vantage integration for macroeconomic analysis and market correlation studies"
+    - "Geospatial Services - Google Maps API, Mapbox, and ESRI integration for location-based analytics and market penetration analysis"
 
 performance_benchmarks:
-  response_times: []
-  throughput_targets: []
-  resource_utilization: []
+  response_times:
+    - "Dashboard Load Times: P50 < 3s, P95 < 8s, P99 < 15s for interactive business intelligence dashboards with complex visualizations and real-time data"
+    - "Ad-hoc Query Performance: P50 < 5s, P95 < 20s, P99 < 45s for complex analytical queries across large datasets with proper indexing and optimization"
+    - "Report Generation: P50 < 10s, P95 < 60s, P99 < 180s for automated business reports with multiple data sources and advanced calculations"
+    - "Data Refresh Cycles: P50 < 30min, P95 < 2h, P99 < 4h for scheduled data pipeline execution and business intelligence system updates"
 
-troubleshooting_guides: []
-  # Example structure:
-  # - issue: "Common problem description"
-  #   symptoms: []
-  #   solutions: []
-  #   prevention: []
+  throughput_targets:
+    - "Concurrent Dashboard Users: >100 simultaneous users with responsive performance and proper caching strategies"
+    - "Daily Report Volume: >500 automated reports with reliable delivery and format consistency across multiple business units"
+    - "API Query Rate: >1000 requests/hour for business intelligence API endpoints with proper rate limiting and resource management"
+    - "Data Processing Volume: >10GB/hour for ETL pipelines handling business data ingestion, transformation, and loading processes"
 
-tool_configurations: []
-  # Example structure:
-  # - tool: "pytest"
-  #   config_file: "pytest.ini"
-  #   recommended_settings: {}
-  #   integration_notes: ""
+  resource_utilization:
+    - "Query Optimization: <70% database CPU utilization during peak business hours with efficient indexing and query planning"
+    - "Dashboard Memory Usage: <8GB per dashboard server instance with proper caching and resource allocation for concurrent users"
+    - "Storage Efficiency: <80% data warehouse storage utilization with automated archiving and data lifecycle management"
+    - "Network Bandwidth: <60% utilization during data synchronization with compression and optimization techniques"
+
+troubleshooting_guides:
+  - issue: "Dashboard Performance Degradation and Slow Loading"
+    symptoms:
+      - "Business intelligence dashboards taking >30 seconds to load"
+      - "Timeout errors when accessing complex visualizations"
+      - "User complaints about unresponsive interactive filters"
+      - "High CPU usage on dashboard servers during peak hours"
+    solutions:
+      - "Implement data aggregation tables for commonly used metrics to reduce query complexity"
+      - "Add dashboard caching strategies with appropriate refresh intervals based on data freshness requirements"
+      - "Optimize database queries by adding proper indexes on frequently filtered columns"
+      - "Implement incremental data refresh instead of full dataset reloading for time-sensitive dashboards"
+    prevention:
+      - "Monitor dashboard usage patterns and proactively optimize high-traffic visualizations"
+      - "Establish dashboard performance standards and automated monitoring alerts"
+      - "Regular database maintenance including index optimization and statistics updates"
+
+  - issue: "Inaccurate Business Metrics and Data Quality Issues"
+    symptoms:
+      - "Discrepancies between different business reports showing same metrics"
+      - "Historical data showing unexpected spikes or drops without business explanation"
+      - "Missing data points in critical business KPIs and performance indicators"
+      - "Stakeholders questioning reliability of business intelligence insights"
+    solutions:
+      - "Implement comprehensive data validation rules at ingestion points with automated quality checks"
+      - "Establish data lineage tracking to identify source of metric discrepancies and calculation errors"
+      - "Create business rules engine for logical data validation and anomaly detection"
+      - "Implement dual-source verification for critical business metrics with reconciliation processes"
+    prevention:
+      - "Regular data quality audits with business stakeholder validation and sign-off"
+      - "Automated data profiling and statistical analysis to detect data drift and anomalies"
+      - "Clear data governance policies with defined ownership and accountability for data quality"
+
+  - issue: "Competitive Intelligence Data Staleness and Accuracy"
+    symptoms:
+      - "Competitive analysis based on outdated market research and pricing information"
+      - "Strategic decisions made with incomplete competitive landscape understanding"
+      - "Market opportunity assessments missing recent competitor moves or product launches"
+      - "Inconsistent competitive data from multiple research sources and vendor reports"
+    solutions:
+      - "Establish automated competitive intelligence gathering using web scraping and API monitoring"
+      - "Implement multi-source data verification with weighted confidence scoring for competitive insights"
+      - "Create competitive intelligence dashboard with real-time updates and source attribution"
+      - "Develop competitive alert system for significant market changes and competitor activities"
+    prevention:
+      - "Regular competitive intelligence source review and reliability assessment"
+      - "Establish primary research programs including customer interviews and market surveys"
+      - "Create competitive intelligence validation process with business stakeholder review"
+
+  - issue: "ROI Analysis Discrepancies and Attribution Challenges"
+    symptoms:
+      - "Multiple departments claiming credit for same revenue with conflicting ROI calculations"
+      - "Marketing attribution models showing different results for same campaigns"
+      - "Difficulty tracking long-term ROI for strategic investments and business initiatives"
+      - "Inconsistent ROI methodologies across different business units and project types"
+    solutions:
+      - "Implement standardized ROI calculation framework with clear attribution rules and assumptions"
+      - "Establish multi-touch attribution modeling with data-driven coefficient assignment"
+      - "Create ROI tracking dashboard with transparent methodology and assumption documentation"
+      - "Implement baseline establishment and incremental impact analysis for accurate ROI measurement"
+    prevention:
+      - "Regular ROI methodology training for business stakeholders and project managers"
+      - "Standardized business case templates with consistent ROI calculation requirements"
+      - "Cross-functional ROI review process with finance and operations stakeholder approval"
+
+  - issue: "Customer Segmentation Model Drift and Effectiveness Loss"
+    symptoms:
+      - "Marketing campaigns showing declining response rates for established customer segments"
+      - "Customer behavior patterns not matching historical segmentation profiles"
+      - "Personalization algorithms producing irrelevant recommendations for customer segments"
+      - "Customer lifetime value predictions becoming increasingly inaccurate over time"
+    solutions:
+      - "Implement automated model monitoring with statistical drift detection for customer segments"
+      - "Establish regular model retraining schedule with new customer behavior data integration"
+      - "Create A/B testing framework for segmentation model validation and performance comparison"
+      - "Implement ensemble modeling approach combining multiple segmentation methodologies"
+    prevention:
+      - "Continuous customer behavior monitoring with automated alerting for significant changes"
+      - "Regular business stakeholder feedback collection on segment relevance and accuracy"
+      - "Established model governance process with performance thresholds and retraining triggers"
+
+tool_configurations:
+  - tool: "Tableau"
+    config_file: "tableau_server_config.yml"
+    recommended_settings:
+      server_settings:
+        vizqlserver.session.expiry.timeout: 60
+        backgrounder.querylimit: 7200
+        native_api.max_request_size_mb: 128
+        webserver.session.idle_limit: 240
+      performance_optimization:
+        data_engine.hyper_connection_pool_size: 8
+        data_engine.max_query_limit: 1800
+        extract_refresh_parallel_limit: 4
+        dashboard_cache_size_mb: 512
+      security_configuration:
+        gateway.trusted_hosts: ["trusted-server-1", "trusted-server-2"]
+        ssl.protocols: ["TLSv1.2", "TLSv1.3"]
+        authentication.method: "SAML"
+        data_connection.allow_insecure: false
+    integration_notes: "Configure with enterprise SSO and establish data governance policies for published dashboards. Enable row-level security for sensitive business metrics."
+
+  - tool: "Power BI"
+    config_file: "powerbi_tenant_settings.json"
+    recommended_settings:
+      tenant_administration:
+        export_to_excel_enabled: true
+        publish_to_web_enabled: false
+        dataset_sharing_enabled: true
+        guest_user_access_enabled: true
+      capacity_settings:
+        max_memory_per_dataset_gb: 10
+        query_timeout_minutes: 30
+        refresh_parallelism: 4
+        max_connections_per_gateway: 10
+      security_policies:
+        row_level_security_enabled: true
+        sensitivity_labels_enabled: true
+        audit_log_retention_days: 90
+        api_access_restricted: true
+    integration_notes: "Integrate with Azure Active Directory for enterprise authentication. Configure Premium capacity for large-scale business intelligence workloads."
+
+  - tool: "Python Analytics Environment"
+    config_file: "pyproject.toml"
+    recommended_settings:
+      dependencies:
+        pandas: "^2.1.0"
+        numpy: "^1.25.0"
+        scikit-learn: "^1.3.0"
+        matplotlib: "^3.7.0"
+        seaborn: "^0.12.0"
+        plotly: "^5.15.0"
+        jupyter: "^1.0.0"
+        statsmodels: "^0.14.0"
+      jupyter_configuration:
+        notebook_timeout: 3600
+        max_buffer_size: 1073741824
+        iopub_data_rate_limit: 10000000
+        rate_limit_window: 3.0
+      performance_settings:
+        pandas_compute_engine: "numba"
+        matplotlib_backend: "Agg"
+        memory_usage_threshold_mb: 8192
+        parallel_processing_workers: 4
+    integration_notes: "Configure virtual environment with business intelligence libraries. Set up Jupyter Lab with corporate authentication and shared workspace access."
+
+  - tool: "SQL Database Optimization"
+    config_file: "postgresql.conf"
+    recommended_settings:
+      memory_configuration:
+        shared_buffers: "4GB"
+        effective_cache_size: "12GB"
+        work_mem: "256MB"
+        maintenance_work_mem: "1GB"
+      query_optimization:
+        random_page_cost: 1.1
+        effective_io_concurrency: 200
+        max_worker_processes: 8
+        max_parallel_workers_per_gather: 4
+      logging_and_monitoring:
+        log_min_duration_statement: 1000
+        log_checkpoints: true
+        log_connections: true
+        log_statement: "mod"
+    integration_notes: "Optimize for analytical workloads with proper indexing strategy. Configure connection pooling for business intelligence tools and implement query performance monitoring."
 
 escalation_triggers:
-  - Complex market analysis beyond business intelligence scope
-  - After 3 failed business case attempts requiring senior strategic guidance
-  - Cross-domain coordination requiring enterprise-scale business decisions
-  - Advanced financial modeling requiring specialized quantitative expertise
-  - Strategic business architecture requiring senior executive consultation
+  - Complex market analysis beyond business intelligence scope requiring specialized industry expertise
+  - After 3 failed business case attempts requiring senior strategic guidance and executive consultation
+  - Cross-domain coordination requiring enterprise-scale business decisions affecting multiple business units
+  - Advanced financial modeling requiring specialized quantitative expertise and actuarial analysis
+  - Strategic business architecture requiring senior executive consultation and board-level decision making
+  - Regulatory compliance issues requiring legal and compliance specialist involvement
+  - Competitive intelligence requiring specialized research methodologies and primary market research
+  - Large-scale transformation initiatives requiring change management and organizational design expertise
 
 coordination_overrides:
-  analysis_methodology: Data-driven insights with statistical validation and business impact focus
-  reporting_strategy: Executive-ready business intelligence with actionable recommendations
-  escalation_target: sr-architect for complex technical architecture decisions
+  analysis_methodology: "Data-driven insights with statistical validation, business impact focus, and stakeholder-appropriate communication"
+  reporting_strategy: "Executive-ready business intelligence with actionable recommendations, risk assessment, and implementation roadmaps"
+  quality_standards: "Statistical rigor with confidence intervals, assumption documentation, and methodology transparency"
+  stakeholder_communication: "Business-focused insights with technical detail appropriate to audience expertise level"
+  escalation_target: "sr-architect for complex technical architecture decisions, product-manager for strategic product alignment"

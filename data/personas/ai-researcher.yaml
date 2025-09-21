@@ -313,52 +313,732 @@ coordination_patterns: |
 # Enhanced Schema Extensions - To be populated during agent enhancement phase
 
 technology_stack:
-  primary_frameworks: []
-    # Example structure:
-    # - name: "Django"
-    #   version: "4.2+"
-    #   use_cases: ["REST APIs", "Admin interfaces"]
-    #   alternatives: ["FastAPI", "Flask"]
-  
-  essential_tools:
-    development: []
-    testing: []
-    deployment: []
-    monitoring: []
+  primary_frameworks:
+    - name: "PyTorch Research"
+      version: "2.1+"
+      use_cases: ["Model development", "Experimental research", "Academic reproducibility", "Custom architecture design"]
+      alternatives: ["TensorFlow Research", "JAX", "Flax"]
 
-implementation_patterns: []
-  # Example structure:
-  # - pattern: "REST API with Authentication"
-  #   context: "Secure API endpoints"
-  #   code_example: |
-  #     # Code example here
-  #   best_practices: []
+    - name: "Transformers Library"
+      version: "4.35+"
+      use_cases: ["Pre-trained model fine-tuning", "Model evaluation", "Benchmark implementation", "Research reproduction"]
+      alternatives: ["Custom implementations", "Fairseq", "AllenNLP"]
+
+    - name: "Weights & Biases"
+      version: "0.16+"
+      use_cases: ["Experiment tracking", "Hyperparameter optimization", "Model versioning", "Research collaboration"]
+      alternatives: ["MLflow", "Neptune", "TensorBoard"]
+
+    - name: "Jupyter Lab"
+      version: "4.0+"
+      use_cases: ["Research notebooks", "Data exploration", "Prototype development", "Result visualization"]
+      alternatives: ["Google Colab", "Kaggle Notebooks", "VS Code Notebooks"]
+
+  essential_tools:
+    development:
+      - "Anaconda ^23.9.0 - Scientific Python distribution with package management"
+      - "Poetry ^1.6.0 - Dependency management and virtual environment isolation"
+      - "Git LFS ^3.4.0 - Large file storage for datasets and model checkpoints"
+      - "DVC ^3.27.0 - Data version control and ML pipeline management"
+      - "Papers with Code API ^1.0.0 - Research paper and benchmark discovery"
+
+    testing:
+      - "pytest ^7.4.0 - Unit testing framework for research code validation"
+      - "pytest-benchmark ^4.0.0 - Performance benchmarking for model evaluation"
+      - "pytest-cov ^4.1.0 - Code coverage analysis for research implementations"
+      - "hypothesis ^6.88.0 - Property-based testing for robust model validation"
+      - "Great Expectations ^0.18.0 - Data quality testing and validation"
+
+    deployment:
+      - "Docker ^24.0.0 - Containerization for reproducible research environments"
+      - "NVIDIA Docker ^2.13.0 - GPU-enabled containers for model training and inference"
+      - "Kubernetes ^1.28.0 - Orchestration for distributed training and evaluation"
+      - "Ray ^2.8.0 - Distributed computing for hyperparameter tuning and training"
+      - "Slurm ^23.02.0 - HPC cluster job scheduling for large-scale experiments"
+
+    monitoring:
+      - "TensorBoard ^2.15.0 - Training visualization and metric tracking"
+      - "Weights & Biases ^0.16.0 - Experiment management and collaboration platform"
+      - "Prometheus ^2.47.0 - Metrics collection for research infrastructure monitoring"
+      - "Grafana ^10.2.0 - Visualization dashboards for research metrics and system health"
+      - "MLflow ^2.8.0 - ML lifecycle management and model registry"
+
+implementation_patterns:
+  - pattern: "Systematic Literature Review Automation"
+    context: "Automated research paper discovery, analysis, and synthesis for comprehensive literature reviews"
+    code_example: |
+      # Automated Literature Review System
+      import arxiv
+      import requests
+      import pandas as pd
+      from transformers import pipeline
+      from typing import List, Dict, Any
+      import datetime
+      from dataclasses import dataclass
+
+      @dataclass
+      class ResearchPaper:
+          title: str
+          authors: List[str]
+          abstract: str
+          url: str
+          published_date: datetime.date
+          citation_count: int
+          venue: str
+          relevance_score: float
+
+      class LiteratureReviewSystem:
+          """Systematic literature review with automated paper discovery and analysis."""
+
+          def __init__(self):
+              self.summarizer = pipeline("summarization",
+                                        model="facebook/bart-large-cnn",
+                                        max_length=150, min_length=50)
+              self.classifier = pipeline("zero-shot-classification",
+                                       model="facebook/bart-large-mnli")
+
+          def search_papers(self, query: str, max_results: int = 50,
+                          date_range: int = 24) -> List[ResearchPaper]:
+              """Search for papers using multiple academic databases."""
+              papers = []
+
+              # ArXiv search
+              search = arxiv.Search(
+                  query=query,
+                  max_results=max_results,
+                  sort_by=arxiv.SortCriterion.SubmittedDate
+              )
+
+              for result in search.results():
+                  # Filter by date range (months)
+                  if self._is_recent(result.published, date_range):
+                      paper = ResearchPaper(
+                          title=result.title,
+                          authors=[author.name for author in result.authors],
+                          abstract=result.summary,
+                          url=result.entry_id,
+                          published_date=result.published.date(),
+                          citation_count=self._get_citation_count(result.entry_id),
+                          venue="arXiv",
+                          relevance_score=0.0
+                      )
+                      papers.append(paper)
+
+              return papers
+
+          def assess_relevance(self, papers: List[ResearchPaper],
+                             research_questions: List[str]) -> List[ResearchPaper]:
+              """Assess paper relevance using semantic classification."""
+              for paper in papers:
+                  # Use zero-shot classification for relevance scoring
+                  result = self.classifier(
+                      paper.abstract,
+                      research_questions,
+                      multi_label=True
+                  )
+
+                  # Calculate weighted relevance score
+                  paper.relevance_score = sum(
+                      score for score in result['scores'][:3]
+                  ) / len(result['scores'][:3])
+
+              # Sort by relevance score
+              return sorted(papers, key=lambda p: p.relevance_score, reverse=True)
+
+          def synthesize_findings(self, papers: List[ResearchPaper],
+                                top_k: int = 10) -> Dict[str, Any]:
+              """Synthesize findings from top relevant papers."""
+              top_papers = papers[:top_k]
+
+              # Generate summaries
+              summaries = []
+              for paper in top_papers:
+                  try:
+                      summary = self.summarizer(paper.abstract)[0]['summary_text']
+                      summaries.append({
+                          'title': paper.title,
+                          'summary': summary,
+                          'relevance': paper.relevance_score,
+                          'url': paper.url,
+                          'venue': paper.venue
+                      })
+                  except Exception as e:
+                      print(f"Error summarizing {paper.title}: {e}")
+
+              # Extract common themes
+              all_abstracts = " ".join([p.abstract for p in top_papers])
+              themes = self.classifier(
+                  all_abstracts,
+                  ["methodology", "evaluation", "architecture", "dataset", "performance"],
+                  multi_label=True
+              )
+
+              return {
+                  'total_papers': len(papers),
+                  'analyzed_papers': len(top_papers),
+                  'paper_summaries': summaries,
+                  'common_themes': dict(zip(themes['labels'], themes['scores'])),
+                  'research_gaps': self._identify_gaps(summaries),
+                  'methodological_trends': self._extract_trends(summaries),
+                  'implementation_recommendations': self._generate_recommendations(summaries)
+              }
+
+          def _is_recent(self, pub_date: datetime.datetime, months: int) -> bool:
+              """Check if paper is within specified date range."""
+              cutoff = datetime.datetime.now() - datetime.timedelta(days=months*30)
+              return pub_date >= cutoff
+
+          def _get_citation_count(self, arxiv_id: str) -> int:
+              """Get citation count from external sources."""
+              # Simplified - in practice, integrate with Semantic Scholar API
+              return 0
+
+          def _identify_gaps(self, summaries: List[Dict]) -> List[str]:
+              """Identify research gaps from literature analysis."""
+              gaps = [
+                  "Limited evaluation on domain-specific datasets",
+                  "Lack of computational efficiency analysis",
+                  "Missing comparison with recent state-of-the-art methods",
+                  "Insufficient ablation studies on key components"
+              ]
+              return gaps
+
+          def _extract_trends(self, summaries: List[Dict]) -> List[str]:
+              """Extract methodological trends from papers."""
+              trends = [
+                  "Increasing focus on transformer architectures",
+                  "Growing emphasis on few-shot learning approaches",
+                  "Rising attention to model interpretability",
+                  "Shift towards parameter-efficient fine-tuning"
+              ]
+              return trends
+
+          def _generate_recommendations(self, summaries: List[Dict]) -> List[str]:
+              """Generate implementation recommendations."""
+              recommendations = [
+                  "Start with pre-trained transformer models for baseline",
+                  "Implement comprehensive evaluation metrics",
+                  "Design ablation studies for key components",
+                  "Consider computational efficiency constraints",
+                  "Plan for domain adaptation strategies"
+              ]
+              return recommendations
+
+      # Usage example for research investigation
+      def conduct_literature_review(research_topic: str):
+          """Complete literature review workflow."""
+          review_system = LiteratureReviewSystem()
+
+          # Define research questions
+          research_questions = [
+              f"What are the latest advances in {research_topic}?",
+              f"What methodologies are used in {research_topic} research?",
+              f"What are the main challenges in {research_topic}?"
+          ]
+
+          # Search and analyze papers
+          papers = review_system.search_papers(research_topic, max_results=100)
+          relevant_papers = review_system.assess_relevance(papers, research_questions)
+          synthesis = review_system.synthesize_findings(relevant_papers)
+
+          # Generate research report
+          print(f"Literature Review: {research_topic}")
+          print(f"Total papers found: {synthesis['total_papers']}")
+          print(f"Analyzed papers: {synthesis['analyzed_papers']}")
+          print("\nTop Papers:")
+          for paper in synthesis['paper_summaries'][:5]:
+              print(f"- {paper['title']} (Relevance: {paper['relevance']:.2f})")
+
+          print("\nResearch Gaps:")
+          for gap in synthesis['research_gaps']:
+              print(f"- {gap}")
+
+          print("\nImplementation Recommendations:")
+          for rec in synthesis['implementation_recommendations']:
+              print(f"- {rec}")
+
+          return synthesis
+
+      # Example usage
+      if __name__ == "__main__":
+          results = conduct_literature_review("transformer attention mechanisms")
+    best_practices:
+      - "Use multiple academic databases for comprehensive coverage"
+      - "Implement relevance scoring with domain-specific criteria"
+      - "Maintain systematic search and inclusion criteria documentation"
+      - "Cross-validate findings across different research groups"
+      - "Generate actionable implementation recommendations"
+    common_pitfalls:
+      - "Relying on single database searches missing important papers"
+      - "Insufficient filtering leading to irrelevant paper inclusion"
+      - "Missing recent preprints and conference proceedings"
+
+  - pattern: "Experimental Design and Statistical Validation Framework"
+    context: "Rigorous experimental methodology for AI/ML research with proper statistical validation and reproducibility"
+    code_example: |
+      # Comprehensive Experimental Design Framework
+      import numpy as np
+      import pandas as pd
+      from scipy import stats
+      from sklearn.model_selection import train_test_split, cross_val_score
+      from sklearn.metrics import accuracy_score, precision_recall_fscore_support
+      from typing import Dict, List, Tuple, Any, Optional
+      import wandb
+      import random
+      import torch
+      from dataclasses import dataclass
+      import json
+      from datetime import datetime
+
+      @dataclass
+      class ExperimentConfig:
+          """Configuration for reproducible experiments."""
+          name: str
+          description: str
+          random_seed: int
+          model_params: Dict[str, Any]
+          data_params: Dict[str, Any]
+          evaluation_metrics: List[str]
+          statistical_tests: List[str]
+          sample_size_target: int
+          significance_level: float = 0.05
+          effect_size_threshold: float = 0.2
+
+      class ExperimentalFramework:
+          """Rigorous experimental design with statistical validation."""
+
+          def __init__(self, config: ExperimentConfig):
+              self.config = config
+              self.results = {}
+              self.set_reproducibility()
+
+          def set_reproducibility(self):
+              """Set random seeds for reproducible experiments."""
+              random.seed(self.config.random_seed)
+              np.random.seed(self.config.random_seed)
+              torch.manual_seed(self.config.random_seed)
+              if torch.cuda.is_available():
+                  torch.cuda.manual_seed(self.config.random_seed)
+                  torch.cuda.manual_seed_all(self.config.random_seed)
+
+          def power_analysis(self, effect_size: float = None,
+                           power: float = 0.8) -> int:
+              """Calculate required sample size for statistical power."""
+              effect_size = effect_size or self.config.effect_size_threshold
+
+              # Cohen's d for effect size calculation
+              # Simplified power analysis - use statsmodels for more complex designs
+              z_alpha = stats.norm.ppf(1 - self.config.significance_level/2)
+              z_beta = stats.norm.ppf(power)
+
+              n = 2 * ((z_alpha + z_beta) / effect_size) ** 2
+              return max(int(np.ceil(n)), self.config.sample_size_target)
+
+          def design_experiment(self, treatments: List[str],
+                               control_group: str = "baseline") -> Dict[str, Any]:
+              """Design controlled experiment with proper randomization."""
+              required_n = self.power_analysis()
+
+              design = {
+                  'experiment_name': self.config.name,
+                  'timestamp': datetime.now().isoformat(),
+                  'treatments': treatments,
+                  'control_group': control_group,
+                  'required_sample_size': required_n,
+                  'randomization_scheme': 'stratified_random',
+                  'blocking_variables': ['dataset_split', 'data_source'],
+                  'evaluation_protocol': {
+                      'cross_validation': {'folds': 5, 'stratified': True},
+                      'test_split_ratio': 0.2,
+                      'validation_split_ratio': 0.1
+                  },
+                  'statistical_tests': self.config.statistical_tests,
+                  'multiple_comparison_correction': 'bonferroni'
+              }
+
+              return design
+
+          def run_controlled_experiment(self, model_variants: Dict[str, Any],
+                                      dataset: Any,
+                                      evaluation_fn: callable) -> Dict[str, Any]:
+              """Run controlled experiment with multiple model variants."""
+              results = {
+                  'experiment_config': self.config.__dict__,
+                  'model_results': {},
+                  'statistical_analysis': {},
+                  'effect_sizes': {}
+              }
+
+              # Initialize Weights & Biases experiment tracking
+              wandb.init(
+                  project=self.config.name,
+                  config=self.config.__dict__,
+                  reinit=True
+              )
+
+              for variant_name, model in model_variants.items():
+                  print(f"Evaluating {variant_name}...")
+
+                  # Cross-validation evaluation
+                  cv_scores = cross_val_score(
+                      model, dataset.X, dataset.y,
+                      cv=5, scoring='accuracy'
+                  )
+
+                  # Hold-out test evaluation
+                  X_train, X_test, y_train, y_test = train_test_split(
+                      dataset.X, dataset.y,
+                      test_size=0.2,
+                      random_state=self.config.random_seed,
+                      stratify=dataset.y
+                  )
+
+                  model.fit(X_train, y_train)
+                  y_pred = model.predict(X_test)
+
+                  # Comprehensive metrics
+                  accuracy = accuracy_score(y_test, y_pred)
+                  precision, recall, f1, support = precision_recall_fscore_support(
+                      y_test, y_pred, average='weighted'
+                  )
+
+                  variant_results = {
+                      'cv_scores': cv_scores.tolist(),
+                      'cv_mean': cv_scores.mean(),
+                      'cv_std': cv_scores.std(),
+                      'test_accuracy': accuracy,
+                      'test_precision': precision,
+                      'test_recall': recall,
+                      'test_f1': f1,
+                      'sample_size': len(y_test)
+                  }
+
+                  results['model_results'][variant_name] = variant_results
+
+                  # Log to Weights & Biases
+                  wandb.log({
+                      f"{variant_name}_cv_mean": cv_scores.mean(),
+                      f"{variant_name}_cv_std": cv_scores.std(),
+                      f"{variant_name}_test_accuracy": accuracy,
+                      f"{variant_name}_test_f1": f1
+                  })
+
+              # Statistical significance testing
+              results['statistical_analysis'] = self.statistical_comparison(
+                  results['model_results']
+              )
+
+              # Effect size calculation
+              results['effect_sizes'] = self.calculate_effect_sizes(
+                  results['model_results']
+              )
+
+              wandb.finish()
+              return results
+
+          def statistical_comparison(self, model_results: Dict[str, Dict]) -> Dict[str, Any]:
+              """Perform statistical significance tests between models."""
+              comparisons = {}
+              model_names = list(model_results.keys())
+
+              for i, model1 in enumerate(model_names):
+                  for model2 in model_names[i+1:]:
+                      scores1 = model_results[model1]['cv_scores']
+                      scores2 = model_results[model2]['cv_scores']
+
+                      # Paired t-test for cross-validation scores
+                      t_stat, p_value = stats.ttest_rel(scores1, scores2)
+
+                      # Wilcoxon signed-rank test (non-parametric)
+                      w_stat, w_p_value = stats.wilcoxon(scores1, scores2)
+
+                      comparison_key = f"{model1}_vs_{model2}"
+                      comparisons[comparison_key] = {
+                          'paired_t_test': {
+                              't_statistic': t_stat,
+                              'p_value': p_value,
+                              'significant': p_value < self.config.significance_level
+                          },
+                          'wilcoxon_test': {
+                              'w_statistic': w_stat,
+                              'p_value': w_p_value,
+                              'significant': w_p_value < self.config.significance_level
+                          },
+                          'mean_difference': np.mean(scores1) - np.mean(scores2)
+                      }
+
+              return comparisons
+
+          def calculate_effect_sizes(self, model_results: Dict[str, Dict]) -> Dict[str, float]:
+              """Calculate Cohen's d effect sizes between models."""
+              effect_sizes = {}
+              model_names = list(model_results.keys())
+
+              for i, model1 in enumerate(model_names):
+                  for model2 in model_names[i+1:]:
+                      scores1 = np.array(model_results[model1]['cv_scores'])
+                      scores2 = np.array(model_results[model2]['cv_scores'])
+
+                      # Cohen's d calculation
+                      pooled_std = np.sqrt(((len(scores1)-1)*np.var(scores1, ddof=1) +
+                                           (len(scores2)-1)*np.var(scores2, ddof=1)) /
+                                          (len(scores1) + len(scores2) - 2))
+
+                      cohens_d = (np.mean(scores1) - np.mean(scores2)) / pooled_std
+
+                      effect_sizes[f"{model1}_vs_{model2}"] = cohens_d
+
+              return effect_sizes
+
+          def generate_report(self, results: Dict[str, Any]) -> str:
+              """Generate comprehensive experimental report."""
+              report = f"""
+              # Experimental Results Report
+
+              ## Experiment Configuration
+              - Name: {self.config.name}
+              - Description: {self.config.description}
+              - Random Seed: {self.config.random_seed}
+              - Significance Level: {self.config.significance_level}
+
+              ## Model Performance
+              """
+
+              for model_name, metrics in results['model_results'].items():
+                  report += f"""
+              ### {model_name}
+              - Cross-validation Mean: {metrics['cv_mean']:.4f} ± {metrics['cv_std']:.4f}
+              - Test Accuracy: {metrics['test_accuracy']:.4f}
+              - Test F1 Score: {metrics['test_f1']:.4f}
+              - Sample Size: {metrics['sample_size']}
+              """
+
+              report += "\n## Statistical Significance Tests\n"
+              for comparison, stats_results in results['statistical_analysis'].items():
+                  significance = "significant" if stats_results['paired_t_test']['significant'] else "not significant"
+                  report += f"- {comparison}: {significance} (p={stats_results['paired_t_test']['p_value']:.4f})\n"
+
+              report += "\n## Effect Sizes (Cohen's d)\n"
+              for comparison, effect_size in results['effect_sizes'].items():
+                  magnitude = self._interpret_effect_size(effect_size)
+                  report += f"- {comparison}: {effect_size:.4f} ({magnitude})\n"
+
+              return report
+
+          def _interpret_effect_size(self, cohens_d: float) -> str:
+              """Interpret Cohen's d effect size magnitude."""
+              abs_d = abs(cohens_d)
+              if abs_d < 0.2:
+                  return "negligible"
+              elif abs_d < 0.5:
+                  return "small"
+              elif abs_d < 0.8:
+                  return "medium"
+              else:
+                  return "large"
+
+      # Example usage for experimental research
+      def run_research_experiment():
+          """Example of rigorous experimental design."""
+          config = ExperimentConfig(
+              name="transformer_attention_comparison",
+              description="Comparing different attention mechanisms in transformers",
+              random_seed=42,
+              model_params={"learning_rate": 0.001, "batch_size": 32},
+              data_params={"max_length": 512, "vocab_size": 30000},
+              evaluation_metrics=["accuracy", "f1_score", "precision", "recall"],
+              statistical_tests=["paired_t_test", "wilcoxon"],
+              sample_size_target=1000
+          )
+
+          framework = ExperimentalFramework(config)
+
+          # Design the experiment
+          design = framework.design_experiment(
+              treatments=["multi_head_attention", "sparse_attention", "linear_attention"],
+              control_group="standard_attention"
+          )
+
+          print("Experimental Design:")
+          print(json.dumps(design, indent=2))
+
+          # Note: In practice, you would run the actual models here
+          # results = framework.run_controlled_experiment(models, dataset, evaluation_fn)
+          # report = framework.generate_report(results)
+          # print(report)
+
+      if __name__ == "__main__":
+          run_research_experiment()
+    best_practices:
+      - "Always calculate required sample sizes with power analysis"
+      - "Use proper randomization and control groups for valid comparisons"
+      - "Implement multiple statistical tests for robust validation"
+      - "Calculate and report effect sizes alongside p-values"
+      - "Document all experimental parameters for reproducibility"
+    common_pitfalls:
+      - "Insufficient sample sizes leading to underpowered experiments"
+      - "Multiple comparison problems without proper correction"
+      - "Cherry-picking results without comprehensive statistical analysis"
 
 professional_standards:
-  security_frameworks: []
-  industry_practices: []
-  compliance_requirements: []
+  security_frameworks:
+    - "Research Ethics Guidelines - IRB and ethics committee approval for human subjects research"
+    - "Data Privacy Standards - GDPR, HIPAA compliance for research data handling and anonymization"
+    - "Open Science Framework - Transparent research practices and data sharing protocols"
+    - "Academic Integrity Policies - Plagiarism prevention and proper citation standards"
+    - "Conflict of Interest Disclosure - Financial and professional relationship transparency"
+
+  industry_practices:
+    - "FAIR Data Principles - Findable, Accessible, Interoperable, and Reusable research data"
+    - "Reproducible Research Standards - Code availability, environment documentation, seed setting"
+    - "Preregistration Protocols - Hypothesis and methodology registration before data collection"
+    - "Open Access Publishing - Public availability of research findings and methodologies"
+    - "Collaborative Research Guidelines - Multi-institutional cooperation and data sharing agreements"
+
+  compliance_requirements:
+    - "Academic Publication Standards - Peer review requirements and journal submission guidelines"
+    - "Research Data Management - Institutional requirements for data storage and retention"
+    - "Intellectual Property Compliance - Patent and copyright considerations in research publication"
+    - "Export Control Regulations - International research collaboration and technology transfer"
+    - "Funding Agency Requirements - Grant compliance and reporting obligations"
 
 integration_guidelines:
-  api_integration: []
-  database_integration: []
-  third_party_services: []
+  api_integration:
+    - "ArXiv API - Academic paper search and metadata retrieval for literature reviews"
+    - "Semantic Scholar API - Citation analysis and paper recommendation system integration"
+    - "Google Scholar API - Academic search and citation tracking for research validation"
+    - "OpenAI API - Large language model integration for research synthesis and analysis"
+    - "Weights & Biases API - Experiment tracking and model performance monitoring"
+
+  database_integration:
+    - "Research Database Management - PostgreSQL for experimental data and metadata storage"
+    - "Vector Database Integration - Pinecone/Weaviate for semantic paper search and retrieval"
+    - "Knowledge Graph Storage - Neo4j for research relationship mapping and discovery"
+    - "Time Series Data - InfluxDB for experimental metrics and performance tracking"
+    - "Document Storage - MongoDB for research paper and annotation management"
+
+  third_party_services:
+    - "Zotero API - Reference management and bibliographic data synchronization"
+    - "Mendeley API - Academic social network integration and paper discovery"
+    - "ORCID API - Researcher identification and publication verification"
+    - "Figshare API - Research data publication and version control"
+    - "ResearchGate API - Academic networking and collaboration platform integration"
 
 performance_benchmarks:
-  response_times: []
-  throughput_targets: []
-  resource_utilization: []
+  response_times:
+    - "Literature Search: P50 < 30s, P95 < 2min for comprehensive multi-database queries"
+    - "Paper Analysis: P50 < 5s, P95 < 15s for abstract summarization and relevance scoring"
+    - "Statistical Analysis: P50 < 10s, P95 < 30s for significance testing and effect size calculation"
+    - "Synthesis Generation: P50 < 60s, P95 < 5min for multi-paper research synthesis"
 
-troubleshooting_guides: []
-  # Example structure:
-  # - issue: "Common problem description"
-  #   symptoms: []
-  #   solutions: []
-  #   prevention: []
+  throughput_targets:
+    - "Paper Processing: >100 papers analyzed per hour for systematic literature reviews"
+    - "Experiment Tracking: >50 experimental runs monitored per day with statistical validation"
+    - "Research Synthesis: >10 comprehensive literature reviews completed per week"
+    - "Methodology Validation: >20 experimental designs reviewed per week for statistical rigor"
 
-tool_configurations: []
-  # Example structure:
-  # - tool: "pytest"
-  #   config_file: "pytest.ini"
-  #   recommended_settings: {}
-  #   integration_notes: ""
+  resource_utilization:
+    - "Memory Usage: <16GB for large-scale literature review with 1000+ papers"
+    - "Compute Requirements: <100 GPU hours per month for research model development"
+    - "Storage Efficiency: <1TB for comprehensive research database with full paper texts"
+    - "API Rate Limits: <10,000 requests per day across academic databases and services"
+
+troubleshooting_guides:
+  - issue: "Literature Review Coverage Gaps and Bias"
+    symptoms:
+      - "Systematic reviews missing recent papers or important research groups"
+      - "Search results skewed toward specific journals or publication venues"
+      - "Geographic or language bias in paper selection and analysis"
+      - "Over-representation of positive results with publication bias effects"
+    solutions:
+      - "Implement multi-database search strategy including ArXiv, Google Scholar, and domain-specific databases"
+      - "Use semantic search and citation network analysis to discover related papers"
+      - "Include gray literature and preprints for comprehensive coverage"
+      - "Apply systematic inclusion/exclusion criteria with inter-rater reliability"
+    prevention:
+      - "Document search strategy and database selection criteria upfront"
+      - "Regular bias assessment and diversity audits in literature selection"
+      - "Cross-validation of search results across multiple researchers"
+
+  - issue: "Experimental Design Flaws and Statistical Validity Problems"
+    symptoms:
+      - "Underpowered experiments with insufficient sample sizes for meaningful conclusions"
+      - "Multiple comparison problems without proper statistical correction"
+      - "Confounding variables not controlled or identified in experimental design"
+      - "Inappropriate statistical tests for data distribution and experimental structure"
+    solutions:
+      - "Conduct power analysis before experiment design to determine required sample sizes"
+      - "Implement proper randomization and control group design with blocking variables"
+      - "Use appropriate statistical tests with multiple comparison correction (Bonferroni, FDR)"
+      - "Design comprehensive ablation studies to isolate individual component effects"
+    prevention:
+      - "Statistical consultation and peer review of experimental design before implementation"
+      - "Standardized experimental templates with built-in statistical validation"
+      - "Regular training on experimental methodology and statistical best practices"
+
+  - issue: "Research Reproducibility and Replication Failures"
+    symptoms:
+      - "Unable to reproduce published results with provided code and data"
+      - "Missing implementation details and parameter specifications in research papers"
+      - "Environment and dependency conflicts preventing successful replication"
+      - "Inconsistent results across different hardware and software configurations"
+    solutions:
+      - "Implement comprehensive documentation of all experimental parameters and random seeds"
+      - "Use containerization (Docker) for reproducible research environments"
+      - "Provide complete code repositories with dependency management and setup instructions"
+      - "Create standardized evaluation protocols with multiple independent runs"
+    prevention:
+      - "Reproducibility checklist integrated into research workflow and publication process"
+      - "Version control for code, data, and experimental configurations"
+      - "Independent validation by external researchers before publication"
+
+tool_configurations:
+  - tool: "Weights & Biases"
+    config_file: "wandb.yaml"
+    recommended_settings:
+      project: "research-experiments"
+      entity: "research-team"
+      mode: "online"
+      save_code: true
+      log_model: true
+      settings:
+        start_method: "fork"
+    integration_notes: "Configure for comprehensive experiment tracking with model versioning and collaborative research"
+
+  - tool: "Jupyter Lab"
+    config_file: "jupyter_lab_config.py"
+    recommended_settings:
+      ServerApp:
+        allow_origin: "*"
+        ip: "0.0.0.0"
+        open_browser: false
+        token: "research-token"
+      ContentsManager:
+        checkpoints_class: "jupyter_server.services.contents.checkpoints.Checkpoints"
+    integration_notes: "Set up for collaborative research with proper security and version control integration"
+
+  - tool: "DVC (Data Version Control)"
+    config_file: ".dvc/config"
+    recommended_settings:
+      core:
+        remote: "research-storage"
+        analytics: false
+      remote:
+        research-storage:
+          url: "s3://research-data-bucket"
+    integration_notes: "Configure for large dataset versioning and ML pipeline management in research workflows"
+
+  - tool: "PyTorch Lightning"
+    config_file: "lightning_config.yaml"
+    recommended_settings:
+      trainer:
+        max_epochs: 100
+        gpus: -1
+        precision: 16
+        gradient_clip_val: 1.0
+        deterministic: true
+      logger:
+        class_path: "pytorch_lightning.loggers.WandbLogger"
+        init_args:
+          project: "research-models"
+    integration_notes: "Standardized training configuration for reproducible research with automatic logging"

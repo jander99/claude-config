@@ -4,21 +4,22 @@ This file provides project-specific guidance to Claude Code when working with th
 
 ## Repository Purpose
 
-This is a simple YAML-to-Markdown templating tool that generates Claude Code agent configurations. The system processes YAML agent definitions through Jinja2 templates to create agent markdown files, then installs them to `${HOME}/.claude/` directory. This is a focused templating tool (~500 lines total) that does one thing well: convert YAML agent specs to Claude Code configurations.
+This is an advanced YAML-to-Markdown templating system with hybrid trait architecture that generates Claude Code agent configurations. The system processes YAML agent definitions through enhanced Jinja2 templates with trait imports to create comprehensive agent markdown files, then installs them to `${HOME}/.claude/` directory. This is a sophisticated template-based system (~2,000 lines) with trait-based duplication elimination that generates industry-leading agent depth while maintaining consistency.
 
 ## Architecture Overview
 
 This repository uses YAML source files and Jinja2 templates to generate agent markdown files. The system consists of:
 
-- **YAML Agent Definitions** (`data/personas/`) - 25+ agent specifications
-- **Template Engine** (`src/claude_config/composer.py`) - ~200 lines of templating logic
-- **Basic CLI** (`src/claude_config/cli.py`) - ~100 lines with build, validate, install, list-agents commands
-- **YAML Validation** (`src/claude_config/validator.py`) - ~115 lines of basic validation
-- **Jinja2 Template** (`src/claude_config/templates/`) - Converts YAML to agent markdown
+- **YAML Agent Definitions** (`data/personas/`) - 28 agent specifications with trait imports
+- **Hybrid Trait System** (`src/claude_config/traits/`) - 10 reusable traits eliminating 72% duplication
+- **Enhanced Template Engine** (`src/claude_config/composer.py`) - ~500 lines with trait processing
+- **Advanced CLI** (`src/claude_config/cli.py`) - Build, validate, install commands with trait support
+- **YAML Validation** (`src/claude_config/validator.py`) - Enhanced validation with trait verification
+- **Jinja2 Templates** (`src/claude_config/templates/`) - Advanced templates with trait integration
 
 ### Agent Library
 
-The system generates 25+ specialized agents organized by role:
+The system generates 28 specialized agents organized by role with hybrid trait coordination:
 
 **Core Development:** `ai-engineer`, `python-engineer`, `java-engineer`, `data-engineer`, `blockchain-engineer`, `mobile-engineer`, `frontend-engineer`, `devops-engineer`, `security-engineer`, `database-engineer`
 
@@ -26,51 +27,56 @@ The system generates 25+ specialized agents organized by role:
 
 **Quality & Architecture:** `qa-engineer`, `performance-engineer`, `sr-architect`, `integration-architect`, `technical-writer`, `ui-ux-designer`
 
-**Specialized:** `prompt-engineer`, `git-helper`, `customer-success`, `project-coordinator`, `subagent-generator`
+**Specialized:** `prompt-engineer`, `git-helper`, `systems-engineer`, `platform-engineer`, `site-reliability-engineer`, `subagent-generator`
 
 All agents are defined in YAML format in `data/personas/` and converted to markdown via template processing.
 
 ### Build Process
 
-The system follows a simple templating workflow:
+The system follows an advanced hybrid trait templating workflow:
 
-1. **YAML Agent Definitions** - Each agent specified in `data/personas/{agent}.yaml` 
-2. **Template Processing** - Jinja2 template converts YAML to agent markdown
-3. **Basic Validation** - YAML syntax and structure checking
-4. **Agent Generation** - Complete agent markdown files created in `dist/agents/`
-5. **Installation** - Generated agents deployed to `~/.claude/agents/`
+1. **YAML Agent Definitions** - Each agent in `data/personas/{agent}.yaml` with trait imports
+2. **Trait Processing** - TraitProcessor loads and merges reusable trait content
+3. **Template Processing** - Enhanced Jinja2 templates render agents with trait integration
+4. **Advanced Validation** - YAML syntax, structure, and trait dependency checking
+5. **Agent Generation** - Comprehensive agent markdown files in `dist/agents/` (6,000-12,000 lines each)
+6. **Installation** - Generated agents deployed to `~/.claude/agents/`
 
 
 ### Core Components
 
 **CLI Commands:**
-- `claude-config build` - Process YAML through templates to generate agents
-- `claude-config validate` - Check YAML syntax and structure
-- `claude-config install` - Deploy generated agents to ~/.claude/
+- `make build` - Process YAML through enhanced templates with trait integration
+- `make install` - Deploy generated agents to ~/.claude/
+- `make validate` - Check YAML syntax, structure, and trait dependencies
 - `claude-config list-agents` - List available agent definitions
 - `claude-config --help` - Show usage information
 
-**Template System:**
-- Single Jinja2 template at `src/claude_config/templates/agent.md.j2`
-- Converts YAML agent specifications to complete markdown
-- Simple variable substitution and basic control flow
+**Hybrid Trait Template System:**
+- Enhanced Jinja2 template at `src/claude_config/templates/agent.md.j2`
+- TraitProcessor class for loading and merging trait content
+- 10 reusable traits: 4 coordination, 3 tool stacks, 3 compliance/security/performance
+- Advanced template rendering with trait imports and custom overrides
 
-**Validation:**
-- Basic YAML syntax checking
-- Required field validation (name, model, description, etc.)
-- Structure verification for consistent agent format
+**Enhanced Validation:**
+- YAML syntax and structure checking
+- Required field validation with trait import support
+- Trait dependency verification and content validation
+- Code example syntax checking and quality gates
 
 ## Directory Structure
 
 ### This Repository (Development)
-- `data/personas/` - YAML agent definitions (25+ files)
-- `src/claude_config/cli.py` - Command-line interface (~100 lines)
-- `src/claude_config/composer.py` - Template engine (~200 lines)
-- `src/claude_config/validator.py` - YAML validation (~115 lines)
-- `src/claude_config/templates/` - Jinja2 template for agent generation
-- `tests/` - Test suite (4 files covering core functionality)
+- `data/personas/` - YAML agent definitions (28 files with trait imports)
+- `src/claude_config/traits/` - Hybrid trait system (10 reusable traits)
+- `src/claude_config/cli.py` - Enhanced command-line interface
+- `src/claude_config/composer.py` - Advanced template engine with trait processing
+- `src/claude_config/validator.py` - Enhanced validation with trait support
+- `src/claude_config/templates/` - Advanced Jinja2 templates with trait integration
+- `tests/` - Comprehensive test suite covering trait system
 - `README.md` - Repository documentation
 - `CLAUDE.md` - This project guide
+- `DEVELOPMENT_PLAN.md` - Unified enhancement roadmap
 
 ### Production Directory (`${HOME}/.claude/`)
 Generated and deployed from this repository:
@@ -81,10 +87,11 @@ Generated and deployed from this repository:
 
 ## Simple Configuration
 
-- **Agent Definitions**: YAML files in `data/personas/` define each agent
-- **Template**: Single Jinja2 template generates agent markdown
-- **Settings**: Basic `settings.json` for Claude Code preferences
-- **Build & Deploy**: CLI processes YAML → markdown → installation
+- **Agent Definitions**: YAML files in `data/personas/` with trait import system
+- **Trait Library**: 10 reusable traits eliminate 72% duplication across agents
+- **Template System**: Enhanced Jinja2 templates with trait integration
+- **Settings**: Advanced `settings.json` for Claude Code preferences
+- **Build & Deploy**: `make build` processes YAML + traits → comprehensive markdown → installation
 
 
 
@@ -97,6 +104,13 @@ display_name: "Agent Name"
 model: sonnet|opus|haiku
 description: Brief description of agent purpose
 
+imports:
+  coordination:
+    - standard-safety-protocols
+    - qa-testing-handoff
+  tools:
+    - python-development-stack
+
 context_priming: |
   Agent mindset and thought patterns
 
@@ -107,6 +121,17 @@ responsibilities:
 expertise:
   - "Technical expertise area"
 
+technology_stack:
+  primary_frameworks: []
+  essential_tools: []
+
+implementation_patterns: []
+professional_standards: []
+integration_guidelines: []
+performance_benchmarks: []
+troubleshooting_guides: []
+tool_configurations: []
+
 proactive_triggers:
   file_patterns: ["*.ext"]
   project_indicators: ["Framework"]
@@ -114,21 +139,23 @@ proactive_triggers:
 
 ## Working with This Repository
 
-1. **Modify Agents**: Edit YAML files in `data/personas/` to update agent behavior
-2. **Add New Agents**: Create new YAML files following the established format
-3. **Build Agents**: Run `claude-config build` to process YAML through templates
-4. **Validate**: Use `claude-config validate` to check YAML syntax
-5. **Install**: Deploy with `claude-config install` to ~/.claude/
-6. **Test**: Use `pytest tests/` to run the test suite
+1. **Modify Agents**: Edit YAML files in `data/personas/` with trait import support
+2. **Add New Agents**: Create YAML files using trait imports for consistency
+3. **Create Traits**: Add reusable patterns to `src/claude_config/traits/`
+4. **Build Agents**: Run `make build` to process YAML + traits through templates
+5. **Validate**: Use `make validate` or `claude-config validate` to check syntax and traits
+6. **Install**: Deploy with `make install` to ~/.claude/
+7. **Test**: Use `pytest tests/` to run comprehensive test suite
 
 
 ## Repository Standards
 
-- All agents defined in YAML format with consistent structure
-- Use specific file patterns and project indicators for activation
+- All agents defined in YAML format with trait import consistency
+- Use trait imports for common patterns (coordination, tools, compliance)
 - Follow naming conventions (kebab-case for agent names)
-- Include context priming, responsibilities, and expertise for each agent
-- Validate YAML before committing changes
+- Include comprehensive content in 7 schema sections for industry-leading depth
+- Validate YAML and trait dependencies before committing changes
+- Target 6,000-12,000 lines per agent with template-driven consistency
 
 
 # Claude Agent Ecosystem Coordination Guide
@@ -148,7 +175,7 @@ This document serves as the definitive guide for understanding and coordinating 
 
 ## Available Specialized Agents
 
-The agent ecosystem consists of **25 specialized agents** organized into three performance tiers based on complexity and cost requirements.
+The agent ecosystem consists of **28 specialized agents** organized into three performance tiers based on complexity and cost requirements, enhanced with hybrid trait coordination.
 
 ### Tier 1: Efficiency Agents (Haiku - Fast & Cost-Effective)
 
@@ -258,6 +285,21 @@ The agent ecosystem consists of **25 specialized agents** organized into three p
 - LLM integration, prompt optimization, and AI workflow design
 - API integration patterns, model selection, and cost optimization
 - Proactive on: LLM configs, prompt templates, AI integration projects
+
+**systems-engineer** `model: sonnet`
+- Low-level programming (C/C++/Rust), embedded systems, kernel programming
+- Real-time systems, hardware-software interfaces, performance optimization
+- Proactive on: Systems programming, embedded projects, performance-critical code
+
+**platform-engineer** `model: sonnet`
+- Internal developer tooling, platform-as-a-service development, developer experience
+- Kubernetes operators, CI/CD platforms, self-service infrastructure
+- Proactive on: Platform tooling, developer productivity, internal tools
+
+**site-reliability-engineer** `model: sonnet`
+- Production system reliability, observability, incident response, chaos engineering
+- SLO/SLI management, monitoring systems, reliability automation
+- Proactive on: Production monitoring, reliability requirements, incident procedures
 
 ### Tier 3: Senior Agents (Opus - Advanced & Strategic)
 
