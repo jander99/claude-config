@@ -39,6 +39,73 @@ Claude Code SHALL automatically detect these patterns and invoke the specified a
 {% for agent in agents %}{% if agent.proactive_triggers and agent.proactive_triggers.file_patterns %}{% set file_patterns = agent.proactive_triggers.file_patterns[:3] %}| {{ agent.display_name }} | {{ file_patterns | join(', ') }} | `{{ agent.name }}` | {% if agent.model == 'opus' %}STRICT{% else %}STANDARD{% endif %} |
 {% endif %}{% endfor %}
 
+**Parallel Execution Triggers:**
+| **Scenario** | **Parallel Agents** | **Coordination Pattern** |
+|--------------|-------------------|---------------------------|
+| Full-Stack Feature | `frontend-engineer`, `python-engineer`, `database-engineer` | Simultaneous development with API contract |
+| Security Review | `security-engineer`, `qa-engineer`, `sr-architect` | Multi-perspective vulnerability assessment |
+| Performance Optimization | `performance-engineer`, `database-engineer`, `devops-engineer` | Coordinated optimization across stack layers |
+| Research Phase | `ai-researcher`, `business-analyst`, `technical-writer` | Parallel literature review and documentation |
+| Multi-Feature Development | `git-helper` + multiple specialist agents | Git worktrees for isolated parallel development |
+
+**Context Isolation Strategy:**
+- Each parallel agent maintains dedicated context window
+- Prevents quality degradation through specialized focus
+- Enables deep domain expertise preservation
+
+## 🔄 PARALLEL EXECUTION PROTOCOLS
+
+**Parallel Agent Dispatch Commands:**
+- Use single message with multiple Task tool calls for simultaneous agent execution
+- Pattern: Send one message with multiple `Task` tool invocations for coordinated parallel work
+- Each agent operates with isolated context window for specialized focus
+
+**Git Worktree Integration:**
+- Use `git-helper` to detect parallel development opportunities
+- Create isolated worktrees for parallel feature development
+- Pattern: "Create worktrees for features X, Y, Z and coordinate development across agents"
+- Enables true parallel development with complete file system isolation
+
+**Agent Depth Configuration:**
+- **LIGHT**: Surface-level analysis and quick implementations
+- **STANDARD**: Thorough investigation with comprehensive solutions
+- **DEEP**: Exhaustive analysis with multiple alternatives and edge cases
+
+**Split Role Coordination Pattern:**
+```
+"Analyze this from three perspectives:
+1. Security Expert: Focus on vulnerabilities and compliance
+2. Senior Engineer: Evaluate architecture and scalability
+3. Performance Analyst: Assess optimization opportunities"
+```
+
+**Structured Handoff Artifacts:**
+- Each agent produces standardized outputs for seamless coordination
+- Include clear success criteria and quality gates
+- Define escalation triggers for complex integrations
+
+## ⚡ CONTEXT OPTIMIZATION STRATEGIES
+
+**File Organization Best Practices:**
+- Use many small, logically organized files to reduce context window usage
+- Explicitly specify which files agents should read or avoid
+- Structure projects with focused, single-responsibility modules
+
+**Token Usage Monitoring:**
+- Use `/context` command to inspect token distribution across tools and agents
+- Monitor high token-consuming operations and optimize accordingly
+- Avoid complex tasks in the last fifth of context window
+
+**Performance Optimization Guidelines:**
+- Strategic model switching: Opus for planning, Sonnet for execution
+- Leverage Plan Mode for structured analysis before implementation
+- Use "ultrathink" for complex problem-solving requiring deep analysis
+
+**Context Window Management:**
+- Each sub-agent operates with isolated context for specialized focus
+- Prevent context pollution through clear role boundaries
+- Implement feedback loops for iterative refinement without context bloat
+
 ## 🧩 UNIVERSAL TRAIT SYSTEM
 
 **ALL specialized agents implement coordination through standardized traits** - this eliminates duplication and ensures consistency.
@@ -84,6 +151,11 @@ Claude Code SHALL automatically detect these patterns and invoke the specified a
 - Handles complex architecture and integration decisions
 - Provides structured escalation context
 
+**`coordination/parallel-execution`**: Parallel Agent Coordination
+- Coordinates simultaneous agent execution with role isolation
+- Manages structured handoff artifacts between parallel streams
+- Implements context isolation to prevent quality degradation
+
 ### ⚡ Enhancement Traits (SYSTEMATIC)
 
 **`enhancement/mcp-integration`**: MCP Server Integration
@@ -95,6 +167,11 @@ Claude Code SHALL automatically detect these patterns and invoke the specified a
 - Enforces consistent code quality and style standards
 - Integrates with linting and formatting tools
 - Maintains code quality metrics and reporting
+
+**`optimization/context-management`**: Context Window Optimization
+- Monitors token usage through `/context` command integration
+- Implements file organization strategies for efficiency
+- Manages model selection for optimal cost/performance balance
 
 ## 💰 UNIVERSAL COST OPTIMIZATION
 
@@ -157,6 +234,33 @@ devops-engineer → security-engineer → database-engineer
 qa-engineer → (via coordination/documentation-handoff) → technical-writer → (via coordination/version-control-coordination) → git-helper
 ```
 
+### Parallel Development Flow:
+```
+Split Role Analysis → Parallel Agent Dispatch → Artifact Consolidation → Integration Review
+     ↓ (via coordination/parallel-execution)
+Context Isolation → Specialized Focus → Structured Handoffs → Quality Gates
+```
+
+### Automated Assembly Line Pattern:
+```
+Agent A (Research) → Agent B (Implementation) → Agent C (Testing) → Agent D (Documentation)
+     ↓ (sequential handoffs with parallel sub-streams)
+Structured Artifacts → Quality Validation → Performance Optimization → Deployment Ready
+```
+
+### Git Worktree Parallel Development Pattern:
+```
+git-helper (Worktree Setup) → Parallel Agent Dispatch → Independent Development → Integration
+     ↓ (via coordination/version-control-coordination)
+Worktree A (Feature X) + Worktree B (Feature Y) + Worktree C (Feature Z) → Merge Coordination
+```
+
+**Worktree Detection Triggers:**
+- Multiple independent features requested in single session
+- Large feature requiring multiple development streams
+- Experimental development alongside stable feature work
+- Multi-team coordination requiring isolated development environments
+
 ## 📋 TASK MANAGEMENT
 
 **Mandatory TodoWrite Usage:**
@@ -179,11 +283,18 @@ qa-engineer → (via coordination/documentation-handoff) → technical-writer �
 
 **Track Universal Metrics:**
 - Agent delegation compliance rate (target: >95%)
-- Trait-based coordination adherence 
+- Trait-based coordination adherence
 - Cost efficiency through appropriate tier selection
 - Escalation success rates via `coordination/escalation-protocol`
 - Quality assurance completion via `coordination/testing-handoff`
 - Branch safety compliance via `safety/branch-check`
+
+**Track Parallel Execution Metrics:**
+- Context isolation effectiveness (target: 100% role separation)
+- Parallel agent coordination success rate (target: >90%)
+- Token efficiency through optimization strategies
+- Handoff artifact quality and completeness
+- Agent depth selection appropriateness (LIGHT/STANDARD/DEEP)
 
 ---
 

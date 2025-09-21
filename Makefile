@@ -8,7 +8,7 @@ help:
 	@echo "  build-claude Build global CLAUDE.md configuration file"
 	@echo "  build        Build both agents and global CLAUDE.md"
 	@echo "  test         Run test suite"
-	@echo "  install      Install built configurations to ~/.claude/"
+	@echo "  install      Install built configurations to ~/.claude/ (clean install by default)"
 	@echo "  clean        Clean build artifacts"
 	@echo "  help         Show this help message"
 

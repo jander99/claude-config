@@ -192,48 +192,78 @@ def build(data_dir: Path, output_dir: Path, agent: List[str], validate: bool):
 
 
 @cli.command()
-@click.option("--output-dir", "-o", type=click.Path(path_type=Path), 
+@click.option("--output-dir", "-o", type=click.Path(path_type=Path),
               default="dist", help="Output directory to install from")
-@click.option("--target", "-t", type=click.Path(path_type=Path), 
+@click.option("--target", "-t", type=click.Path(path_type=Path),
               help="Target directory (defaults to ~/.claude)")
 @click.option("--dry-run", is_flag=True, help="Show what would be installed without doing it")
-def install(output_dir: Path, target: Optional[Path], dry_run: bool):
-    """Install generated configurations to Claude Code directory."""
+@click.option("--no-clean", is_flag=True, help="Skip cleaning agents directory before install")
+def install(output_dir: Path, target: Optional[Path], dry_run: bool, no_clean: bool):
+    """Install generated configurations to Claude Code directory.
+
+    By default, this performs a clean installation that removes existing
+    agents before installing new ones. Use --no-clean to preserve existing
+    agents and only overwrite matching files.
+    """
     import shutil
-    
+
     if not target:
         target = Path.home() / ".claude"
-    
+
     if not output_dir.exists():
         console.print(f"❌ Output directory {output_dir} does not exist. Run 'build' first.", style="red")
         sys.exit(1)
-    
+
     console.print(f"📦 Installing from {output_dir} to {target}", style="blue")
-    
+
     if dry_run:
         console.print("🔍 Dry run mode - no changes will be made", style="yellow")
-    
+
     # Ensure target directory exists
     if not dry_run:
         target.mkdir(parents=True, exist_ok=True)
-    
-    # Copy files
+
+    # Clean agents directory if requested (default behavior)
+    agents_dir = target / "agents"
+    cleaned_files = []
+
+    if not no_clean and agents_dir.exists():
+        console.print("🧹 Cleaning existing agents directory...", style="yellow")
+
+        if dry_run:
+            # Show what would be cleaned
+            for agent_file in agents_dir.glob("*.md"):
+                console.print(f"Would remove: agents/{agent_file.name}", style="dim red")
+                cleaned_files.append(f"agents/{agent_file.name}")
+        else:
+            # Actually clean the agents directory
+            for agent_file in agents_dir.glob("*.md"):
+                agent_file.unlink()
+                cleaned_files.append(f"agents/{agent_file.name}")
+                console.print(f"🗑️  Removed: agents/{agent_file.name}", style="dim")
+
+    # Copy new files
     copied_files = []
     for item in output_dir.rglob("*"):
         if item.is_file():
             rel_path = item.relative_to(output_dir)
             dest_path = target / rel_path
-            
+
             if dry_run:
-                console.print(f"Would copy: {rel_path}", style="dim")
+                console.print(f"Would copy: {rel_path}", style="dim green")
             else:
                 dest_path.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy2(item, dest_path)
                 copied_files.append(rel_path)
-    
+
+    # Summary
     if not dry_run:
+        if cleaned_files and not no_clean:
+            console.print(f"🗑️  Cleaned {len(cleaned_files)} existing agents", style="yellow")
         console.print(f"✅ Installed {len(copied_files)} files to {target}", style="green")
     else:
+        if cleaned_files and not no_clean:
+            console.print(f"Would clean {len(cleaned_files)} existing agents", style="yellow")
         console.print(f"Would install {len(list(output_dir.rglob('*')))} items", style="yellow")
 
 
