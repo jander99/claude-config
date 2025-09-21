@@ -340,55 +340,2532 @@ custom_instructions: |
 # Enhanced Schema Extensions - To be populated during agent enhancement phase
 
 technology_stack:
-  primary_frameworks: []
-    # Example structure:
-    # - name: "Django"
-    #   version: "4.2+"
-    #   use_cases: ["REST APIs", "Admin interfaces"]
-    #   alternatives: ["FastAPI", "Flask"]
-  
-  essential_tools:
-    development: []
-    testing: []
-    deployment: []
-    monitoring: []
+  primary_frameworks:
+    - name: "React"
+      version: "18.2+"
+      use_cases: ["Single-page applications", "Component libraries", "Progressive web apps", "Server-side rendering"]
+      alternatives: ["Vue.js", "Angular", "Svelte"]
+      key_features:
+        - "Concurrent rendering with React 18"
+        - "Automatic batching for performance optimization"
+        - "Suspense for data fetching and code splitting"
+        - "React Server Components for SSR optimization"
+        - "Strict Mode for development debugging"
+      configuration: |
+        // React 18 with TypeScript and modern patterns
+        import React, { StrictMode, Suspense, startTransition } from 'react';
+        import { createRoot } from 'react-dom/client';
+        import { BrowserRouter, Routes, Route } from 'react-router-dom';
+        import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+        import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+        import { ErrorBoundary } from 'react-error-boundary';
 
-implementation_patterns: []
-  # Example structure:
-  # - pattern: "REST API with Authentication"
-  #   context: "Secure API endpoints"
-  #   code_example: |
-  #     # Code example here
-  #   best_practices: []
+        // Enhanced error boundary with reporting
+        function ErrorFallback({ error, resetErrorBoundary }: {
+          error: Error;
+          resetErrorBoundary: () => void;
+        }) {
+          return (
+            <div role="alert" className="error-boundary">
+              <h2>Something went wrong:</h2>
+              <pre>{error.message}</pre>
+              <button onClick={resetErrorBoundary}>Try again</button>
+            </div>
+          );
+        }
+
+        // React Query configuration for server state
+        const queryClient = new QueryClient({
+          defaultOptions: {
+            queries: {
+              staleTime: 5 * 60 * 1000, // 5 minutes
+              cacheTime: 10 * 60 * 1000, // 10 minutes
+              retry: (failureCount, error: any) => {
+                if (error.status === 404) return false;
+                return failureCount < 3;
+              },
+              refetchOnWindowFocus: false,
+            },
+          },
+        });
+
+        // App component with providers and routing
+        function App() {
+          return (
+            <StrictMode>
+              <ErrorBoundary
+                FallbackComponent={ErrorFallback}
+                onError={(error, errorInfo) => {
+                  console.error('Error caught by boundary:', error, errorInfo);
+                  // Report to error tracking service
+                }}
+              >
+                <QueryClientProvider client={queryClient}>
+                  <BrowserRouter>
+                    <div className="app">
+                      <Suspense fallback={<div>Loading...</div>}>
+                        <Routes>
+                          <Route path="/" element={<HomePage />} />
+                          <Route path="/dashboard" element={<DashboardPage />} />
+                          <Route path="*" element={<NotFoundPage />} />
+                        </Routes>
+                      </Suspense>
+                    </div>
+                  </BrowserRouter>
+                  <ReactQueryDevtools initialIsOpen={false} />
+                </QueryClientProvider>
+              </ErrorBoundary>
+            </StrictMode>
+          );
+        }
+
+        // Modern component with hooks and TypeScript
+        interface User {
+          id: string;
+          name: string;
+          email: string;
+        }
+
+        function UserProfile({ userId }: { userId: string }) {
+          const [optimisticUpdate, setOptimisticUpdate] = React.useState<User | null>(null);
+
+          // Server state management with React Query
+          const { data: user, isLoading, error } = useQuery({
+            queryKey: ['user', userId],
+            queryFn: () => fetchUser(userId),
+            enabled: !!userId,
+          });
+
+          // Optimistic updates with transitions
+          const updateUser = (updates: Partial<User>) => {
+            startTransition(() => {
+              setOptimisticUpdate(prev => ({ ...prev, ...updates } as User));
+            });
+          };
+
+          const displayUser = optimisticUpdate || user;
+
+          if (isLoading) return <UserSkeleton />;
+          if (error) return <ErrorMessage error={error} />;
+          if (!displayUser) return <UserNotFound />;
+
+          return (
+            <div className="user-profile">
+              <h1>{displayUser.name}</h1>
+              <p>{displayUser.email}</p>
+            </div>
+          );
+        }
+
+        // Root rendering with React 18
+        const container = document.getElementById('root')!;
+        const root = createRoot(container);
+        root.render(<App />);
+
+    - name: "Next.js"
+      version: "14.1+"
+      use_cases: ["Server-side rendering", "Static site generation", "Full-stack applications", "API routes"]
+      alternatives: ["Nuxt.js", "SvelteKit", "Remix"]
+      key_features:
+        - "App Router with React Server Components"
+        - "Turbopack bundler for development"
+        - "Server Actions for seamless client-server integration"
+        - "Image optimization with automatic WebP/AVIF"
+        - "Built-in performance monitoring and analytics"
+        - "Parallel and intercepting routes"
+      configuration: |
+        // next.config.js - Next.js 14 configuration
+        /** @type {import('next').NextConfig} */
+        const nextConfig = {
+          experimental: {
+            appDir: true,
+            serverActions: true,
+            turbo: {
+              rules: {
+                '*.svg': {
+                  loaders: ['@svgr/webpack'],
+                  as: '*.js',
+                },
+              },
+            },
+          },
+          images: {
+            formats: ['image/avif', 'image/webp'],
+            domains: ['example.com', 'cdn.example.com'],
+            deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+            imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+          },
+          env: {
+            CUSTOM_KEY: process.env.CUSTOM_KEY,
+          },
+          async headers() {
+            return [
+              {
+                source: '/(.*)',
+                headers: [
+                  {
+                    key: 'X-Frame-Options',
+                    value: 'DENY',
+                  },
+                  {
+                    key: 'X-Content-Type-Options',
+                    value: 'nosniff',
+                  },
+                ],
+              },
+            ];
+          },
+          async redirects() {
+            return [
+              {
+                source: '/old-page',
+                destination: '/new-page',
+                permanent: true,
+              },
+            ];
+          },
+        };
+
+        module.exports = nextConfig;
+
+        // app/layout.tsx - Root layout with metadata
+        import type { Metadata } from 'next';
+        import { Inter } from 'next/font/google';
+        import './globals.css';
+
+        const inter = Inter({ subsets: ['latin'] });
+
+        export const metadata: Metadata = {
+          title: {
+            template: '%s | My App',
+            default: 'My App',
+          },
+          description: 'A modern Next.js application',
+          keywords: ['Next.js', 'React', 'TypeScript'],
+          authors: [{ name: 'Your Name' }],
+          creator: 'Your Name',
+          openGraph: {
+            type: 'website',
+            locale: 'en_US',
+            url: 'https://example.com',
+            title: 'My App',
+            description: 'A modern Next.js application',
+            siteName: 'My App',
+          },
+          twitter: {
+            card: 'summary_large_image',
+            title: 'My App',
+            description: 'A modern Next.js application',
+            creator: '@yourhandle',
+          },
+          robots: {
+            index: true,
+            follow: true,
+            googleBot: {
+              index: true,
+              follow: true,
+              'max-video-preview': -1,
+              'max-image-preview': 'large',
+              'max-snippet': -1,
+            },
+          },
+        };
+
+        export default function RootLayout({
+          children,
+        }: {
+          children: React.ReactNode;
+        }) {
+          return (
+            <html lang="en">
+              <body className={inter.className}>
+                {children}
+              </body>
+            </html>
+          );
+        }
+
+        // app/page.tsx - Server Component with data fetching
+        import { Suspense } from 'react';
+        import { UserList } from './components/UserList';
+        import { Metadata } from 'next';
+
+        export const metadata: Metadata = {
+          title: 'Home',
+          description: 'Welcome to our application',
+        };
+
+        // Server Component
+        async function HomePage() {
+          return (
+            <main className="container mx-auto px-4 py-8">
+              <h1 className="text-4xl font-bold mb-8">Welcome</h1>
+              <Suspense fallback={<div>Loading users...</div>}>
+                <UserList />
+              </Suspense>
+            </main>
+          );
+        }
+
+        export default HomePage;
+
+        // Server Actions for form handling
+        'use server';
+
+        import { revalidatePath } from 'next/cache';
+        import { redirect } from 'next/navigation';
+
+        export async function createUser(formData: FormData) {
+          const name = formData.get('name') as string;
+          const email = formData.get('email') as string;
+
+          // Validate input
+          if (!name || !email) {
+            throw new Error('Name and email are required');
+          }
+
+          // Save to database
+          const user = await saveUser({ name, email });
+
+          // Revalidate cached data
+          revalidatePath('/users');
+
+          // Redirect to user page
+          redirect(`/users/${user.id}`);
+        }
+
+    - name: "Vue.js"
+      version: "3.4+"
+      use_cases: ["Progressive web apps", "Enterprise applications", "Rapid prototyping", "Component libraries"]
+      alternatives: ["React", "Angular", "Svelte"]
+      key_features:
+        - "Composition API for better code organization"
+        - "Built-in TypeScript support"
+        - "Performance improvements with Proxy reactivity"
+        - "Vue DevTools for debugging"
+        - "Single File Components (SFC)"
+      configuration: |
+        // Vue 3 with TypeScript and Composition API
+        import { createApp } from 'vue';
+        import { createRouter, createWebHistory } from 'vue-router';
+        import { createPinia } from 'pinia';
+        import App from './App.vue';
+        import './style.css';
+
+        // Router configuration
+        const router = createRouter({
+          history: createWebHistory(),
+          routes: [
+            { path: '/', component: () => import('./views/Home.vue') },
+            { path: '/about', component: () => import('./views/About.vue') },
+            { path: '/:pathMatch(.*)*', component: () => import('./views/NotFound.vue') },
+          ],
+        });
+
+        // Pinia store setup
+        const pinia = createPinia();
+
+        // App setup
+        const app = createApp(App);
+        app.use(router);
+        app.use(pinia);
+        app.mount('#app');
+
+        // Composition API component example
+        <template>
+          <div class="user-profile">
+            <h1>{{ user?.name }}</h1>
+            <button @click="updateProfile" :disabled="isUpdating">
+              {{ isUpdating ? 'Updating...' : 'Update Profile' }}
+            </button>
+          </div>
+        </template>
+
+        <script setup lang="ts">
+        import { ref, computed, onMounted, watch } from 'vue';
+        import { useUserStore } from '@/stores/user';
+
+        interface User {
+          id: string;
+          name: string;
+          email: string;
+        }
+
+        const props = defineProps<{
+          userId: string;
+        }>();
+
+        const emit = defineEmits<{
+          userUpdated: [user: User];
+        }>();
+
+        // Reactive state
+        const user = ref<User | null>(null);
+        const isUpdating = ref(false);
+        const userStore = useUserStore();
+
+        // Computed properties
+        const displayName = computed(() => {
+          return user.value?.name ?? 'Unknown User';
+        });
+
+        // Watchers
+        watch(
+          () => props.userId,
+          async (newUserId) => {
+            if (newUserId) {
+              await fetchUser(newUserId);
+            }
+          },
+          { immediate: true }
+        );
+
+        // Methods
+        async function fetchUser(userId: string) {
+          try {
+            user.value = await userStore.fetchUser(userId);
+          } catch (error) {
+            console.error('Failed to fetch user:', error);
+          }
+        }
+
+        async function updateProfile() {
+          if (!user.value) return;
+
+          isUpdating.value = true;
+          try {
+            const updatedUser = await userStore.updateUser(user.value.id, {
+              name: user.value.name,
+            });
+            user.value = updatedUser;
+            emit('userUpdated', updatedUser);
+          } catch (error) {
+            console.error('Failed to update user:', error);
+          } finally {
+            isUpdating.value = false;
+          }
+        }
+
+        // Lifecycle
+        onMounted(() => {
+          console.log('UserProfile component mounted');
+        });
+        </script>
+
+        <style scoped>
+        .user-profile {
+          padding: 2rem;
+          border-radius: 0.5rem;
+          background: white;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        </style>
+
+    - name: "Angular"
+      version: "17+"
+      use_cases: ["Enterprise applications", "Complex forms", "Real-time applications", "Progressive web apps"]
+      alternatives: ["React", "Vue.js", "Svelte"]
+      key_features:
+        - "Standalone components and bootstrapping"
+        - "Signals for reactive programming"
+        - "Angular Universal for SSR"
+        - "Angular CLI for development tooling"
+        - "RxJS for reactive programming"
+      configuration: |
+        // Angular 17 with standalone components and signals
+        import { bootstrapApplication } from '@angular/platform-browser';
+        import { provideRouter } from '@angular/router';
+        import { provideHttpClient, withInterceptors } from '@angular/common/http';
+        import { AppComponent } from './app/app.component';
+        import { routes } from './app/app.routes';
+        import { authInterceptor } from './app/interceptors/auth.interceptor';
+
+        bootstrapApplication(AppComponent, {
+          providers: [
+            provideRouter(routes),
+            provideHttpClient(
+              withInterceptors([authInterceptor])
+            ),
+          ],
+        });
+
+        // Standalone component with signals
+        import { Component, signal, computed, effect, inject } from '@angular/core';
+        import { CommonModule } from '@angular/common';
+        import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+        import { UserService } from './services/user.service';
+
+        @Component({
+          selector: 'app-user-profile',
+          standalone: true,
+          imports: [CommonModule, ReactiveFormsModule],
+          template: `
+            <div class="user-profile">
+              <h1>{{ displayName() }}</h1>
+              <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+                <input
+                  formControlName="name"
+                  placeholder="Name"
+                  [class.error]="nameControl.invalid && nameControl.touched"
+                />
+                <button
+                  type="submit"
+                  [disabled]="userForm.invalid || isLoading()"
+                >
+                  {{ isLoading() ? 'Updating...' : 'Update Profile' }}
+                </button>
+              </form>
+            </div>
+          `,
+          styles: [
+            `
+              .user-profile {
+                padding: 2rem;
+                border-radius: 0.5rem;
+                background: white;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+              }
+              .error {
+                border-color: #ef4444;
+              }
+            `,
+          ],
+        })
+        export class UserProfileComponent {
+          private fb = inject(FormBuilder);
+          private userService = inject(UserService);
+
+          // Signals for reactive state
+          user = signal<User | null>(null);
+          isLoading = signal(false);
+          error = signal<string | null>(null);
+
+          // Computed signals
+          displayName = computed(() => {
+            return this.user()?.name ?? 'Unknown User';
+          });
+
+          // Reactive forms
+          userForm = this.fb.group({
+            name: ['', [Validators.required, Validators.minLength(2)]],
+            email: ['', [Validators.required, Validators.email]],
+          });
+
+          get nameControl() {
+            return this.userForm.get('name')!;
+          }
+
+          constructor() {
+            // Effect for side effects
+            effect(() => {
+              const currentUser = this.user();
+              if (currentUser) {
+                this.userForm.patchValue({
+                  name: currentUser.name,
+                  email: currentUser.email,
+                });
+              }
+            });
+          }
+
+          async onSubmit() {
+            if (this.userForm.valid) {
+              this.isLoading.set(true);
+              this.error.set(null);
+
+              try {
+                const formValue = this.userForm.value;
+                const updatedUser = await this.userService.updateUser({
+                  ...this.user()!,
+                  ...formValue,
+                });
+                this.user.set(updatedUser);
+              } catch (error) {
+                this.error.set('Failed to update user');
+              } finally {
+                this.isLoading.set(false);
+              }
+            }
+          }
+        }
+
+  essential_tools:
+    development:
+      - "Vite ^5.1.0 - Next-generation frontend build tool with instant HMR and optimized production builds"
+      - "TypeScript ^5.3.0 - Static type checking with advanced type features and strict configuration"
+      - "ESLint ^8.56.0 - JavaScript/TypeScript linting with React, Vue, and Angular rule sets"
+      - "Prettier ^3.2.0 - Opinionated code formatting with consistent style enforcement"
+      - "Husky ^9.0.0 - Git hooks for automated code quality checks and pre-commit validation"
+      - "Lint-staged ^15.2.0 - Run linters on staged git files for efficient quality control"
+      - "React DevTools ^4.28.0 - Browser extension for React component inspection and profiling"
+      - "Vue DevTools ^6.5.0 - Browser extension for Vue.js debugging and state inspection"
+      - "Angular DevTools ^17.0.0 - Browser extension for Angular application debugging"
+      - "Storybook ^7.6.0 - Tool for building UI components in isolation with comprehensive documentation"
+
+    testing:
+      - "Vitest ^1.2.0 - Fast unit test framework with native ES modules support and Vite integration"
+      - "Jest ^29.7.0 - Comprehensive testing framework with snapshot testing and mocking capabilities"
+      - "React Testing Library ^14.1.0 - Simple and complete testing utilities for React components"
+      - "Vue Testing Library ^8.0.0 - Simple and complete testing utilities for Vue.js components"
+      - "Angular Testing Utilities ^17.0.0 - Built-in testing tools for Angular applications"
+      - "Cypress ^13.6.0 - End-to-end testing with real browser automation and visual debugging"
+      - "Playwright ^1.41.0 - Cross-browser testing with powerful automation and debugging capabilities"
+      - "MSW ^2.1.0 - Mock Service Worker for API mocking in tests and development"
+      - "@testing-library/jest-dom ^6.2.0 - Custom Jest matchers for DOM testing assertions"
+      - "@testing-library/user-event ^14.5.0 - Fire events for realistic user interaction testing"
+
+    deployment:
+      - "Vercel CLI ^33.0.0 - Deployment platform optimized for frontend frameworks with instant global CDN"
+      - "Netlify CLI ^17.15.0 - Deployment platform with continuous deployment and serverless functions"
+      - "AWS Amplify CLI ^12.10.0 - Full-stack deployment platform with hosting, authentication, and APIs"
+      - "Docker ^25.0.0 - Containerization for consistent deployment across environments"
+      - "GitHub Actions - CI/CD workflows for automated testing, building, and deployment"
+      - "GitLab CI/CD - Integrated continuous integration and deployment pipelines"
+      - "Cloudflare Pages - JAMstack deployment with edge computing and analytics"
+      - "Azure Static Web Apps - Serverless hosting with integrated APIs and authentication"
+      - "Firebase Hosting ^13.0.0 - Fast and secure hosting for modern web apps with CDN"
+      - "Surge.sh - Simple, single-command static web publishing"
+
+    monitoring:
+      - "Sentry ^7.99.0 - Error tracking and performance monitoring with release health insights"
+      - "LogRocket ^8.6.0 - Session replay and performance monitoring for user experience insights"
+      - "Datadog RUM ^5.11.0 - Real user monitoring with performance analytics and error tracking"
+      - "New Relic Browser ^1.256.0 - Application performance monitoring with user journey insights"
+      - "Google Analytics 4 - User behavior analytics and conversion tracking"
+      - "Hotjar ^1.3.0 - User behavior analytics with heatmaps and session recordings"
+      - "FullStory ^2.0.0 - Digital experience intelligence with complete user session capture"
+      - "Lighthouse CI ^0.12.0 - Automated performance, accessibility, and SEO auditing"
+      - "Web Vitals ^3.5.0 - Library for measuring Core Web Vitals performance metrics"
+      - "Bundle Analyzer - Webpack/Vite bundle analysis for optimization insights"
+
+implementation_patterns:
+  - pattern: "Modern React Component Architecture with TypeScript"
+    context: "Building scalable, maintainable React applications with proper TypeScript integration and modern patterns"
+    code_example: |
+      // Component hierarchy and composition patterns
+      import React, { useState, useEffect, useCallback, useMemo } from 'react';
+      import { QueryClient, useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+      import { z } from 'zod';
+
+      // Type definitions with Zod validation
+      const UserSchema = z.object({
+        id: z.string(),
+        name: z.string().min(1),
+        email: z.string().email(),
+        avatar: z.string().url().optional(),
+        role: z.enum(['admin', 'user', 'moderator']),
+        createdAt: z.string().datetime(),
+        updatedAt: z.string().datetime(),
+      });
+
+      type User = z.infer<typeof UserSchema>;
+
+      const UserListSchema = z.array(UserSchema);
+
+      // API layer with type safety
+      class UserAPI {
+        private static baseURL = '/api/users';
+
+        static async fetchUsers(): Promise<User[]> {
+          const response = await fetch(this.baseURL);
+          if (!response.ok) {
+            throw new Error(`Failed to fetch users: ${response.statusText}`);
+          }
+          const data = await response.json();
+          return UserListSchema.parse(data);
+        }
+
+        static async fetchUser(id: string): Promise<User> {
+          const response = await fetch(`${this.baseURL}/${id}`);
+          if (!response.ok) {
+            throw new Error(`Failed to fetch user: ${response.statusText}`);
+          }
+          const data = await response.json();
+          return UserSchema.parse(data);
+        }
+
+        static async updateUser(id: string, updates: Partial<User>): Promise<User> {
+          const response = await fetch(`${this.baseURL}/${id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updates),
+          });
+          if (!response.ok) {
+            throw new Error(`Failed to update user: ${response.statusText}`);
+          }
+          const data = await response.json();
+          return UserSchema.parse(data);
+        }
+
+        static async deleteUser(id: string): Promise<void> {
+          const response = await fetch(`${this.baseURL}/${id}`, {
+            method: 'DELETE',
+          });
+          if (!response.ok) {
+            throw new Error(`Failed to delete user: ${response.statusText}`);
+          }
+        }
+      }
+
+      // Custom hooks for data management
+      function useUsers() {
+        return useQuery({
+          queryKey: ['users'],
+          queryFn: UserAPI.fetchUsers,
+          staleTime: 5 * 60 * 1000, // 5 minutes
+          cacheTime: 10 * 60 * 1000, // 10 minutes
+        });
+      }
+
+      function useUser(id: string) {
+        return useQuery({
+          queryKey: ['user', id],
+          queryFn: () => UserAPI.fetchUser(id),
+          enabled: !!id,
+        });
+      }
+
+      function useUpdateUser() {
+        const queryClient = useQueryClient();
+
+        return useMutation({
+          mutationFn: ({ id, updates }: { id: string; updates: Partial<User> }) =>
+            UserAPI.updateUser(id, updates),
+          onSuccess: (updatedUser) => {
+            // Update the user in the cache
+            queryClient.setQueryData(['user', updatedUser.id], updatedUser);
+
+            // Update the user in the users list
+            queryClient.setQueryData(['users'], (oldUsers: User[] | undefined) => {
+              if (!oldUsers) return [updatedUser];
+              return oldUsers.map(user =>
+                user.id === updatedUser.id ? updatedUser : user
+              );
+            });
+          },
+          onError: (error) => {
+            console.error('Failed to update user:', error);
+          },
+        });
+      }
+
+      // Base component interfaces
+      interface BaseProps {
+        className?: string;
+        'data-testid'?: string;
+      }
+
+      // Atomic components
+      interface ButtonProps extends BaseProps {
+        variant?: 'primary' | 'secondary' | 'danger';
+        size?: 'small' | 'medium' | 'large';
+        disabled?: boolean;
+        loading?: boolean;
+        children: React.ReactNode;
+        onClick?: () => void;
+      }
+
+      const Button: React.FC<ButtonProps> = ({
+        variant = 'primary',
+        size = 'medium',
+        disabled = false,
+        loading = false,
+        children,
+        onClick,
+        className = '',
+        'data-testid': testId,
+      }) => {
+        const baseClasses = 'inline-flex items-center justify-center font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2';
+
+        const variantClasses = {
+          primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500',
+          secondary: 'bg-gray-200 text-gray-900 hover:bg-gray-300 focus:ring-gray-500',
+          danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500',
+        };
+
+        const sizeClasses = {
+          small: 'px-3 py-1.5 text-sm',
+          medium: 'px-4 py-2 text-base',
+          large: 'px-6 py-3 text-lg',
+        };
+
+        const isDisabled = disabled || loading;
+
+        return (
+          <button
+            type="button"
+            disabled={isDisabled}
+            onClick={onClick}
+            data-testid={testId}
+            className={`
+              ${baseClasses}
+              ${variantClasses[variant]}
+              ${sizeClasses[size]}
+              ${isDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
+              ${className}
+            `}
+          >
+            {loading && (
+              <svg
+                className="animate-spin -ml-1 mr-2 h-4 w-4 text-current"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                />
+              </svg>
+            )}
+            {children}
+          </button>
+        );
+      };
+
+      // Compound components
+      interface UserCardProps extends BaseProps {
+        user: User;
+        onEdit?: (user: User) => void;
+        onDelete?: (user: User) => void;
+        showActions?: boolean;
+      }
+
+      const UserCard: React.FC<UserCardProps> = ({
+        user,
+        onEdit,
+        onDelete,
+        showActions = true,
+        className = '',
+        'data-testid': testId,
+      }) => {
+        const [isDeleting, setIsDeleting] = useState(false);
+
+        const handleDelete = useCallback(async () => {
+          if (!onDelete) return;
+
+          const confirmed = window.confirm(`Are you sure you want to delete ${user.name}?`);
+          if (!confirmed) return;
+
+          setIsDeleting(true);
+          try {
+            await onDelete(user);
+          } finally {
+            setIsDeleting(false);
+          }
+        }, [user, onDelete]);
+
+        const handleEdit = useCallback(() => {
+          if (onEdit) {
+            onEdit(user);
+          }
+        }, [user, onEdit]);
+
+        return (
+          <div
+            className={`bg-white rounded-lg shadow-md p-6 border border-gray-200 ${className}`}
+            data-testid={testId}
+          >
+            <div className="flex items-center space-x-4">
+              {user.avatar && (
+                <img
+                  src={user.avatar}
+                  alt={`${user.name}'s avatar`}
+                  className="w-12 h-12 rounded-full object-cover"
+                />
+              )}
+              <div className="flex-1 min-w-0">
+                <h3 className="text-lg font-medium text-gray-900 truncate">
+                  {user.name}
+                </h3>
+                <p className="text-sm text-gray-500 truncate">{user.email}</p>
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                  {user.role}
+                </span>
+              </div>
+              {showActions && (
+                <div className="flex space-x-2">
+                  <Button
+                    variant="secondary"
+                    size="small"
+                    onClick={handleEdit}
+                    data-testid={`edit-user-${user.id}`}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    variant="danger"
+                    size="small"
+                    loading={isDeleting}
+                    onClick={handleDelete}
+                    data-testid={`delete-user-${user.id}`}
+                  >
+                    {isDeleting ? 'Deleting...' : 'Delete'}
+                  </Button>
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      };
+
+      // Container components with data fetching
+      interface UserListProps extends BaseProps {
+        searchTerm?: string;
+        roleFilter?: User['role'] | 'all';
+        onUserEdit?: (user: User) => void;
+      }
+
+      const UserList: React.FC<UserListProps> = ({
+        searchTerm = '',
+        roleFilter = 'all',
+        onUserEdit,
+        className = '',
+        'data-testid': testId,
+      }) => {
+        const { data: users, isLoading, error, refetch } = useUsers();
+        const updateUserMutation = useUpdateUser();
+
+        // Memoized filtered users
+        const filteredUsers = useMemo(() => {
+          if (!users) return [];
+
+          return users.filter(user => {
+            const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                                user.email.toLowerCase().includes(searchTerm.toLowerCase());
+            const matchesRole = roleFilter === 'all' || user.role === roleFilter;
+
+            return matchesSearch && matchesRole;
+          });
+        }, [users, searchTerm, roleFilter]);
+
+        const handleUserDelete = useCallback(async (user: User) => {
+          try {
+            await UserAPI.deleteUser(user.id);
+            await refetch();
+          } catch (error) {
+            console.error('Failed to delete user:', error);
+            alert('Failed to delete user. Please try again.');
+          }
+        }, [refetch]);
+
+        if (isLoading) {
+          return (
+            <div className="space-y-4" data-testid={testId}>
+              {Array.from({ length: 3 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="bg-gray-200 rounded-lg h-24 animate-pulse"
+                />
+              ))}
+            </div>
+          );
+        }
+
+        if (error) {
+          return (
+            <div
+              className="bg-red-50 border border-red-200 rounded-lg p-4"
+              data-testid={testId}
+            >
+              <p className="text-red-800">Failed to load users. Please try again.</p>
+              <Button
+                variant="secondary"
+                size="small"
+                onClick={() => refetch()}
+                className="mt-2"
+              >
+                Retry
+              </Button>
+            </div>
+          );
+        }
+
+        if (!filteredUsers.length) {
+          return (
+            <div
+              className="text-center py-8 text-gray-500"
+              data-testid={testId}
+            >
+              No users found matching your criteria.
+            </div>
+          );
+        }
+
+        return (
+          <div className={`space-y-4 ${className}`} data-testid={testId}>
+            {filteredUsers.map(user => (
+              <UserCard
+                key={user.id}
+                user={user}
+                onEdit={onUserEdit}
+                onDelete={handleUserDelete}
+                data-testid={`user-card-${user.id}`}
+              />
+            ))}
+          </div>
+        );
+      };
+
+      // Main application component
+      const UserManagementApp: React.FC = () => {
+        const [searchTerm, setSearchTerm] = useState('');
+        const [roleFilter, setRoleFilter] = useState<User['role'] | 'all'>('all');
+        const [editingUser, setEditingUser] = useState<User | null>(null);
+
+        const handleUserEdit = useCallback((user: User) => {
+          setEditingUser(user);
+        }, []);
+
+        return (
+          <div className="max-w-4xl mx-auto p-6">
+            <h1 className="text-3xl font-bold text-gray-900 mb-8">User Management</h1>
+
+            {/* Filters */}
+            <div className="mb-6 space-y-4 sm:space-y-0 sm:flex sm:space-x-4">
+              <input
+                type="text"
+                placeholder="Search users..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                data-testid="user-search"
+              />
+              <select
+                value={roleFilter}
+                onChange={(e) => setRoleFilter(e.target.value as User['role'] | 'all')}
+                className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                data-testid="role-filter"
+              >
+                <option value="all">All Roles</option>
+                <option value="admin">Admin</option>
+                <option value="user">User</option>
+                <option value="moderator">Moderator</option>
+              </select>
+            </div>
+
+            {/* User List */}
+            <UserList
+              searchTerm={searchTerm}
+              roleFilter={roleFilter}
+              onUserEdit={handleUserEdit}
+              data-testid="user-list"
+            />
+
+            {/* Edit Modal would go here */}
+            {editingUser && (
+              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div className="bg-white rounded-lg p-6 w-full max-w-md">
+                  <h2 className="text-xl font-bold mb-4">Edit User</h2>
+                  <p>Editing {editingUser.name}</p>
+                  <div className="mt-4 flex space-x-2">
+                    <Button
+                      variant="secondary"
+                      onClick={() => setEditingUser(null)}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      variant="primary"
+                      onClick={() => setEditingUser(null)}
+                    >
+                      Save
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      };
+
+      export default UserManagementApp;
+    best_practices:
+      - "Use TypeScript with strict configuration for compile-time error detection"
+      - "Implement runtime validation with libraries like Zod for API responses"
+      - "Create reusable compound components with clear interfaces"
+      - "Use React Query for server state management and caching"
+      - "Implement proper error boundaries and loading states"
+      - "Follow the single responsibility principle for component design"
+      - "Use custom hooks to encapsulate complex logic and promote reusability"
+      - "Implement proper testing with data-testid attributes"
+    common_pitfalls:
+      - "Not validating API responses leading to runtime errors"
+      - "Creating overly complex components that violate single responsibility"
+      - "Missing proper error handling and loading states"
+      - "Not implementing proper TypeScript types for component props"
+
+  - pattern: "Next.js 14 App Router with Server Components"
+    context: "Building modern full-stack applications with Next.js App Router, Server Components, and Server Actions"
+    code_example: |
+      // next.config.js - Next.js 14 configuration
+      /** @type {import('next').NextConfig} */
+      const nextConfig = {
+        experimental: {
+          appDir: true,
+          serverActions: true,
+          serverComponentsExternalPackages: ['prisma'],
+        },
+        images: {
+          domains: ['example.com', 'cdn.example.com'],
+          formats: ['image/avif', 'image/webp'],
+        },
+        async rewrites() {
+          return [
+            {
+              source: '/api/v1/:path*',
+              destination: '/api/:path*',
+            },
+          ];
+        },
+        async headers() {
+          return [
+            {
+              source: '/(.*)',
+              headers: [
+                {
+                  key: 'X-Frame-Options',
+                  value: 'DENY',
+                },
+                {
+                  key: 'X-Content-Type-Options',
+                  value: 'nosniff',
+                },
+                {
+                  key: 'Referrer-Policy',
+                  value: 'origin-when-cross-origin',
+                },
+              ],
+            },
+          ];
+        },
+      };
+
+      module.exports = nextConfig;
+
+      // app/layout.tsx - Root layout with metadata and providers
+      import type { Metadata, Viewport } from 'next';
+      import { Inter } from 'next/font/google';
+      import { Providers } from './providers';
+      import { Navigation } from './components/Navigation';
+      import { Footer } from './components/Footer';
+      import './globals.css';
+
+      const inter = Inter({
+        subsets: ['latin'],
+        display: 'swap',
+        variable: '--font-inter',
+      });
+
+      export const metadata: Metadata = {
+        title: {
+          template: '%s | My App',
+          default: 'My App - Modern Web Application',
+        },
+        description: 'A modern web application built with Next.js 14 and React',
+        keywords: ['Next.js', 'React', 'TypeScript', 'Tailwind CSS'],
+        authors: [{ name: 'Your Name', url: 'https://yourwebsite.com' }],
+        creator: 'Your Name',
+        openGraph: {
+          type: 'website',
+          locale: 'en_US',
+          url: 'https://myapp.com',
+          title: 'My App',
+          description: 'A modern web application built with Next.js 14',
+          siteName: 'My App',
+          images: [
+            {
+              url: '/og-image.jpg',
+              width: 1200,
+              height: 630,
+              alt: 'My App',
+            },
+          ],
+        },
+        twitter: {
+          card: 'summary_large_image',
+          title: 'My App',
+          description: 'A modern web application built with Next.js 14',
+          creator: '@yourhandle',
+          images: ['/twitter-image.jpg'],
+        },
+        robots: {
+          index: true,
+          follow: true,
+          'max-video-preview': -1,
+          'max-image-preview': 'large',
+          'max-snippet': -1,
+        },
+        verification: {
+          google: 'your-google-verification-code',
+        },
+      };
+
+      export const viewport: Viewport = {
+        themeColor: [
+          { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+          { media: '(prefers-color-scheme: dark)', color: '#000000' },
+        ],
+        width: 'device-width',
+        initialScale: 1,
+      };
+
+      export default function RootLayout({
+        children,
+      }: {
+        children: React.ReactNode;
+      }) {
+        return (
+          <html lang="en" className={inter.variable}>
+            <body className="font-sans antialiased">
+              <Providers>
+                <div className="flex flex-col min-h-screen">
+                  <Navigation />
+                  <main className="flex-grow">{children}</main>
+                  <Footer />
+                </div>
+              </Providers>
+            </body>
+          </html>
+        );
+      }
+
+      // app/providers.tsx - Client-side providers
+      'use client';
+
+      import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+      import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+      import { ThemeProvider } from 'next-themes';
+      import { Toaster } from 'react-hot-toast';
+      import { useState } from 'react';
+
+      export function Providers({ children }: { children: React.ReactNode }) {
+        const [queryClient] = useState(
+          () =>
+            new QueryClient({
+              defaultOptions: {
+                queries: {
+                  staleTime: 60 * 1000, // 1 minute
+                  cacheTime: 5 * 60 * 1000, // 5 minutes
+                  retry: (failureCount, error: any) => {
+                    if (error.status === 404) return false;
+                    return failureCount < 3;
+                  },
+                  refetchOnWindowFocus: false,
+                },
+                mutations: {
+                  onError: (error: any) => {
+                    console.error('Mutation error:', error);
+                  },
+                },
+              },
+            })
+        );
+
+        return (
+          <QueryClientProvider client={queryClient}>
+            <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+              {children}
+              <Toaster
+                position="top-right"
+                toastOptions={{
+                  duration: 4000,
+                  style: {
+                    background: '#363636',
+                    color: '#fff',
+                  },
+                }}
+              />
+            </ThemeProvider>
+            <ReactQueryDevtools initialIsOpen={false} />
+          </QueryClientProvider>
+        );
+      }
+
+      // app/page.tsx - Home page with Server Component
+      import { Suspense } from 'react';
+      import { UserStats } from './components/UserStats';
+      import { RecentActivity } from './components/RecentActivity';
+      import { WelcomeMessage } from './components/WelcomeMessage';
+      import { LoadingSpinner } from './components/ui/LoadingSpinner';
+      import { getUserStats } from './lib/api';
+
+      export const metadata = {
+        title: 'Dashboard',
+        description: 'Your application dashboard with real-time statistics',
+      };
+
+      // Server Component
+      export default async function HomePage() {
+        // This runs on the server
+        const stats = await getUserStats();
+
+        return (
+          <div className="container mx-auto px-4 py-8">
+            <WelcomeMessage />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+              <UserStats initialStats={stats} />
+              <Suspense fallback={<LoadingSpinner />}>
+                <RecentActivity />
+              </Suspense>
+            </div>
+
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <h2 className="text-2xl font-bold mb-4">Quick Actions</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <ActionCard
+                  title="Create User"
+                  description="Add a new user to the system"
+                  href="/users/new"
+                  icon="user-plus"
+                />
+                <ActionCard
+                  title="View Reports"
+                  description="Access detailed analytics"
+                  href="/reports"
+                  icon="chart"
+                />
+                <ActionCard
+                  title="Settings"
+                  description="Configure application settings"
+                  href="/settings"
+                  icon="settings"
+                />
+                <ActionCard
+                  title="Support"
+                  description="Get help and support"
+                  href="/support"
+                  icon="help"
+                />
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      // Action card component
+      interface ActionCardProps {
+        title: string;
+        description: string;
+        href: string;
+        icon: string;
+      }
+
+      function ActionCard({ title, description, href, icon }: ActionCardProps) {
+        return (
+          <a
+            href={href}
+            className="block p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+          >
+            <div className="flex items-center space-x-3">
+              <div className="flex-shrink-0">
+                {/* Icon component would go here */}
+                <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <span className="text-blue-600 text-sm font-medium">
+                    {icon.charAt(0).toUpperCase()}
+                  </span>
+                </div>
+              </div>
+              <div>
+                <h3 className="text-sm font-medium text-gray-900">{title}</h3>
+                <p className="text-sm text-gray-500">{description}</p>
+              </div>
+            </div>
+          </a>
+        );
+      }
+
+      // app/users/page.tsx - Users listing page
+      import { Suspense } from 'react';
+      import { SearchParams } from 'next/navigation';
+      import { UserList } from '../components/UserList';
+      import { UserFilters } from '../components/UserFilters';
+      import { CreateUserButton } from '../components/CreateUserButton';
+      import { LoadingSpinner } from '../components/ui/LoadingSpinner';
+
+      interface UsersPageProps {
+        searchParams: {
+          search?: string;
+          role?: string;
+          page?: string;
+        };
+      }
+
+      export const metadata = {
+        title: 'Users',
+        description: 'Manage users and their permissions',
+      };
+
+      export default function UsersPage({ searchParams }: UsersPageProps) {
+        const search = searchParams.search || '';
+        const role = searchParams.role || 'all';
+        const page = parseInt(searchParams.page || '1', 10);
+
+        return (
+          <div className="container mx-auto px-4 py-8">
+            <div className="flex justify-between items-center mb-8">
+              <h1 className="text-3xl font-bold text-gray-900">Users</h1>
+              <CreateUserButton />
+            </div>
+
+            <UserFilters initialSearch={search} initialRole={role} />
+
+            <Suspense fallback={<LoadingSpinner />}>
+              <UserList search={search} role={role} page={page} />
+            </Suspense>
+          </div>
+        );
+      }
+
+      // app/users/[id]/page.tsx - User detail page
+      import { notFound } from 'next/navigation';
+      import { getUserById } from '../../lib/api';
+      import { UserProfile } from '../../components/UserProfile';
+      import { UserActions } from '../../components/UserActions';
+
+      interface UserPageProps {
+        params: {
+          id: string;
+        };
+      }
+
+      export async function generateMetadata({ params }: UserPageProps) {
+        const user = await getUserById(params.id);
+
+        if (!user) {
+          return {
+            title: 'User Not Found',
+          };
+        }
+
+        return {
+          title: `${user.name} - User Profile`,
+          description: `Profile page for ${user.name}`,
+        };
+      }
+
+      export default async function UserPage({ params }: UserPageProps) {
+        const user = await getUserById(params.id);
+
+        if (!user) {
+          notFound();
+        }
+
+        return (
+          <div className="container mx-auto px-4 py-8">
+            <div className="max-w-4xl mx-auto">
+              <div className="bg-white rounded-lg shadow-md overflow-hidden">
+                <div className="px-6 py-4 border-b border-gray-200">
+                  <div className="flex justify-between items-center">
+                    <h1 className="text-2xl font-bold text-gray-900">User Profile</h1>
+                    <UserActions user={user} />
+                  </div>
+                </div>
+
+                <div className="p-6">
+                  <UserProfile user={user} />
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      // app/api/users/route.ts - API route with Server Actions
+      import { NextRequest, NextResponse } from 'next/server';
+      import { z } from 'zod';
+      import { getUsers, createUser } from '../../lib/api';
+
+      const CreateUserSchema = z.object({
+        name: z.string().min(1, 'Name is required'),
+        email: z.string().email('Valid email is required'),
+        role: z.enum(['admin', 'user', 'moderator']),
+      });
+
+      export async function GET(request: NextRequest) {
+        try {
+          const { searchParams } = new URL(request.url);
+          const search = searchParams.get('search') || '';
+          const role = searchParams.get('role') || 'all';
+          const page = parseInt(searchParams.get('page') || '1', 10);
+          const limit = parseInt(searchParams.get('limit') || '10', 10);
+
+          const users = await getUsers({ search, role, page, limit });
+
+          return NextResponse.json(users);
+        } catch (error) {
+          console.error('Error fetching users:', error);
+          return NextResponse.json(
+            { error: 'Failed to fetch users' },
+            { status: 500 }
+          );
+        }
+      }
+
+      export async function POST(request: NextRequest) {
+        try {
+          const body = await request.json();
+          const validatedData = CreateUserSchema.parse(body);
+
+          const user = await createUser(validatedData);
+
+          return NextResponse.json(user, { status: 201 });
+        } catch (error) {
+          if (error instanceof z.ZodError) {
+            return NextResponse.json(
+              { error: 'Validation error', details: error.errors },
+              { status: 400 }
+            );
+          }
+
+          console.error('Error creating user:', error);
+          return NextResponse.json(
+            { error: 'Failed to create user' },
+            { status: 500 }
+          );
+        }
+      }
+
+      // Server Actions
+      'use server';
+
+      import { revalidatePath } from 'next/cache';
+      import { redirect } from 'next/navigation';
+      import { z } from 'zod';
+
+      const UpdateUserSchema = z.object({
+        id: z.string(),
+        name: z.string().min(1),
+        email: z.string().email(),
+        role: z.enum(['admin', 'user', 'moderator']),
+      });
+
+      export async function updateUserAction(formData: FormData) {
+        try {
+          const rawData = {
+            id: formData.get('id') as string,
+            name: formData.get('name') as string,
+            email: formData.get('email') as string,
+            role: formData.get('role') as string,
+          };
+
+          const validatedData = UpdateUserSchema.parse(rawData);
+
+          await updateUser(validatedData.id, {
+            name: validatedData.name,
+            email: validatedData.email,
+            role: validatedData.role,
+          });
+
+          revalidatePath('/users');
+          revalidatePath(`/users/${validatedData.id}`);
+
+        } catch (error) {
+          if (error instanceof z.ZodError) {
+            throw new Error('Validation error: ' + error.errors.map(e => e.message).join(', '));
+          }
+          throw new Error('Failed to update user');
+        }
+      }
+
+      export async function deleteUserAction(userId: string) {
+        try {
+          await deleteUser(userId);
+
+          revalidatePath('/users');
+          redirect('/users');
+        } catch (error) {
+          throw new Error('Failed to delete user');
+        }
+      }
+    best_practices:
+      - "Use Server Components for data fetching and initial rendering"
+      - "Implement proper error handling with error.tsx and not-found.tsx"
+      - "Use Server Actions for form submissions and mutations"
+      - "Implement proper metadata for SEO and social sharing"
+      - "Use Suspense for loading states and progressive enhancement"
+      - "Validate all inputs with runtime validation libraries like Zod"
+      - "Implement proper cache invalidation with revalidatePath"
+      - "Use TypeScript for type safety across client and server"
+    common_pitfalls:
+      - "Mixing client and server state incorrectly"
+      - "Not implementing proper error boundaries"
+      - "Missing cache invalidation after mutations"
+      - "Not optimizing images and fonts for performance"
+
+  - pattern: "Vue 3 Composition API with TypeScript"
+    context: "Building modern Vue.js applications with Composition API, TypeScript, and Pinia for state management"
+    code_example: |
+      // vite.config.ts - Vite configuration for Vue 3
+      import { defineConfig } from 'vite';
+      import vue from '@vitejs/plugin-vue';
+      import { resolve } from 'path';
+
+      export default defineConfig({
+        plugins: [vue()],
+        resolve: {
+          alias: {
+            '@': resolve(__dirname, 'src'),
+          },
+        },
+        css: {
+          preprocessorOptions: {
+            scss: {
+              additionalData: '@import "@/styles/variables.scss";',
+            },
+          },
+        },
+        build: {
+          rollupOptions: {
+            output: {
+              manualChunks: {
+                vendor: ['vue', 'vue-router', 'pinia'],
+                ui: ['@headlessui/vue', '@heroicons/vue'],
+              },
+            },
+          },
+        },
+      });
+
+      // src/main.ts - Application entry point
+      import { createApp } from 'vue';
+      import { createPinia } from 'pinia';
+      import { router } from './router';
+      import App from './App.vue';
+      import './style.css';
+
+      const app = createApp(App);
+      const pinia = createPinia();
+
+      app.use(pinia);
+      app.use(router);
+
+      // Global error handler
+      app.config.errorHandler = (err, vm, info) => {
+        console.error('Global error:', err, info);
+        // Send to error reporting service
+      };
+
+      app.mount('#app');
+
+      // src/composables/useApi.ts - API composable
+      import { ref, computed } from 'vue';
+      import { z } from 'zod';
+
+      const UserSchema = z.object({
+        id: z.string(),
+        name: z.string(),
+        email: z.string().email(),
+        role: z.enum(['admin', 'user', 'moderator']),
+        createdAt: z.string(),
+        updatedAt: z.string(),
+      });
+
+      type User = z.infer<typeof UserSchema>;
+
+      interface ApiState<T> {
+        data: T | null;
+        loading: boolean;
+        error: string | null;
+      }
+
+      export function useApi<T>(url: string, schema: z.ZodSchema<T>) {
+        const state = ref<ApiState<T>>({
+          data: null,
+          loading: false,
+          error: null,
+        });
+
+        const isLoading = computed(() => state.value.loading);
+        const hasError = computed(() => !!state.value.error);
+        const data = computed(() => state.value.data);
+
+        async function execute() {
+          state.value.loading = true;
+          state.value.error = null;
+
+          try {
+            const response = await fetch(url);
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const json = await response.json();
+            const validatedData = schema.parse(json);
+
+            state.value.data = validatedData;
+          } catch (error) {
+            state.value.error = error instanceof Error ? error.message : 'Unknown error';
+          } finally {
+            state.value.loading = false;
+          }
+        }
+
+        async function mutate(method: string, body?: any) {
+          state.value.loading = true;
+          state.value.error = null;
+
+          try {
+            const response = await fetch(url, {
+              method,
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: body ? JSON.stringify(body) : undefined,
+            });
+
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const json = await response.json();
+            const validatedData = schema.parse(json);
+
+            state.value.data = validatedData;
+            return validatedData;
+          } catch (error) {
+            state.value.error = error instanceof Error ? error.message : 'Unknown error';
+            throw error;
+          } finally {
+            state.value.loading = false;
+          }
+        }
+
+        return {
+          state: readonly(state),
+          data,
+          isLoading,
+          hasError,
+          execute,
+          mutate,
+        };
+      }
+
+      // src/stores/user.ts - Pinia store
+      import { defineStore } from 'pinia';
+      import { ref, computed } from 'vue';
+      import { useApi } from '@/composables/useApi';
+
+      export const useUserStore = defineStore('user', () => {
+        const users = ref<User[]>([]);
+        const selectedUser = ref<User | null>(null);
+        const searchTerm = ref('');
+        const roleFilter = ref<User['role'] | 'all'>('all');
+
+        // Computed
+        const filteredUsers = computed(() => {
+          return users.value.filter(user => {
+            const matchesSearch = user.name.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
+                                user.email.toLowerCase().includes(searchTerm.value.toLowerCase());
+            const matchesRole = roleFilter.value === 'all' || user.role === roleFilter.value;
+
+            return matchesSearch && matchesRole;
+          });
+        });
+
+        const userCount = computed(() => users.value.length);
+
+        // Actions
+        async function fetchUsers() {
+          try {
+            const response = await fetch('/api/users');
+            if (!response.ok) {
+              throw new Error('Failed to fetch users');
+            }
+
+            const data = await response.json();
+            users.value = z.array(UserSchema).parse(data);
+          } catch (error) {
+            console.error('Error fetching users:', error);
+            throw error;
+          }
+        }
+
+        async function fetchUser(id: string) {
+          try {
+            const response = await fetch(`/api/users/${id}`);
+            if (!response.ok) {
+              throw new Error('Failed to fetch user');
+            }
+
+            const data = await response.json();
+            const user = UserSchema.parse(data);
+            selectedUser.value = user;
+            return user;
+          } catch (error) {
+            console.error('Error fetching user:', error);
+            throw error;
+          }
+        }
+
+        async function createUser(userData: Omit<User, 'id' | 'createdAt' | 'updatedAt'>) {
+          try {
+            const response = await fetch('/api/users', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(userData),
+            });
+
+            if (!response.ok) {
+              throw new Error('Failed to create user');
+            }
+
+            const data = await response.json();
+            const newUser = UserSchema.parse(data);
+            users.value.push(newUser);
+            return newUser;
+          } catch (error) {
+            console.error('Error creating user:', error);
+            throw error;
+          }
+        }
+
+        async function updateUser(id: string, updates: Partial<User>) {
+          try {
+            const response = await fetch(`/api/users/${id}`, {
+              method: 'PATCH',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(updates),
+            });
+
+            if (!response.ok) {
+              throw new Error('Failed to update user');
+            }
+
+            const data = await response.json();
+            const updatedUser = UserSchema.parse(data);
+
+            const index = users.value.findIndex(user => user.id === id);
+            if (index !== -1) {
+              users.value[index] = updatedUser;
+            }
+
+            if (selectedUser.value?.id === id) {
+              selectedUser.value = updatedUser;
+            }
+
+            return updatedUser;
+          } catch (error) {
+            console.error('Error updating user:', error);
+            throw error;
+          }
+        }
+
+        async function deleteUser(id: string) {
+          try {
+            const response = await fetch(`/api/users/${id}`, {
+              method: 'DELETE',
+            });
+
+            if (!response.ok) {
+              throw new Error('Failed to delete user');
+            }
+
+            users.value = users.value.filter(user => user.id !== id);
+
+            if (selectedUser.value?.id === id) {
+              selectedUser.value = null;
+            }
+          } catch (error) {
+            console.error('Error deleting user:', error);
+            throw error;
+          }
+        }
+
+        function setSearchTerm(term: string) {
+          searchTerm.value = term;
+        }
+
+        function setRoleFilter(role: User['role'] | 'all') {
+          roleFilter.value = role;
+        }
+
+        function clearFilters() {
+          searchTerm.value = '';
+          roleFilter.value = 'all';
+        }
+
+        return {
+          // State
+          users: readonly(users),
+          selectedUser: readonly(selectedUser),
+          searchTerm: readonly(searchTerm),
+          roleFilter: readonly(roleFilter),
+          // Computed
+          filteredUsers,
+          userCount,
+          // Actions
+          fetchUsers,
+          fetchUser,
+          createUser,
+          updateUser,
+          deleteUser,
+          setSearchTerm,
+          setRoleFilter,
+          clearFilters,
+        };
+      });
+
+      // src/components/UserCard.vue - Reusable component
+      <template>
+        <div class="bg-white rounded-lg shadow-md p-6 border border-gray-200">
+          <div class="flex items-center space-x-4">
+            <div v-if="user.avatar" class="flex-shrink-0">
+              <img
+                :src="user.avatar"
+                :alt="`${user.name}'s avatar`"
+                class="w-12 h-12 rounded-full object-cover"
+              />
+            </div>
+            <div class="flex-1 min-w-0">
+              <h3 class="text-lg font-medium text-gray-900 truncate">
+                {{ user.name }}
+              </h3>
+              <p class="text-sm text-gray-500 truncate">{{ user.email }}</p>
+              <span
+                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                :class="roleClasses"
+              >
+                {{ user.role }}
+              </span>
+            </div>
+            <div v-if="showActions" class="flex space-x-2">
+              <BaseButton
+                variant="secondary"
+                size="small"
+                @click="$emit('edit', user)"
+                :data-testid="`edit-user-${user.id}`"
+              >
+                Edit
+              </BaseButton>
+              <BaseButton
+                variant="danger"
+                size="small"
+                :loading="isDeleting"
+                @click="handleDelete"
+                :data-testid="`delete-user-${user.id}`"
+              >
+                {{ isDeleting ? 'Deleting...' : 'Delete' }}
+              </BaseButton>
+            </div>
+          </div>
+        </div>
+      </template>
+
+      <script setup lang="ts">
+      import { computed, ref } from 'vue';
+      import BaseButton from './ui/BaseButton.vue';
+
+      interface Props {
+        user: User;
+        showActions?: boolean;
+      }
+
+      interface Emits {
+        edit: [user: User];
+        delete: [user: User];
+      }
+
+      const props = withDefaults(defineProps<Props>(), {
+        showActions: true,
+      });
+
+      const emit = defineEmits<Emits>();
+
+      const isDeleting = ref(false);
+
+      const roleClasses = computed(() => {
+        const baseClasses = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium';
+
+        switch (props.user.role) {
+          case 'admin':
+            return `${baseClasses} bg-red-100 text-red-800`;
+          case 'moderator':
+            return `${baseClasses} bg-yellow-100 text-yellow-800`;
+          default:
+            return `${baseClasses} bg-blue-100 text-blue-800`;
+        }
+      });
+
+      async function handleDelete() {
+        const confirmed = confirm(`Are you sure you want to delete ${props.user.name}?`);
+        if (!confirmed) return;
+
+        isDeleting.value = true;
+        try {
+          emit('delete', props.user);
+        } finally {
+          isDeleting.value = false;
+        }
+      }
+      </script>
+
+      // src/components/UserList.vue - List component with state management
+      <template>
+        <div class="space-y-4">
+          <div class="flex space-x-4 mb-6">
+            <input
+              v-model="localSearchTerm"
+              type="text"
+              placeholder="Search users..."
+              class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              data-testid="user-search"
+            />
+            <select
+              v-model="localRoleFilter"
+              class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              data-testid="role-filter"
+            >
+              <option value="all">All Roles</option>
+              <option value="admin">Admin</option>
+              <option value="user">User</option>
+              <option value="moderator">Moderator</option>
+            </select>
+          </div>
+
+          <div v-if="isLoading" class="space-y-4">
+            <div
+              v-for="index in 3"
+              :key="index"
+              class="bg-gray-200 rounded-lg h-24 animate-pulse"
+            />
+          </div>
+
+          <div
+            v-else-if="error"
+            class="bg-red-50 border border-red-200 rounded-lg p-4"
+          >
+            <p class="text-red-800">{{ error }}</p>
+            <BaseButton
+              variant="secondary"
+              size="small"
+              @click="refreshUsers"
+              class="mt-2"
+            >
+              Retry
+            </BaseButton>
+          </div>
+
+          <div
+            v-else-if="!filteredUsers.length"
+            class="text-center py-8 text-gray-500"
+          >
+            No users found matching your criteria.
+          </div>
+
+          <div v-else class="space-y-4">
+            <UserCard
+              v-for="user in filteredUsers"
+              :key="user.id"
+              :user="user"
+              @edit="handleUserEdit"
+              @delete="handleUserDelete"
+              :data-testid="`user-card-${user.id}`"
+            />
+          </div>
+        </div>
+      </template>
+
+      <script setup lang="ts">
+      import { computed, onMounted, watch } from 'vue';
+      import { storeToRefs } from 'pinia';
+      import { useUserStore } from '@/stores/user';
+      import UserCard from './UserCard.vue';
+      import BaseButton from './ui/BaseButton.vue';
+
+      interface Emits {
+        userEdit: [user: User];
+      }
+
+      const emit = defineEmits<Emits>();
+
+      const userStore = useUserStore();
+      const { filteredUsers, searchTerm, roleFilter } = storeToRefs(userStore);
+
+      const isLoading = ref(false);
+      const error = ref<string | null>(null);
+
+      // Local reactive copies for v-model
+      const localSearchTerm = ref(searchTerm.value);
+      const localRoleFilter = ref(roleFilter.value);
+
+      // Watch local values and update store
+      watch(localSearchTerm, (newValue) => {
+        userStore.setSearchTerm(newValue);
+      });
+
+      watch(localRoleFilter, (newValue) => {
+        userStore.setRoleFilter(newValue);
+      });
+
+      async function loadUsers() {
+        isLoading.value = true;
+        error.value = null;
+
+        try {
+          await userStore.fetchUsers();
+        } catch (err) {
+          error.value = err instanceof Error ? err.message : 'Failed to load users';
+        } finally {
+          isLoading.value = false;
+        }
+      }
+
+      async function refreshUsers() {
+        await loadUsers();
+      }
+
+      function handleUserEdit(user: User) {
+        emit('userEdit', user);
+      }
+
+      async function handleUserDelete(user: User) {
+        try {
+          await userStore.deleteUser(user.id);
+        } catch (err) {
+          error.value = err instanceof Error ? err.message : 'Failed to delete user';
+        }
+      }
+
+      onMounted(() => {
+        loadUsers();
+      });
+      </script>
+    best_practices:
+      - "Use Composition API for better code organization and reusability"
+      - "Implement proper TypeScript types for all components and composables"
+      - "Use Pinia for centralized state management with TypeScript support"
+      - "Create reusable composables for common functionality"
+      - "Implement proper error handling and loading states"
+      - "Use computed properties for derived state"
+      - "Implement proper component communication with emit/props"
+      - "Use reactive and readonly for proper reactivity patterns"
+    common_pitfalls:
+      - "Not properly typing component props and emits"
+      - "Missing reactive wrapper for primitive values in composables"
+      - "Not implementing proper error boundaries"
+      - "Overusing watchers instead of computed properties"
 
 professional_standards:
-  security_frameworks: []
-  industry_practices: []
-  compliance_requirements: []
+  security_frameworks:
+    - "OWASP Top 10 for Web Applications - Comprehensive security framework addressing injection, broken authentication, sensitive data exposure, XML external entities, broken access control, security misconfigurations, cross-site scripting, insecure deserialization, vulnerable components, and insufficient logging"
+    - "Content Security Policy (CSP) Level 3 - Modern web security standard for preventing cross-site scripting, data injection attacks, and unauthorized resource loading through declarative policy configuration"
+    - "Subresource Integrity (SRI) - Security feature enabling browsers to verify that files fetched from CDNs haven't been tampered with through cryptographic hash validation"
+    - "Secure Headers Implementation - HTTP security headers including HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, and Permissions-Policy for defense-in-depth security"
+    - "OAuth 2.0 / OpenID Connect - Industry-standard protocols for secure authentication and authorization in single-page applications with proper PKCE implementation"
+    - "Web Cryptography API - Browser-native cryptographic operations for secure key generation, encryption, decryption, and digital signatures in client-side applications"
+
+  industry_practices:
+    - "Progressive Web App (PWA) Standards - W3C and Google standards for app-like experiences including service workers, web app manifests, responsive design, and offline functionality"
+    - "Web Accessibility Guidelines (WCAG 2.2) - International accessibility standards ensuring usable experiences for users with disabilities through perceivable, operable, understandable, and robust design"
+    - "Performance Budget Methodology - Industry best practices for establishing and maintaining performance constraints including bundle size limits, Core Web Vitals targets, and resource optimization"
+    - "Mobile-First Design Principles - Industry-standard approach prioritizing mobile experience design and progressive enhancement for larger screens and capabilities"
+    - "Component-Driven Development - Modern development methodology emphasizing reusable, isolated, and testable UI components with tools like Storybook and design systems"
+    - "JAMstack Architecture - Modern web development architecture based on JavaScript, APIs, and Markup for better performance, security, and developer experience"
+    - "Semantic Versioning (SemVer) - Industry standard for version numbering enabling predictable dependency management and backwards compatibility communication"
+
+  compliance_requirements:
+    - "GDPR Cookie Consent and Privacy - European data protection regulation requirements for user consent management, data processing transparency, and privacy-by-design implementation"
+    - "CCPA Privacy Compliance - California Consumer Privacy Act requirements for user data rights, privacy policy disclosure, and opt-out mechanisms in web applications"
+    - "Section 508 Accessibility - US federal accessibility standards for government websites ensuring equal access for users with disabilities through assistive technology compatibility"
+    - "PCI DSS Level 1 - Payment Card Industry Data Security Standard for handling credit card information including secure transmission, encryption, and access controls"
+    - "SOX Compliance for Financial Applications - Sarbanes-Oxley Act requirements for financial data integrity, audit trails, and internal controls in web applications"
+    - "HIPAA Privacy and Security - Health Insurance Portability and Accountability Act requirements for protecting health information in web applications including encryption and access controls"
+    - "ISO 27001 Information Security - International standard for information security management systems ensuring systematic approach to sensitive data protection"
 
 integration_guidelines:
-  api_integration: []
-  database_integration: []
-  third_party_services: []
+  api_integration:
+    - "RESTful API Integration - HTTP-based API consumption with proper HTTP methods, status codes, error handling, and resource-based URL design patterns"
+    - "GraphQL Client Implementation - Type-safe API queries and mutations with Apollo Client, Relay, or urql including caching, optimistic updates, and subscription management"
+    - "Real-time WebSocket Integration - Bidirectional communication for live updates using WebSocket APIs, Socket.IO, or Server-Sent Events with connection management"
+    - "Authentication Token Management - Secure handling of JWT tokens, refresh token rotation, automatic token renewal, and secure storage strategies"
+    - "API Rate Limiting and Retry Logic - Client-side implementation of exponential backoff, circuit breaker patterns, and graceful degradation for API reliability"
+    - "CORS Configuration and Preflight Handling - Cross-Origin Resource Sharing setup for secure cross-domain API access with proper header configuration"
+    - "API Versioning Strategies - Client-side handling of API version management, backwards compatibility, and migration strategies for evolving APIs"
+
+  database_integration:
+    - "Client-Side Caching Strategies - Browser storage mechanisms including localStorage, sessionStorage, IndexedDB, and Cache API for offline functionality"
+    - "State Synchronization Patterns - Optimistic updates, conflict resolution, and data consistency between client state and server database"
+    - "Offline-First Architecture - Progressive Web App patterns for offline data access, background sync, and eventual consistency with remote databases"
+    - "Real-time Database Integration - Integration with Firebase Realtime Database, Supabase, or PlanetScale for live data synchronization"
+    - "Search and Filtering Implementation - Client-side search optimization, debounced queries, and integration with search services like Algolia or Elasticsearch"
+    - "Data Validation and Sanitization - Client-side validation with libraries like Yup, Joi, or Zod for data integrity before API submission"
+    - "Database Migration Handling - Client-side handling of database schema changes, data migration notifications, and version compatibility"
+
+  third_party_services:
+    - "Analytics Integration - Google Analytics 4, Adobe Analytics, Mixpanel, or Amplitude integration for user behavior tracking and conversion optimization"
+    - "Error Monitoring Integration - Sentry, LogRocket, or Bugsnag integration for real-time error tracking, performance monitoring, and user session replay"
+    - "Content Delivery Network (CDN) - Cloudflare, AWS CloudFront, or Vercel Edge Network integration for global content delivery and performance optimization"
+    - "Payment Gateway Integration - Stripe, PayPal, or Square integration for secure payment processing with PCI DSS compliance"
+    - "Social Media Authentication - OAuth integration with Google, Facebook, GitHub, and Twitter for social login and user authentication"
+    - "Email Service Integration - SendGrid, Mailgun, or AWS SES integration for transactional emails, newsletters, and user communication"
+    - "Search Service Integration - Algolia, Elasticsearch, or Typesense integration for fast, relevant search functionality with autocomplete and filtering"
+    - "Image and Video Processing - Cloudinary, ImageKit, or AWS S3 integration for media optimization, resizing, and format conversion"
+    - "Push Notification Services - Firebase Cloud Messaging, OneSignal, or native Web Push API for user engagement and re-engagement"
+    - "A/B Testing Platforms - Optimizely, VWO, or LaunchDarkly integration for feature flags, experiments, and gradual feature rollouts"
 
 performance_benchmarks:
-  response_times: []
-  throughput_targets: []
-  resource_utilization: []
+  response_times:
+    - "Time to First Byte (TTFB): P50 < 200ms, P95 < 500ms, P99 < 1s for server response time optimization"
+    - "First Contentful Paint (FCP): P50 < 1.2s, P95 < 2.5s, P99 < 4s for initial content visibility on 3G networks"
+    - "Largest Contentful Paint (LCP): P50 < 2.5s, P95 < 4s, P99 < 6s for main content loading completion"
+    - "First Input Delay (FID): P50 < 50ms, P95 < 100ms, P99 < 200ms for user interaction responsiveness"
+    - "Cumulative Layout Shift (CLS): P50 < 0.05, P95 < 0.1, P99 < 0.15 for visual stability during page load"
+    - "Time to Interactive (TTI): P50 < 3s, P95 < 5s, P99 < 8s for full page interactivity on mobile devices"
+    - "Speed Index: P50 < 2s, P95 < 3.5s, P99 < 5s for visual completeness of above-the-fold content"
 
-troubleshooting_guides: []
-  # Example structure:
-  # - issue: "Common problem description"
-  #   symptoms: []
-  #   solutions: []
-  #   prevention: []
+  throughput_targets:
+    - "Component Rendering: >60 FPS for smooth animations and interactions with 16.67ms frame budget"
+    - "API Request Handling: >100 concurrent requests with proper queue management and rate limiting"
+    - "Bundle Loading: >500 KB/s effective throughput on 3G networks with compression and caching optimization"
+    - "Image Loading: >50 images/second with lazy loading, WebP/AVIF format optimization, and responsive sizing"
+    - "Search Performance: <100ms response time for client-side search with debounced queries and result caching"
+    - "Form Validation: <50ms per field validation with real-time feedback and error messaging"
+    - "Route Navigation: <200ms for client-side route transitions with prefetching and code splitting"
 
-tool_configurations: []
-  # Example structure:
-  # - tool: "pytest"
-  #   config_file: "pytest.ini"
-  #   recommended_settings: {}
-  #   integration_notes: ""
+  resource_utilization:
+    - "JavaScript Bundle Size: Initial bundle < 200KB, total JavaScript < 1MB with code splitting and tree shaking"
+    - "CSS Bundle Size: Critical CSS < 50KB inline, total CSS < 200KB with unused code elimination"
+    - "Memory Usage: Peak heap < 50MB on mobile devices, < 200MB on desktop with proper cleanup and garbage collection"
+    - "CPU Utilization: <50% average CPU usage during normal operation with efficient algorithms and batching"
+    - "Network Requests: <50 requests per page load with resource bundling, HTTP/2 multiplexing, and caching strategies"
+    - "Cache Hit Ratio: >80% for static assets, >60% for API responses with proper cache headers and invalidation"
+    - "Battery Impact: Minimal battery drain with efficient rendering, reduced CPU usage, and optimized network activity"
+
+troubleshooting_guides:
+  - issue: "Poor Core Web Vitals Performance and Lighthouse Scores"
+    symptoms:
+      - "Lighthouse Performance score consistently below 90 across multiple page audits"
+      - "Large Contentful Paint (LCP) exceeding 2.5 seconds on mobile and desktop"
+      - "Cumulative Layout Shift (CLS) above 0.1 causing visible content jumping"
+      - "First Input Delay (FID) or Interaction to Next Paint (INP) above 200ms causing poor user experience"
+      - "Time to Interactive (TTI) exceeding 5 seconds on 3G network conditions"
+    solutions:
+      - "Implement code splitting at route and component levels using React.lazy(), Vue async components, or Angular lazy loading"
+      - "Optimize images with next/image, responsive images, WebP/AVIF formats, and proper sizing attributes"
+      - "Use resource hints (preload, prefetch, preconnect) for critical resources and third-party domains"
+      - "Implement critical CSS inlining and defer non-critical stylesheets to reduce render-blocking resources"
+      - "Add performance monitoring with Web Vitals library and real user monitoring (RUM) tools"
+      - "Optimize third-party scripts with async/defer loading and consider removing non-essential integrations"
+    prevention:
+      - "Set up performance budgets in CI/CD with tools like Lighthouse CI or WebPageTest automation"
+      - "Regular performance audits using Lighthouse, PageSpeed Insights, and synthetic monitoring"
+      - "Implement performance-focused development practices with bundle analysis and optimization"
+
+  - issue: "Hydration Mismatches and Server-Side Rendering Errors"
+    symptoms:
+      - "Console warnings about hydration mismatches between server and client rendering"
+      - "Flash of unstyled content (FOUC) or layout shifts during page hydration"
+      - "Different content rendering on server vs client causing inconsistent user experience"
+      - "React hydration errors or Vue/Angular SSR inconsistencies"
+      - "SEO issues due to server-client content differences affecting search rankings"
+    solutions:
+      - "Ensure consistent data fetching between server and client using SSR-compatible state management"
+      - "Use suppressHydrationWarning sparingly and only for content that legitimately differs (timestamps, random IDs)"
+      - "Implement proper loading states and skeleton screens during hydration process"
+      - "Avoid browser-only APIs (localStorage, window object) during initial render"
+      - "Use dynamic imports with ssr: false for components that require browser environment"
+      - "Implement proper error boundaries specifically for hydration errors"
+    prevention:
+      - "Test SSR builds thoroughly with tools like Puppeteer or Playwright for consistency validation"
+      - "Use TypeScript strict mode to catch potential hydration issues at compile time"
+      - "Implement end-to-end testing that validates server and client rendering consistency"
+
+  - issue: "Memory Leaks and Performance Degradation Over Time"
+    symptoms:
+      - "Browser tab consuming increasing amounts of memory during extended usage"
+      - "Application becoming sluggish after prolonged user interaction"
+      - "Event listeners not being properly cleaned up causing accumulating callbacks"
+      - "React/Vue components not unmounting properly leaving references in memory"
+      - "Third-party libraries retaining references and preventing garbage collection"
+    solutions:
+      - "Implement proper cleanup in useEffect/onUnmounted hooks for event listeners and subscriptions"
+      - "Use weak references (WeakMap, WeakSet) for caching and temporary data storage"
+      - "Audit and optimize component lifecycle with React DevTools Profiler or Vue DevTools"
+      - "Remove unused event listeners, intervals, and timeouts in component cleanup functions"
+      - "Implement virtual scrolling for large lists using libraries like react-window or vue-virtual-scroller"
+      - "Use browser DevTools Memory tab to identify and fix memory leaks through heap snapshots"
+    prevention:
+      - "Regular memory profiling during development with automated memory leak detection"
+      - "Code review practices focusing on proper resource cleanup and lifecycle management"
+      - "Implement automated testing for memory usage patterns and regression detection"
+
+  - issue: "Accessibility Violations and Screen Reader Incompatibility"
+    symptoms:
+      - "axe-core or Lighthouse accessibility audits showing multiple violations"
+      - "Screen readers unable to navigate content properly or announce elements incorrectly"
+      - "Keyboard navigation broken or incomplete for interactive elements"
+      - "Color contrast ratios below WCAG 2.1 AA standards (4.5:1 for normal text)"
+      - "Missing or incorrect ARIA labels, roles, and properties for complex components"
+    solutions:
+      - "Implement semantic HTML structure with proper heading hierarchy (h1-h6) and landmark roles"
+      - "Add comprehensive ARIA labels, descriptions, and live regions for dynamic content"
+      - "Ensure keyboard navigation works for all interactive elements with visible focus indicators"
+      - "Test with actual screen readers (NVDA, JAWS, VoiceOver) not just automated tools"
+      - "Implement skip links, focus management, and proper tab order for complex interfaces"
+      - "Use tools like axe-core, WAVE, and Lighthouse accessibility audits in CI/CD pipeline"
+    prevention:
+      - "Include accessibility requirements in definition of done for all user stories"
+      - "Regular accessibility training for development team and design collaboration"
+      - "Automated accessibility testing integration with fail-fast CI/CD pipeline gates"
+
+  - issue: "Bundle Size Bloat and Slow Loading Performance"
+    symptoms:
+      - "Initial JavaScript bundle exceeding 300KB causing slow page loads"
+      - "Webpack Bundle Analyzer showing large unused dependencies in production bundles"
+      - "Poor performance on mobile networks with slow download speeds"
+      - "Third-party libraries contributing disproportionately to bundle size"
+      - "Duplicate dependencies or polyfills being included multiple times"
+    solutions:
+      - "Implement tree shaking with ES6 modules and webpack/Rollup optimization"
+      - "Use dynamic imports for code splitting and lazy loading of non-critical features"
+      - "Replace large libraries with smaller alternatives (date-fns vs moment, lodash-es vs lodash)"
+      - "Implement proper polyfill strategy with differential serving for modern vs legacy browsers"
+      - "Use webpack-bundle-analyzer or source-map-explorer to identify optimization opportunities"
+      - "Configure build tools for proper dead code elimination and minification"
+    prevention:
+      - "Set up bundle size monitoring with tools like bundlesize or relative-ci in CI/CD"
+      - "Regular dependency audits and updates with consideration for size impact"
+      - "Performance budgets enforcement preventing bundle size regression"
+
+  - issue: "Cross-Browser Compatibility and Layout Inconsistencies"
+    symptoms:
+      - "Different rendering behavior across Chrome, Firefox, Safari, and Edge browsers"
+      - "CSS Grid or Flexbox layouts breaking in older browser versions"
+      - "JavaScript features not working in target browser versions"
+      - "Mobile Safari specific issues with touch events and viewport handling"
+      - "Internet Explorer compatibility issues despite polyfills"
+    solutions:
+      - "Use autoprefixer and browserslist configuration for automatic vendor prefix addition"
+      - "Implement feature detection with Modernizr or manual checks instead of browser detection"
+      - "Use CSS reset or normalize.css for consistent baseline styling across browsers"
+      - "Test with real devices and browsers using tools like BrowserStack or Sauce Labs"
+      - "Implement progressive enhancement strategy for newer CSS and JavaScript features"
+      - "Use polyfills selectively based on browser support matrix and usage analytics"
+    prevention:
+      - "Establish supported browser matrix based on user analytics and business requirements"
+      - "Automated cross-browser testing in CI/CD pipeline with visual regression detection"
+      - "Regular testing on real devices and browsers throughout development process"
+
+  - issue: "State Management Complexity and Data Inconsistency"
+    symptoms:
+      - "Application state becoming difficult to debug and reason about"
+      - "Prop drilling through multiple component layers causing maintenance issues"
+      - "Race conditions and stale closures in React hooks or Vue composables"
+      - "Inconsistent data between different parts of the application"
+      - "Complex update patterns causing unnecessary re-renders and performance issues"
+    solutions:
+      - "Implement proper state management with Redux Toolkit, Zustand, Pinia, or NgRx for complex applications"
+      - "Use React Query, SWR, or Apollo Client for server state management and caching"
+      - "Implement proper data normalization to avoid duplication and inconsistency"
+      - "Use context providers strategically for related state without overusing global context"
+      - "Implement proper loading and error states for all async operations"
+      - "Use state machines (XState) for complex state logic with clear transitions"
+    prevention:
+      - "Establish clear state management patterns and architecture decisions early"
+      - "Regular refactoring to extract and centralize related state logic"
+      - "Code review focus on state management patterns and data flow consistency"
+
+tool_configurations:
+  - tool: "Vite"
+    config_file: "vite.config.ts"
+    recommended_settings:
+      plugins: ["@vitejs/plugin-react", "@vitejs/plugin-vue", "vite-plugin-eslint"]
+      build:
+        target: "es2020"
+        rollupOptions:
+          output:
+            manualChunks:
+              vendor: ["react", "react-dom"]
+              router: ["react-router-dom"]
+        sourcemap: true
+      server:
+        port: 3000
+        host: true
+        open: true
+      preview:
+        port: 3001
+        host: true
+    integration_notes: "Essential for modern frontend development with fast HMR, optimized builds, and excellent TypeScript support"
+
+  - tool: "TypeScript"
+    config_file: "tsconfig.json"
+    recommended_settings:
+      compilerOptions:
+        target: "ES2020"
+        lib: ["ES2020", "DOM", "DOM.Iterable"]
+        module: "ESNext"
+        moduleResolution: "bundler"
+        strict: true
+        noUnusedLocals: true
+        noUnusedParameters: true
+        noFallthroughCasesInSwitch: true
+        jsx: "react-jsx"
+        allowImportingTsExtensions: true
+        resolveJsonModule: true
+        isolatedModules: true
+        noEmit: true
+      include: ["src"]
+      exclude: ["node_modules", "dist"]
+    integration_notes: "Strict TypeScript configuration for compile-time error detection and better developer experience"
+
+  - tool: "ESLint"
+    config_file: ".eslintrc.json"
+    recommended_settings:
+      extends:
+        - "eslint:recommended"
+        - "@typescript-eslint/recommended"
+        - "react-hooks/recommended"
+        - "@vue/typescript/recommended"
+      parser: "@typescript-eslint/parser"
+      parserOptions:
+        ecmaVersion: "latest"
+        sourceType: "module"
+        ecmaFeatures:
+          jsx: true
+      plugins: ["react-refresh", "@typescript-eslint", "jsx-a11y"]
+      rules:
+        "react-refresh/only-export-components": "warn"
+        "@typescript-eslint/no-unused-vars": "error"
+        "react-hooks/exhaustive-deps": "warn"
+        "jsx-a11y/alt-text": "error"
+        "jsx-a11y/anchor-has-content": "error"
+    integration_notes: "Comprehensive linting for JavaScript, TypeScript, React, and accessibility with automated fixing"
+
+  - tool: "Prettier"
+    config_file: ".prettierrc"
+    recommended_settings:
+      semi: true
+      trailingComma: "es5"
+      singleQuote: true
+      printWidth: 80
+      tabWidth: 2
+      useTabs: false
+      bracketSpacing: true
+      bracketSameLine: false
+      arrowParens: "avoid"
+      endOfLine: "lf"
+    integration_notes: "Opinionated code formatting for consistent style across team and automatic formatting on save"
+
+  - tool: "Tailwind CSS"
+    config_file: "tailwind.config.js"
+    recommended_settings:
+      content: ["./src/**/*.{js,ts,jsx,tsx}", "./index.html"]
+      theme:
+        extend:
+          colors:
+            primary: "var(--color-primary)"
+            secondary: "var(--color-secondary)"
+          fontFamily:
+            sans: ["Inter", "system-ui", "sans-serif"]
+          spacing:
+            18: "4.5rem"
+            88: "22rem"
+      plugins: ["@tailwindcss/forms", "@tailwindcss/typography", "@tailwindcss/aspect-ratio"]
+      corePlugins:
+        preflight: true
+      future:
+        hoverOnlyWhenSupported: true
+    integration_notes: "Utility-first CSS framework configuration with design system integration and performance optimization"
+
+  - tool: "Vitest"
+    config_file: "vitest.config.ts"
+    recommended_settings:
+      test:
+        globals: true
+        environment: "jsdom"
+        setupFiles: ["./src/test/setup.ts"]
+        coverage:
+          provider: "v8"
+          reporter: ["text", "json", "html"]
+          exclude: ["node_modules/", "src/test/"]
+          thresholds:
+            global:
+              branches: 80
+              functions: 80
+              lines: 80
+              statements: 80
+        mockReset: true
+        clearMocks: true
+        restoreMocks: true
+    integration_notes: "Fast testing framework with built-in TypeScript support, mocking, and coverage reporting"
+
+  - tool: "Storybook"
+    config_file: ".storybook/main.js"
+    recommended_settings:
+      framework: "@storybook/react-vite"
+      stories: ["../src/**/*.stories.@(js|jsx|ts|tsx|mdx)"]
+      addons:
+        - "@storybook/addon-essentials"
+        - "@storybook/addon-a11y"
+        - "@storybook/addon-design-tokens"
+        - "@storybook/addon-viewport"
+      features:
+        buildStoriesJson: true
+      typescript:
+        reactDocgen: "react-docgen-typescript"
+        reactDocgenTypescriptOptions:
+          shouldExtractLiteralValuesFromEnum: true
+          propFilter: "(prop) => prop.parent ? !/node_modules/.test(prop.parent.fileName) : true"
+    integration_notes: "Component development environment with accessibility testing, design tokens, and comprehensive documentation"
+
+  - tool: "Playwright"
+    config_file: "playwright.config.ts"
+    recommended_settings:
+      testDir: "./e2e"
+      fullyParallel: true
+      forbidOnly: "!!process.env.CI"
+      retries: "process.env.CI ? 2 : 0"
+      workers: "process.env.CI ? 1 : undefined"
+      reporter: "html"
+      use:
+        baseURL: "http://localhost:3000"
+        trace: "on-first-retry"
+        screenshot: "only-on-failure"
+        video: "retain-on-failure"
+      projects:
+        - name: "chromium"
+          use: "@playwright/test"
+        - name: "firefox"
+          use: "@playwright/test"
+        - name: "webkit"
+          use: "@playwright/test"
+      webServer:
+        command: "npm run dev"
+        port: 3000
+        reuseExistingServer: "!process.env.CI"
+    integration_notes: "Cross-browser end-to-end testing with visual regression testing and comprehensive debugging capabilities"
+
+  - tool: "Lighthouse CI"
+    config_file: "lighthouserc.js"
+    recommended_settings:
+      ci:
+        collect:
+          url: ["http://localhost:3000"]
+          startServerCommand: "npm run build && npm run preview"
+          numberOfRuns: 3
+        assert:
+          assertions:
+            "categories:performance": ["warn", {"minScore": 0.9}]
+            "categories:accessibility": ["error", {"minScore": 0.95}]
+            "categories:best-practices": ["warn", {"minScore": 0.9}]
+            "categories:seo": ["warn", {"minScore": 0.9}]
+        upload:
+          target: "temporary-public-storage"
+    integration_notes: "Automated performance and accessibility testing integrated into CI/CD pipeline for continuous quality monitoring"
 
 # Frontend Testing & QA Integration
 
@@ -551,6 +3028,186 @@ coordination_overrides:
   accessibility_approach: WCAG 2.1 AA compliance with automated testing integration
   build_optimization: Modern build tools with tree shaking and code splitting
   escalation_target: sr-architect for complex technical architecture decisions
+
+advanced_patterns:
+  - pattern: "Micro-Frontend Architecture with Module Federation"
+    context: "Building scalable applications with independently deployable frontend modules"
+    implementation: |
+      // webpack.config.js - Module Federation setup
+      const ModuleFederationPlugin = require('@module-federation/webpack');
+
+      module.exports = {
+        mode: 'development',
+        devServer: {
+          port: 3001,
+        },
+        plugins: [
+          new ModuleFederationPlugin({
+            name: 'shell',
+            filename: 'remoteEntry.js',
+            remotes: {
+              userModule: 'userModule@http://localhost:3002/remoteEntry.js',
+              productModule: 'productModule@http://localhost:3003/remoteEntry.js',
+            },
+            shared: {
+              react: { singleton: true },
+              'react-dom': { singleton: true },
+            },
+          }),
+        ],
+      };
+
+      // Dynamic imports for micro-frontends
+      const UserModule = React.lazy(() => import('userModule/UserApp'));
+      const ProductModule = React.lazy(() => import('productModule/ProductApp'));
+
+  - pattern: "Advanced State Management with RTK Query"
+    context: "Comprehensive data fetching and caching with Redux Toolkit Query"
+    implementation: |
+      import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+      import { RootState } from '../store';
+
+      export const api = createApi({
+        reducerPath: 'api',
+        baseQuery: fetchBaseQuery({
+          baseUrl: '/api/',
+          prepareHeaders: (headers, { getState }) => {
+            const token = (getState() as RootState).auth.token;
+            if (token) {
+              headers.set('authorization', `Bearer ${token}`);
+            }
+            return headers;
+          },
+        }),
+        tagTypes: ['User', 'Product'],
+        endpoints: (builder) => ({
+          getUsers: builder.query<User[], { page: number; limit: number }>({
+            query: ({ page, limit }) => `users?page=${page}&limit=${limit}`,
+            providesTags: ['User'],
+          }),
+          getUserById: builder.query<User, string>({
+            query: (id) => `users/${id}`,
+            providesTags: (result, error, id) => [{ type: 'User', id }],
+          }),
+          updateUser: builder.mutation<User, { id: string; updates: Partial<User> }>({
+            query: ({ id, updates }) => ({
+              url: `users/${id}`,
+              method: 'PATCH',
+              body: updates,
+            }),
+            invalidatesTags: (result, error, { id }) => [{ type: 'User', id }],
+          }),
+        }),
+      });
+
+  - pattern: "Server-Side Rendering with Streaming"
+    context: "Advanced SSR patterns with React 18 concurrent features and streaming"
+    implementation: |
+      // server.tsx - Node.js SSR with streaming
+      import { renderToPipeableStream } from 'react-dom/server';
+      import { StaticRouter } from 'react-router-dom/server';
+
+      app.get('*', async (req, res) => {
+        const { pipe, abort } = renderToPipeableStream(
+          <StaticRouter location={req.url}>
+            <App />
+          </StaticRouter>,
+          {
+            bootstrapScripts: ['/dist/client.js'],
+            onShellReady() {
+              res.statusCode = 200;
+              res.setHeader('Content-Type', 'text/html');
+              pipe(res);
+            },
+            onShellError(error) {
+              res.statusCode = 500;
+              res.send('<!doctype html><p>Loading...</p><script src="/dist/client.js"></script>');
+            },
+            onError(error) {
+              console.error(error);
+            },
+          }
+        );
+
+        setTimeout(abort, 5000);
+      });
+
+  - pattern: "Progressive Web App with Advanced Caching"
+    context: "Building offline-first PWAs with sophisticated caching strategies"
+    implementation: |
+      // sw.js - Advanced service worker with Workbox
+      import { precacheAndRoute, cleanupOutdatedCaches } from 'workbox-precaching';
+      import { registerRoute } from 'workbox-routing';
+      import { StaleWhileRevalidate, CacheFirst, NetworkFirst } from 'workbox-strategies';
+      import { ExpirationPlugin } from 'workbox-expiration';
+
+      precacheAndRoute(self.__WB_MANIFEST);
+      cleanupOutdatedCaches();
+
+      // Cache API calls
+      registerRoute(
+        ({ url }) => url.pathname.startsWith('/api/'),
+        new NetworkFirst({
+          cacheName: 'api-cache',
+          plugins: [
+            new ExpirationPlugin({
+              maxEntries: 100,
+              maxAgeSeconds: 60 * 60 * 24, // 24 hours
+            }),
+          ],
+        })
+      );
+
+      // Cache images
+      registerRoute(
+        ({ request }) => request.destination === 'image',
+        new CacheFirst({
+          cacheName: 'images',
+          plugins: [
+            new ExpirationPlugin({
+              maxEntries: 60,
+              maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+            }),
+          ],
+        })
+      );
+
+code_quality_standards:
+  typescript_configuration:
+    strict_mode: true
+    no_implicit_any: true
+    exact_optional_property_types: true
+    no_unused_locals: true
+    no_unused_parameters: true
+    no_implicit_returns: true
+    no_fallthrough_cases_in_switch: true
+
+  testing_requirements:
+    unit_test_coverage: "80% minimum for utility functions and business logic"
+    component_test_coverage: "70% minimum for React/Vue/Angular components"
+    integration_test_coverage: "60% minimum for user workflows and API integration"
+    e2e_test_coverage: "90% minimum for critical user paths and business flows"
+
+  accessibility_standards:
+    wcag_compliance: "WCAG 2.2 Level AA minimum for all interactive components"
+    keyboard_navigation: "Full keyboard accessibility for all functionality"
+    screen_reader_support: "Proper semantic markup and ARIA labels"
+    color_contrast: "4.5:1 minimum for normal text, 3:1 for large text"
+
+  performance_requirements:
+    lighthouse_scores:
+      performance: 90
+      accessibility: 95
+      best_practices: 90
+      seo: 90
+    core_web_vitals:
+      lcp: "<2.5s"
+      fid: "<100ms"
+      cls: "<0.1"
+    bundle_size_limits:
+      initial_js: "<200KB gzipped"
+      initial_css: "<50KB gzipped"
+      total_js: "<1MB gzipped"
 
 # Consolidated Content Sections
 
