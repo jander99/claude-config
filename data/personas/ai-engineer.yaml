@@ -376,76 +376,1221 @@ specialization_boundaries:
 # Enhanced Schema Extensions - To be populated during agent enhancement phase
 
 technology_stack:
-  primary_frameworks: []
-    # Example structure:
-    # - name: "Django"
-    #   version: "4.2+"
-    #   use_cases: ["REST APIs", "Admin interfaces"]
-    #   alternatives: ["FastAPI", "Flask"]
-  
+  primary_frameworks:
+    - name: "PyTorch"
+      version: "2.1+"
+      use_cases: ["Deep learning model development", "Research prototyping", "Custom neural architectures", "Distributed training"]
+      alternatives: ["TensorFlow", "JAX", "PaddlePaddle"]
+      key_features: ["Dynamic computation graphs", "TorchScript compilation", "CUDA integration", "Automatic differentiation"]
+      advanced_features: ["torch.compile for 2x speedup", "Distributed training with DDP", "Mixed precision training", "Custom autograd functions"]
+
+    - name: "Transformers (HuggingFace)"
+      version: "4.35+"
+      use_cases: ["Pre-trained model fine-tuning", "Custom model architectures", "Multi-modal models", "Model inference optimization"]
+      alternatives: ["Fairseq", "AllenNLP", "Custom implementations"]
+      key_features: ["10,000+ pre-trained models", "AutoModel classes", "Tokenizer integration", "Pipeline abstractions"]
+      advanced_features: ["PEFT (LoRA, AdaLoRA)", "BitsAndBytes quantization", "Flash Attention integration", "Custom model registration"]
+
+    - name: "Scikit-learn"
+      version: "1.3+"
+      use_cases: ["Classical ML algorithms", "Data preprocessing", "Model evaluation", "Feature engineering"]
+      alternatives: ["XGBoost", "LightGBM", "CatBoost"]
+      key_features: ["Consistent API design", "Comprehensive preprocessing", "Cross-validation utilities", "Pipeline abstractions"]
+      advanced_features: ["Custom estimators", "Feature selection", "Ensemble methods", "Hyperparameter search"]
+
+    - name: "TensorFlow"
+      version: "2.15+"
+      use_cases: ["Production model serving", "Mobile deployment", "Large-scale training", "Custom ops development"]
+      alternatives: ["PyTorch", "JAX", "MXNet"]
+      key_features: ["Eager execution", "TensorFlow Serving", "TensorFlow Lite", "SavedModel format"]
+      advanced_features: ["tf.function compilation", "Distribution strategies", "Custom training loops", "TensorFlow Extended (TFX)"]
+
   essential_tools:
     # Core Python development tools inherited from python-development-stack trait
-    development: []
-    testing: []
-    deployment: []
-    monitoring: []
+    development:
+      - "Python ^3.9 - Core language with type hints and dataclasses"
+      - "Poetry ^1.6.0 - Dependency management and virtual environment isolation"
+      - "Jupyter Lab ^4.0.0 - Interactive development and experimentation"
+      - "IPython ^8.15.0 - Enhanced Python REPL with magic commands"
+      - "Conda ^23.7.0 - Package and environment management for scientific computing"
+      - "VS Code ^1.83.0 - IDE with Python extension and remote development"
+      - "Git ^2.42.0 - Version control with LFS for large model files"
+      - "DVC ^3.27.0 - Data version control and ML pipeline management"
+
+    testing:
+      - "pytest ^7.4.0 - Unit testing framework with fixtures and parametrization"
+      - "pytest-cov ^4.1.0 - Code coverage analysis and reporting"
+      - "pytest-benchmark ^4.0.0 - Performance benchmarking for ML code"
+      - "hypothesis ^6.88.0 - Property-based testing for robust model validation"
+      - "Great Expectations ^0.18.0 - Data quality testing and validation"
+      - "deepdiff ^6.6.0 - Deep comparison for model outputs and datasets"
+      - "model-bakery ^1.17.0 - Test data generation for ML models"
+
+    deployment:
+      - "Docker ^24.0.0 - Containerization for consistent ML environments"
+      - "NVIDIA Docker ^2.13.0 - GPU-enabled containers for model serving"
+      - "FastAPI ^0.104.0 - High-performance API framework for model serving"
+      - "Uvicorn ^0.24.0 - ASGI server for FastAPI applications"
+      - "Gunicorn ^21.2.0 - WSGI server for production Flask applications"
+      - "Ray Serve ^2.8.0 - Scalable model serving with automatic scaling"
+      - "BentoML ^1.1.0 - ML model deployment and serving platform"
+      - "Triton Inference Server ^2.40.0 - NVIDIA's optimized inference serving"
+
+    monitoring:
+      - "MLflow ^2.8.0 - Experiment tracking and model registry"
+      - "Weights & Biases ^0.16.0 - Advanced experiment tracking and collaboration"
+      - "TensorBoard ^2.15.0 - Training visualization and debugging"
+      - "Neptune ^1.8.0 - Metadata management for ML experiments"
+      - "Evidently ^0.4.0 - Model monitoring and data drift detection"
+      - "Prometheus ^0.19.0 - Metrics collection for model serving"
+      - "Grafana ^10.2.0 - Visualization dashboards for ML metrics"
+      - "Slack SDK ^3.23.0 - Automated alerting and notifications"
 
     # ML/AI specific tools
     ml_frameworks:
-      - "PyTorch ^2.1.0 - Deep learning framework with dynamic computation graphs"
-      - "Transformers ^4.35.0 - HuggingFace library for pre-trained models"
-      - "TensorFlow ^2.15.0 - Google's ML framework for production deployment"
-      - "Scikit-learn ^1.3.0 - Classical machine learning algorithms and utilities"
+      - "PyTorch Lightning ^2.1.0 - High-level PyTorch framework for research"
+      - "Accelerate ^0.24.0 - Distributed training made simple"
+      - "DeepSpeed ^0.12.0 - Memory and speed optimizations for large models"
+      - "FairScale ^0.4.13 - PyTorch extensions for high performance and large scale training"
+      - "Horovod ^0.28.0 - Distributed deep learning training framework"
+      - "ONNX ^1.15.0 - Open standard for machine learning model representation"
+      - "ONNXRuntime ^1.16.0 - Cross-platform inference and training accelerator"
+      - "TorchServe ^0.9.0 - PyTorch model serving framework"
 
     ml_experimentation:
-      - "MLflow ^2.8.0 - Experiment tracking and model versioning"
-      - "Weights & Biases - Advanced experiment tracking with visualization"
-      - "TensorBoard - Training visualization and model debugging"
       - "Optuna ^3.4.0 - Hyperparameter optimization framework"
+      - "Hyperopt ^0.2.7 - Bayesian optimization for hyperparameter tuning"
+      - "Ray Tune ^2.8.0 - Scalable hyperparameter tuning"
+      - "Wandb Sweeps - Advanced hyperparameter optimization with early stopping"
+      - "Sacred ^0.8.4 - Tool for configuring and observing computational experiments"
+      - "Hydra ^1.3.2 - Framework for elegantly configuring complex applications"
+      - "ClearML ^1.13.0 - MLOps platform for experiment management"
+      - "Comet ML ^3.35.0 - Machine learning experiment tracking and optimization"
 
-implementation_patterns: []
-  # Example structure:
-  # - pattern: "REST API with Authentication"
-  #   context: "Secure API endpoints"
-  #   code_example: |
-  #     # Code example here
-  #   best_practices: []
+    data_processing:
+      - "pandas ^2.1.0 - Data manipulation and analysis library"
+      - "numpy ^1.25.0 - Fundamental package for scientific computing"
+      - "Polars ^0.19.0 - Fast DataFrame library with lazy evaluation"
+      - "Dask ^2023.10.0 - Parallel computing library for larger-than-memory datasets"
+      - "Apache Arrow ^14.0.0 - Columnar in-memory analytics"
+      - "Datasets (HuggingFace) ^2.14.0 - Fast and efficient dataset loading"
+      - "PyTorch Geometric ^2.4.0 - Deep learning on irregular input data"
+      - "DGL ^1.1.0 - Deep Graph Library for graph neural networks"
+
+    model_optimization:
+      - "ONNX ^1.15.0 - Model optimization and conversion"
+      - "TensorRT ^8.6.0 - NVIDIA's inference optimization library"
+      - "OpenVINO ^2023.2.0 - Intel's toolkit for model optimization"
+      - "Quantization Toolkit - Model compression and acceleration"
+      - "Pruning Libraries - Model sparsification for efficiency"
+      - "Knowledge Distillation - Model compression through teacher-student training"
+      - "Neural Architecture Search (NAS) - Automated model design"
+      - "AutoML Tools - Automated machine learning pipelines"
+
+    computer_vision:
+      - "OpenCV ^4.8.0 - Computer vision and image processing library"
+      - "Pillow ^10.0.0 - Python Imaging Library for image manipulation"
+      - "Albumentations ^1.3.0 - Fast image augmentation library"
+      - "torchvision ^0.16.0 - Computer vision utilities for PyTorch"
+      - "timm ^0.9.0 - PyTorch Image Models with pre-trained weights"
+      - "Detectron2 ^0.6.0 - Facebook's object detection and segmentation platform"
+      - "MMDetection ^3.2.0 - OpenMMLab's object detection toolbox"
+      - "YOLO v8/v9 - Real-time object detection models"
+
+    natural_language_processing:
+      - "spaCy ^3.7.0 - Industrial-strength NLP library"
+      - "NLTK ^3.8.0 - Natural Language Toolkit for text processing"
+      - "Gensim ^4.3.0 - Topic modeling and document similarity"
+      - "SentenceTransformers ^2.2.0 - Sentence and text embeddings"
+      - "FastText ^0.9.2 - Efficient text classification and representation learning"
+      - "BERTopic ^0.15.0 - Topic modeling with BERT embeddings"
+      - "Tokenizers ^0.14.0 - Fast and customizable tokenization"
+      - "TextBlob ^0.17.0 - Simple API for diving into common NLP tasks"
+
+    audio_processing:
+      - "librosa ^0.10.0 - Audio and music signal analysis"
+      - "torchaudio ^2.1.0 - Audio processing utilities for PyTorch"
+      - "SpeechRecognition ^3.10.0 - Speech recognition library"
+      - "pydub ^0.25.0 - Audio manipulation with simple interface"
+      - "Whisper ^20231117 - OpenAI's speech recognition model"
+      - "ESPnet ^202310 - End-to-end speech processing toolkit"
+      - "Wav2Vec2 - Self-supervised speech representation learning"
+      - "Tacotron2/FastSpeech - Text-to-speech synthesis models"
+
+implementation_patterns:
+  - pattern: "PyTorch 2.0 Optimized Model Training Pipeline"
+    context: "High-performance model training with PyTorch 2.0 compilation and modern optimizations"
+    code_example: |
+      # Advanced PyTorch 2.0 Training Pipeline with Compilation
+      import torch
+      import torch.nn as nn
+      import torch.nn.functional as F
+      from torch.optim import AdamW
+      from torch.optim.lr_scheduler import OneCycleLR
+      from torch.cuda.amp import GradScaler, autocast
+      from torch.utils.data import DataLoader
+      import wandb
+      from typing import Dict, Any, Optional, Tuple
+      import time
+      from dataclasses import dataclass
+
+      @dataclass
+      class TrainingConfig:
+          """Configuration for optimized training pipeline."""
+          model_name: str
+          learning_rate: float = 3e-4
+          weight_decay: float = 0.01
+          batch_size: int = 32
+          num_epochs: int = 10
+          warmup_steps: int = 1000
+          gradient_clip_val: float = 1.0
+          accumulation_steps: int = 1
+          compile_model: bool = True
+          mixed_precision: bool = True
+          log_interval: int = 100
+          eval_interval: int = 500
+          save_interval: int = 1000
+
+      class OptimizedTrainer:
+          """High-performance PyTorch 2.0 trainer with modern optimizations."""
+
+          def __init__(self, model: nn.Module, config: TrainingConfig):
+              self.config = config
+              self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+              
+              # Model setup with compilation
+              self.model = model.to(self.device)
+              if config.compile_model and hasattr(torch, 'compile'):
+                  # PyTorch 2.0 compilation for 2x speedup
+                  self.model = torch.compile(self.model, mode='max-autotune')
+              
+              # Optimizer with modern best practices
+              self.optimizer = AdamW(
+                  self.model.parameters(),
+                  lr=config.learning_rate,
+                  weight_decay=config.weight_decay,
+                  betas=(0.9, 0.95),  # Improved betas for stability
+                  eps=1e-8
+              )
+              
+              # Mixed precision setup
+              self.scaler = GradScaler() if config.mixed_precision else None
+              
+              # Metrics tracking
+              self.global_step = 0
+              self.best_val_loss = float('inf')
+              self.train_losses = []
+              self.val_losses = []
+
+          def setup_scheduler(self, total_steps: int):
+              """Setup OneCycle learning rate scheduler."""
+              self.scheduler = OneCycleLR(
+                  self.optimizer,
+                  max_lr=self.config.learning_rate,
+                  total_steps=total_steps,
+                  pct_start=0.1,  # 10% warmup
+                  anneal_strategy='cos',
+                  div_factor=25.0,
+                  final_div_factor=10000.0
+              )
+
+          def train_epoch(self, train_loader: DataLoader, epoch: int) -> Dict[str, float]:
+              """Train for one epoch with optimized loop."""
+              self.model.train()
+              epoch_loss = 0.0
+              num_batches = len(train_loader)
+              
+              for batch_idx, (inputs, targets) in enumerate(train_loader):
+                  inputs, targets = inputs.to(self.device), targets.to(self.device)
+                  
+                  # Forward pass with mixed precision
+                  if self.scaler:
+                      with autocast():
+                          outputs = self.model(inputs)
+                          loss = F.cross_entropy(outputs, targets)
+                          loss = loss / self.config.accumulation_steps
+                  else:
+                      outputs = self.model(inputs)
+                      loss = F.cross_entropy(outputs, targets)
+                      loss = loss / self.config.accumulation_steps
+                  
+                  # Backward pass
+                  if self.scaler:
+                      self.scaler.scale(loss).backward()
+                  else:
+                      loss.backward()
+                  
+                  # Gradient accumulation and optimization
+                  if (batch_idx + 1) % self.config.accumulation_steps == 0:
+                      if self.scaler:
+                          # Gradient clipping with scaler
+                          self.scaler.unscale_(self.optimizer)
+                          torch.nn.utils.clip_grad_norm_(
+                              self.model.parameters(), 
+                              self.config.gradient_clip_val
+                          )
+                          self.scaler.step(self.optimizer)
+                          self.scaler.update()
+                      else:
+                          torch.nn.utils.clip_grad_norm_(
+                              self.model.parameters(), 
+                              self.config.gradient_clip_val
+                          )
+                          self.optimizer.step()
+                      
+                      self.optimizer.zero_grad()
+                      
+                      if hasattr(self, 'scheduler'):
+                          self.scheduler.step()
+                      
+                      self.global_step += 1
+                  
+                  epoch_loss += loss.item() * self.config.accumulation_steps
+                  
+                  # Logging
+                  if self.global_step % self.config.log_interval == 0:
+                      current_lr = self.optimizer.param_groups[0]['lr']
+                      wandb.log({
+                          'train/loss': loss.item() * self.config.accumulation_steps,
+                          'train/learning_rate': current_lr,
+                          'train/epoch': epoch,
+                          'train/step': self.global_step
+                      })
+              
+              avg_loss = epoch_loss / num_batches
+              self.train_losses.append(avg_loss)
+              
+              return {
+                  'train_loss': avg_loss,
+                  'learning_rate': self.optimizer.param_groups[0]['lr']
+              }
+
+          @torch.inference_mode()
+          def validate(self, val_loader: DataLoader) -> Dict[str, float]:
+              """Validation with efficient inference mode."""
+              self.model.eval()
+              val_loss = 0.0
+              correct = 0
+              total = 0
+              
+              for inputs, targets in val_loader:
+                  inputs, targets = inputs.to(self.device), targets.to(self.device)
+                  
+                  if self.scaler:
+                      with autocast():
+                          outputs = self.model(inputs)
+                          loss = F.cross_entropy(outputs, targets)
+                  else:
+                      outputs = self.model(inputs)
+                      loss = F.cross_entropy(outputs, targets)
+                  
+                  val_loss += loss.item()
+                  predicted = outputs.argmax(dim=1)
+                  correct += (predicted == targets).sum().item()
+                  total += targets.size(0)
+              
+              avg_loss = val_loss / len(val_loader)
+              accuracy = correct / total
+              
+              self.val_losses.append(avg_loss)
+              
+              # Update best model
+              if avg_loss < self.best_val_loss:
+                  self.best_val_loss = avg_loss
+                  self.save_checkpoint('best_model.pt')
+              
+              return {
+                  'val_loss': avg_loss,
+                  'val_accuracy': accuracy
+              }
+
+          def save_checkpoint(self, filepath: str):
+              """Save model checkpoint with metadata."""
+              checkpoint = {
+                  'model_state_dict': self.model.state_dict(),
+                  'optimizer_state_dict': self.optimizer.state_dict(),
+                  'scheduler_state_dict': getattr(self.scheduler, 'state_dict', lambda: {})(),
+                  'scaler_state_dict': self.scaler.state_dict() if self.scaler else None,
+                  'global_step': self.global_step,
+                  'best_val_loss': self.best_val_loss,
+                  'config': self.config.__dict__
+              }
+              torch.save(checkpoint, filepath)
+
+          def load_checkpoint(self, filepath: str):
+              """Load model checkpoint and resume training."""
+              checkpoint = torch.load(filepath, map_location=self.device)
+              self.model.load_state_dict(checkpoint['model_state_dict'])
+              self.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+              
+              if hasattr(self, 'scheduler') and checkpoint['scheduler_state_dict']:
+                  self.scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
+              
+              if self.scaler and checkpoint['scaler_state_dict']:
+                  self.scaler.load_state_dict(checkpoint['scaler_state_dict'])
+              
+              self.global_step = checkpoint['global_step']
+              self.best_val_loss = checkpoint['best_val_loss']
+
+          def train(self, train_loader: DataLoader, val_loader: DataLoader):
+              """Full training loop with validation and logging."""
+              # Calculate total steps for scheduler
+              total_steps = len(train_loader) * self.config.num_epochs // self.config.accumulation_steps
+              self.setup_scheduler(total_steps)
+              
+              # Initialize wandb
+              wandb.init(
+                  project=self.config.model_name,
+                  config=self.config.__dict__
+              )
+              
+              print(f"Training {self.config.model_name} for {self.config.num_epochs} epochs")
+              print(f"Total steps: {total_steps}")
+              
+              for epoch in range(self.config.num_epochs):
+                  start_time = time.time()
+                  
+                  # Training
+                  train_metrics = self.train_epoch(train_loader, epoch)
+                  
+                  # Validation
+                  if epoch % 1 == 0:  # Validate every epoch
+                      val_metrics = self.validate(val_loader)
+                      
+                      epoch_time = time.time() - start_time
+                      
+                      print(f"Epoch {epoch+1}/{self.config.num_epochs}:")
+                      print(f"  Train Loss: {train_metrics['train_loss']:.4f}")
+                      print(f"  Val Loss: {val_metrics['val_loss']:.4f}")
+                      print(f"  Val Accuracy: {val_metrics['val_accuracy']:.4f}")
+                      print(f"  Time: {epoch_time:.2f}s")
+                      
+                      # Log to wandb
+                      wandb.log({
+                          **train_metrics,
+                          **val_metrics,
+                          'epoch': epoch,
+                          'epoch_time': epoch_time
+                      })
+                  
+                  # Save checkpoint
+                  if (epoch + 1) % 5 == 0:
+                      self.save_checkpoint(f'checkpoint_epoch_{epoch+1}.pt')
+              
+              # Final model save
+              self.save_checkpoint('final_model.pt')
+              wandb.finish()
+
+      # Usage example
+      def create_optimized_training_pipeline():
+          """Example of creating and using the optimized training pipeline."""
+          
+          # Model definition (example)
+          class SimpleModel(nn.Module):
+              def __init__(self, num_classes=10):
+                  super().__init__()
+                  self.features = nn.Sequential(
+                      nn.Conv2d(3, 64, 3, padding=1),
+                      nn.ReLU(inplace=True),
+                      nn.AdaptiveAvgPool2d((1, 1)),
+                      nn.Flatten()
+                  )
+                  self.classifier = nn.Linear(64, num_classes)
+              
+              def forward(self, x):
+                  x = self.features(x)
+                  return self.classifier(x)
+          
+          # Training configuration
+          config = TrainingConfig(
+              model_name="simple_classifier",
+              learning_rate=1e-3,
+              batch_size=64,
+              num_epochs=20,
+              compile_model=True,
+              mixed_precision=True
+          )
+          
+          # Create trainer
+          model = SimpleModel()
+          trainer = OptimizedTrainer(model, config)
+          
+          # Note: train_loader and val_loader would be created separately
+          # trainer.train(train_loader, val_loader)
+          
+          return trainer
+    best_practices:
+      - "Use PyTorch 2.0 compilation with torch.compile() for 2x speedup"
+      - "Implement mixed precision training with autocast and GradScaler"
+      - "Use OneCycleLR scheduler for faster convergence and better generalization"
+      - "Apply gradient clipping to prevent exploding gradients"
+      - "Use torch.inference_mode() for validation to disable gradient computation"
+      - "Implement gradient accumulation for effective larger batch sizes"
+      - "Save and load complete training state for resumable training"
+      - "Use modern Adam optimizer parameters (betas=(0.9, 0.95))"
+      - "Log comprehensive metrics for experiment tracking"
+      - "Implement early stopping based on validation metrics"
+    common_pitfalls:
+      - "Forgetting to call model.train()/model.eval() mode switching"
+      - "Not handling mixed precision scaling properly with gradient clipping"
+      - "Using inefficient data loading without proper batching and prefetching"
+      - "Applying learning rate scheduling incorrectly with gradient accumulation"
+
+  - pattern: "Transformers Fine-tuning with PEFT and Quantization"
+    context: "Memory-efficient fine-tuning of large language models using Parameter-Efficient Fine-Tuning (PEFT) techniques"
+    code_example: |
+      # Advanced Transformers Fine-tuning with PEFT and Quantization
+      import torch
+      import torch.nn as nn
+      from transformers import (
+          AutoTokenizer, AutoModelForCausalLM, AutoConfig,
+          TrainingArguments, Trainer, DataCollatorForLanguageModeling
+      )
+      from peft import (
+          LoraConfig, get_peft_model, TaskType, PeftModel,
+          AdaLoraConfig, IA3Config, PromptTuningConfig
+      )
+      from datasets import Dataset, load_dataset
+      import bitsandbytes as bnb
+      from transformers import BitsAndBytesConfig
+      import wandb
+      from typing import Dict, List, Optional, Any
+      import json
+      import os
+      from dataclasses import dataclass, field
+
+      @dataclass
+      class PEFTConfig:
+          """Configuration for PEFT fine-tuning."""
+          model_name: str
+          task_type: str = "CAUSAL_LM"
+          peft_type: str = "lora"  # lora, adalora, ia3, prompt_tuning
+          
+          # LoRA specific parameters
+          lora_r: int = 16
+          lora_alpha: int = 32
+          lora_dropout: float = 0.1
+          target_modules: List[str] = field(default_factory=lambda: ["q_proj", "v_proj", "k_proj", "o_proj"])
+          
+          # AdaLoRA specific parameters
+          adalora_init_r: int = 12
+          adalora_target_r: int = 8
+          adalora_beta1: float = 0.85
+          adalora_beta2: float = 0.85
+          
+          # Quantization parameters
+          use_4bit: bool = True
+          bnb_4bit_compute_dtype: str = "float16"
+          bnb_4bit_quant_type: str = "nf4"
+          use_nested_quant: bool = True
+          
+          # Training parameters
+          learning_rate: float = 2e-4
+          num_epochs: int = 3
+          per_device_train_batch_size: int = 4
+          gradient_accumulation_steps: int = 4
+          warmup_steps: int = 100
+          max_seq_length: int = 512
+          
+          # Output parameters
+          output_dir: str = "./peft_model"
+          logging_steps: int = 10
+          save_steps: int = 500
+          eval_steps: int = 500
+
+      class PEFTTrainer:
+          """Advanced PEFT trainer with quantization and optimization."""
+
+          def __init__(self, config: PEFTConfig):
+              self.config = config
+              self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+              self.tokenizer = None
+              self.model = None
+              self.peft_model = None
+
+          def setup_quantization_config(self) -> Optional[BitsAndBytesConfig]:
+              """Setup 4-bit quantization configuration."""
+              if not self.config.use_4bit:
+                  return None
+              
+              compute_dtype = getattr(torch, self.config.bnb_4bit_compute_dtype)
+              
+              bnb_config = BitsAndBytesConfig(
+                  load_in_4bit=True,
+                  bnb_4bit_quant_type=self.config.bnb_4bit_quant_type,
+                  bnb_4bit_compute_dtype=compute_dtype,
+                  bnb_4bit_use_double_quant=self.config.use_nested_quant,
+              )
+              return bnb_config
+
+          def load_model_and_tokenizer(self):
+              """Load base model and tokenizer with quantization."""
+              print(f"Loading model: {self.config.model_name}")
+              
+              # Setup quantization
+              bnb_config = self.setup_quantization_config()
+              
+              # Load tokenizer
+              self.tokenizer = AutoTokenizer.from_pretrained(
+                  self.config.model_name,
+                  trust_remote_code=True
+              )
+              
+              # Add pad token if missing
+              if self.tokenizer.pad_token is None:
+                  self.tokenizer.pad_token = self.tokenizer.eos_token
+              
+              # Load model with quantization
+              model_kwargs = {
+                  "trust_remote_code": True,
+                  "torch_dtype": torch.float16,
+                  "device_map": "auto"
+              }
+              
+              if bnb_config:
+                  model_kwargs["quantization_config"] = bnb_config
+              
+              self.model = AutoModelForCausalLM.from_pretrained(
+                  self.config.model_name,
+                  **model_kwargs
+              )
+              
+              # Enable gradient checkpointing for memory efficiency
+              self.model.gradient_checkpointing_enable()
+              
+              print(f"Model loaded. Memory usage: {torch.cuda.memory_allocated() / 1e9:.2f} GB")
+
+          def setup_peft_config(self):
+              """Setup PEFT configuration based on method."""
+              task_type = getattr(TaskType, self.config.task_type)
+              
+              if self.config.peft_type.lower() == "lora":
+                  peft_config = LoraConfig(
+                      task_type=task_type,
+                      inference_mode=False,
+                      r=self.config.lora_r,
+                      lora_alpha=self.config.lora_alpha,
+                      lora_dropout=self.config.lora_dropout,
+                      target_modules=self.config.target_modules,
+                      bias="none"
+                  )
+              
+              elif self.config.peft_type.lower() == "adalora":
+                  peft_config = AdaLoraConfig(
+                      task_type=task_type,
+                      inference_mode=False,
+                      init_r=self.config.adalora_init_r,
+                      target_r=self.config.adalora_target_r,
+                      beta1=self.config.adalora_beta1,
+                      beta2=self.config.adalora_beta2,
+                      tinit=200,
+                      tfinal=1000,
+                      deltaT=10,
+                      lora_alpha=self.config.lora_alpha,
+                      lora_dropout=self.config.lora_dropout,
+                      target_modules=self.config.target_modules
+                  )
+              
+              elif self.config.peft_type.lower() == "ia3":
+                  peft_config = IA3Config(
+                      task_type=task_type,
+                      inference_mode=False,
+                      target_modules=self.config.target_modules,
+                      feedforward_modules=["mlp"]
+                  )
+              
+              else:
+                  raise ValueError(f"Unsupported PEFT type: {self.config.peft_type}")
+              
+              return peft_config
+
+          def prepare_model_for_training(self):
+              """Prepare model for PEFT training."""
+              # Setup PEFT
+              peft_config = self.setup_peft_config()
+              self.peft_model = get_peft_model(self.model, peft_config)
+              
+              # Print trainable parameters
+              self.peft_model.print_trainable_parameters()
+              
+              # Prepare model for k-bit training if using quantization
+              if self.config.use_4bit:
+                  self.peft_model = self._prepare_model_for_kbit_training(self.peft_model)
+
+          def _prepare_model_for_kbit_training(self, model):
+              """Prepare quantized model for training."""
+              from peft.utils import prepare_model_for_kbit_training
+              
+              # Enable gradient computation for input embeddings
+              model.gradient_checkpointing_enable()
+              
+              # Prepare for k-bit training
+              model = prepare_model_for_kbit_training(model)
+              
+              return model
+
+          def prepare_dataset(self, dataset_name: str, split: str = "train") -> Dataset:
+              """Prepare dataset for fine-tuning."""
+              print(f"Loading dataset: {dataset_name}")
+              
+              # Load dataset
+              if dataset_name.endswith('.json'):
+                  # Local JSON file
+                  with open(dataset_name, 'r') as f:
+                      data = json.load(f)
+                  dataset = Dataset.from_list(data)
+              else:
+                  # HuggingFace dataset
+                  dataset = load_dataset(dataset_name, split=split)
+              
+              # Tokenize dataset
+              def tokenize_function(examples):
+                  # Assuming text column exists
+                  text_column = "text" if "text" in examples else list(examples.keys())[0]
+                  
+                  # Tokenize
+                  tokenized = self.tokenizer(
+                      examples[text_column],
+                      truncation=True,
+                      padding=False,
+                      max_length=self.config.max_seq_length,
+                      return_tensors=None
+                  )
+                  
+                  # For causal LM, labels are the same as input_ids
+                  tokenized["labels"] = tokenized["input_ids"].copy()
+                  
+                  return tokenized
+              
+              tokenized_dataset = dataset.map(
+                  tokenize_function,
+                  batched=True,
+                  remove_columns=dataset.column_names
+              )
+              
+              return tokenized_dataset
+
+          def train(self, train_dataset: Dataset, eval_dataset: Optional[Dataset] = None):
+              """Train the PEFT model."""
+              # Training arguments
+              training_args = TrainingArguments(
+                  output_dir=self.config.output_dir,
+                  num_train_epochs=self.config.num_epochs,
+                  per_device_train_batch_size=self.config.per_device_train_batch_size,
+                  gradient_accumulation_steps=self.config.gradient_accumulation_steps,
+                  learning_rate=self.config.learning_rate,
+                  warmup_steps=self.config.warmup_steps,
+                  logging_steps=self.config.logging_steps,
+                  save_steps=self.config.save_steps,
+                  eval_steps=self.config.eval_steps if eval_dataset else None,
+                  evaluation_strategy="steps" if eval_dataset else "no",
+                  save_strategy="steps",
+                  load_best_model_at_end=True if eval_dataset else False,
+                  metric_for_best_model="eval_loss" if eval_dataset else None,
+                  greater_is_better=False,
+                  fp16=True,
+                  gradient_checkpointing=True,
+                  dataloader_pin_memory=False,
+                  remove_unused_columns=False,
+                  report_to="wandb" if wandb.run else None
+              )
+              
+              # Data collator
+              data_collator = DataCollatorForLanguageModeling(
+                  tokenizer=self.tokenizer,
+                  mlm=False
+              )
+              
+              # Create trainer
+              trainer = Trainer(
+                  model=self.peft_model,
+                  args=training_args,
+                  train_dataset=train_dataset,
+                  eval_dataset=eval_dataset,
+                  tokenizer=self.tokenizer,
+                  data_collator=data_collator
+              )
+              
+              # Train
+              print("Starting training...")
+              trainer.train()
+              
+              # Save final model
+              trainer.save_model()
+              
+              return trainer
+
+          def save_model(self, output_path: str):
+              """Save the PEFT adapter."""
+              self.peft_model.save_pretrained(output_path)
+              self.tokenizer.save_pretrained(output_path)
+              
+              # Save config
+              config_dict = self.config.__dict__.copy()
+              with open(os.path.join(output_path, "training_config.json"), "w") as f:
+                  json.dump(config_dict, f, indent=2)
+
+          @classmethod
+          def load_trained_model(cls, base_model_name: str, peft_path: str):
+              """Load a trained PEFT model for inference."""
+              # Load base model
+              base_model = AutoModelForCausalLM.from_pretrained(
+                  base_model_name,
+                  torch_dtype=torch.float16,
+                  device_map="auto"
+              )
+              
+              # Load PEFT adapter
+              model = PeftModel.from_pretrained(base_model, peft_path)
+              
+              # Load tokenizer
+              tokenizer = AutoTokenizer.from_pretrained(peft_path)
+              
+              return model, tokenizer
+
+      # Usage example
+      def finetune_with_peft():
+          """Example of fine-tuning with PEFT."""
+          
+          # Configuration
+          config = PEFTConfig(
+              model_name="microsoft/DialoGPT-medium",
+              peft_type="lora",
+              lora_r=16,
+              lora_alpha=32,
+              learning_rate=2e-4,
+              num_epochs=3,
+              per_device_train_batch_size=4,
+              gradient_accumulation_steps=4,
+              output_dir="./lora_model"
+          )
+          
+          # Initialize trainer
+          trainer = PEFTTrainer(config)
+          
+          # Load model and tokenizer
+          trainer.load_model_and_tokenizer()
+          
+          # Prepare model for training
+          trainer.prepare_model_for_training()
+          
+          # Prepare dataset (example)
+          # train_dataset = trainer.prepare_dataset("path/to/dataset.json")
+          
+          # Train
+          # trainer.train(train_dataset)
+          
+          # Save model
+          # trainer.save_model("./final_lora_model")
+          
+          return trainer
+    best_practices:
+      - "Use 4-bit quantization with BitsAndBytesConfig for memory efficiency"
+      - "Choose appropriate PEFT method: LoRA for general use, AdaLoRA for adaptive ranking"
+      - "Enable gradient checkpointing to reduce memory usage during training"
+      - "Use proper target modules for LoRA (attention layers typically work best)"
+      - "Implement proper data collation for language modeling tasks"
+      - "Monitor GPU memory usage and adjust batch size accordingly"
+      - "Save both adapter weights and tokenizer for complete model reconstruction"
+      - "Use eval dataset for early stopping and best model selection"
+    common_pitfalls:
+      - "Forgetting to add pad token to tokenizer causing training errors"
+      - "Using too high learning rates with PEFT (typically 10x lower than full fine-tuning)"
+      - "Not preparing model properly for k-bit training with quantization"
+      - "Incorrect target module specification for different model architectures"
 
 professional_standards:
-  security_frameworks: []
-  industry_practices: []
-  compliance_requirements: []
+  security_frameworks:
+    - "AI Security Framework - Comprehensive security assessment for ML models and data"
+    - "Model Governance Standards - Version control, access control, and audit trails for AI models"
+    - "Data Privacy Protection - GDPR, CCPA compliance for training data and model outputs"
+    - "Adversarial Robustness Testing - Defense against adversarial attacks and model manipulation"
+    - "Model Interpretability Requirements - Explainable AI for regulated industries and critical applications"
+    - "Secure Model Deployment - Encrypted model serving and secure API endpoint design"
+    - "Supply Chain Security - Verification of pre-trained models and third-party dependencies"
+    - "Red Team Assessment - Systematic security testing of AI systems and infrastructure"
+
+  industry_practices:
+    - "MLOps Maturity Model - Systematic approach to ML operations and lifecycle management"
+    - "Model Performance Monitoring - Continuous monitoring of accuracy, drift, and bias in production"
+    - "A/B Testing for ML - Statistical testing frameworks for model comparison and deployment"
+    - "Feature Store Best Practices - Centralized feature management and versioning"
+    - "Model Registry Standards - Centralized model storage with metadata and lineage tracking"
+    - "Continuous Integration for ML - Automated testing and validation of model changes"
+    - "Infrastructure as Code - Reproducible ML infrastructure using Terraform, CloudFormation"
+    - "Cost Optimization Strategies - Efficient resource utilization and auto-scaling for ML workloads"
+    - "Cross-functional Collaboration - Effective communication between data science and engineering teams"
+    - "Technical Debt Management - Systematic approach to reducing ML technical debt"
+
+  compliance_requirements:
+    - "FDA 21 CFR Part 11 - Electronic records compliance for medical AI applications"
+    - "SOX Compliance - Financial reporting accuracy for AI in financial services"
+    - "HIPAA Compliance - Healthcare data protection in medical AI applications"
+    - "PCI DSS - Payment card data security for AI in financial transactions"
+    - "ISO 27001 - Information security management for AI systems"
+    - "SOC 2 Type II - Security and availability controls for AI service providers"
+    - "GDPR Article 22 - Automated decision-making and profiling regulations"
+    - "NIST AI Risk Management Framework - Systematic AI risk assessment and mitigation"
+    - "Model Documentation Requirements - Comprehensive model cards and documentation standards"
+    - "Bias Testing and Mitigation - Systematic fairness assessment across demographic groups"
 
 integration_guidelines:
-  api_integration: []
-  database_integration: []
-  third_party_services: []
+  api_integration:
+    - "FastAPI Model Serving - High-performance async API with automatic OpenAPI documentation"
+    - "GraphQL for ML - Flexible query language for complex ML model interactions"
+    - "RESTful Model Endpoints - Standardized REST API design for model inference and management"
+    - "gRPC for High-Performance - Binary protocol for low-latency model serving"
+    - "Streaming Inference APIs - Real-time processing with WebSocket and Server-Sent Events"
+    - "Batch Processing APIs - Efficient bulk inference with job queuing and status tracking"
+    - "Model Versioning in APIs - Semantic versioning and backward compatibility for model endpoints"
+    - "API Rate Limiting - Throttling and quota management for model serving"
+    - "Authentication and Authorization - JWT, OAuth2, and API key management for secure access"
+    - "API Gateway Integration - Centralized routing, monitoring, and security for ML services"
+
+  database_integration:
+    - "Vector Database Integration - Pinecone, Weaviate, Chroma for embedding storage and similarity search"
+    - "Feature Store Integration - Feast, Tecton for feature serving and real-time inference"
+    - "Time Series Databases - InfluxDB, TimescaleDB for model metrics and monitoring data"
+    - "Graph Databases - Neo4j, Amazon Neptune for knowledge graphs and recommendation systems"
+    - "NoSQL for ML Metadata - MongoDB, DynamoDB for flexible model metadata storage"
+    - "Data Warehouses - BigQuery, Snowflake, Redshift for analytics and model training data"
+    - "Streaming Data Integration - Kafka, Pulsar for real-time feature engineering"
+    - "Data Lake Integration - S3, ADLS, GCS for large-scale training data storage"
+    - "Database Optimization - Indexing, partitioning, and query optimization for ML workloads"
+    - "Data Lineage Tracking - Comprehensive tracking of data flow from source to model"
+
+  third_party_services:
+    - "Cloud ML Platforms - AWS SageMaker, Azure ML, Google Vertex AI integration"
+    - "Experiment Tracking - MLflow, Weights & Biases, Neptune integration patterns"
+    - "Model Monitoring - Evidently, Fiddler, Arthur for production model monitoring"
+    - "Data Labeling Services - Label Studio, Labelbox, Amazon SageMaker Ground Truth"
+    - "AutoML Platforms - H2O.ai, DataRobot, AutoML integration and workflow design"
+    - "Notebook Platforms - JupyterHub, Google Colab, Databricks integration"
+    - "Container Registries - Docker Hub, ECR, ACR for ML container management"
+    - "Secret Management - HashiCorp Vault, AWS Secrets Manager for secure credential storage"
+    - "CI/CD Platforms - GitHub Actions, GitLab CI, Jenkins for ML pipeline automation"
+    - "Monitoring and Alerting - Prometheus, Grafana, DataDog for infrastructure monitoring"
 
 performance_benchmarks:
-  response_times: []
-  throughput_targets: []
-  resource_utilization: []
+  response_times:
+    - "Model Inference Latency: P50 < 100ms, P95 < 500ms, P99 < 1s for real-time serving"
+    - "Batch Processing: >1000 samples/second for offline inference workloads"
+    - "Model Loading Time: < 30 seconds for models up to 1GB, < 2 minutes for larger models"
+    - "API Response Time: P50 < 200ms, P95 < 1s including preprocessing and postprocessing"
+    - "Training Iteration Speed: >10 iterations/second for typical deep learning models"
+    - "Data Loading Pipeline: <5% of total training time spent on data loading"
+    - "Model Export/Import: <10 seconds for ONNX conversion of typical models"
+    - "Distributed Training Startup: <5 minutes for multi-GPU/multi-node setup"
 
-troubleshooting_guides: []
-  # Example structure:
-  # - issue: "Common problem description"
-  #   symptoms: []
-  #   solutions: []
-  #   prevention: []
+  throughput_targets:
+    - "Single GPU Inference: >100 QPS for transformer models up to 1B parameters"
+    - "Multi-GPU Serving: Linear scaling with 80%+ efficiency across GPUs"
+    - "CPU Inference: >50 QPS for optimized models on modern CPU instances"
+    - "Batch Inference: >10,000 samples/minute for large-scale offline processing"
+    - "Training Throughput: >1000 samples/second/GPU for computer vision models"
+    - "Data Processing: >1M samples/hour for feature engineering pipelines"
+    - "Model Serving: Handle 10,000+ concurrent users with auto-scaling"
+    - "Stream Processing: <1 second end-to-end latency for real-time ML pipelines"
 
-tool_configurations: []
-  # Example structure:
-  # - tool: "pytest"
-  #   config_file: "pytest.ini"
-  #   recommended_settings: {}
-  #   integration_notes: ""
+  resource_utilization:
+    - "GPU Memory Efficiency: >85% GPU memory utilization during training"
+    - "CPU Utilization: >70% CPU usage during data preprocessing and inference"
+    - "Memory Overhead: <20% additional memory usage for monitoring and logging"
+    - "Storage Efficiency: <2x model size for checkpoints and artifacts"
+    - "Network Bandwidth: <10MB/s per model for typical inference workloads"
+    - "Cost Optimization: <$1/1000 inferences for optimized model serving"
+    - "Energy Efficiency: <100W per inference GPU for sustainable ML operations"
+    - "Container Resource Limits: Proper CPU/memory requests and limits for K8s deployment"
+
+troubleshooting_guides:
+  - issue: "CUDA Out of Memory (OOM) Errors During Training"
+    symptoms:
+      - "RuntimeError: CUDA out of memory errors during forward or backward pass"
+      - "Training crashes after a few batches or epochs"
+      - "Memory usage continuously increases throughout training"
+      - "Unable to load model or process large batches"
+    solutions:
+      - "Reduce batch size by 50% and use gradient accumulation to maintain effective batch size"
+      - "Enable gradient checkpointing with model.gradient_checkpointing_enable()"
+      - "Use mixed precision training with autocast and GradScaler"
+      - "Implement model parallelism for very large models using torch.nn.DataParallel"
+      - "Clear GPU cache periodically with torch.cuda.empty_cache()"
+      - "Use CPU offloading for optimizer states with DeepSpeed ZeRO"
+      - "Apply model pruning or quantization to reduce memory footprint"
+    prevention:
+      - "Monitor GPU memory usage with nvidia-smi during development"
+      - "Profile memory usage with torch.profiler to identify bottlenecks"
+      - "Implement dynamic batch sizing based on available memory"
+      - "Use memory-efficient optimizers like AdaFactor for large models"
+
+  - issue: "Model Training Convergence Problems"
+    symptoms:
+      - "Loss plateaus early and doesn't improve"
+      - "Training loss decreases but validation loss increases (overfitting)"
+      - "Loss oscillates wildly or becomes NaN"
+      - "Model performs worse than random baseline"
+    solutions:
+      - "Reduce learning rate by 10x and use learning rate scheduling"
+      - "Add regularization techniques: dropout, weight decay, batch normalization"
+      - "Implement gradient clipping with max_norm=1.0 to prevent exploding gradients"
+      - "Check data preprocessing and ensure proper normalization"
+      - "Verify loss function implementation and label encoding"
+      - "Use different optimizer (Adam → AdamW → SGD with momentum)"
+      - "Implement early stopping based on validation metrics"
+      - "Add data augmentation to reduce overfitting"
+    prevention:
+      - "Start with proven architectures and hyperparameters"
+      - "Implement comprehensive logging of metrics and gradients"
+      - "Use cross-validation to assess model generalization"
+      - "Perform hyperparameter search with Optuna or Ray Tune"
+
+  - issue: "Slow Training and Inference Performance"
+    symptoms:
+      - "Training takes significantly longer than expected"
+      - "Low GPU utilization (<50%) during training"
+      - "High CPU usage with low GPU usage"
+      - "Inference latency exceeds acceptable thresholds"
+    solutions:
+      - "Optimize data loading with DataLoader num_workers and pin_memory=True"
+      - "Use torch.compile() for PyTorch 2.0 automatic optimization"
+      - "Implement mixed precision training for 2x speedup"
+      - "Profile code with torch.profiler to identify bottlenecks"
+      - "Increase batch size to maximize GPU utilization"
+      - "Use optimized operations: F.cross_entropy instead of manual softmax + NLL"
+      - "Enable CUDA optimizations with torch.backends.cudnn.benchmark=True"
+      - "Convert model to ONNX or TensorRT for optimized inference"
+    prevention:
+      - "Benchmark different batch sizes and data loading configurations"
+      - "Use profiling tools during development to catch performance issues early"
+      - "Monitor system resources (CPU, GPU, memory, I/O) during training"
+      - "Implement performance regression tests for critical models"
+
+  - issue: "Model Deployment and Serving Issues"
+    symptoms:
+      - "Model serving crashes under load"
+      - "Inconsistent predictions between training and inference"
+      - "High latency or timeouts in production"
+      - "Memory leaks in long-running inference services"
+    solutions:
+      - "Use torch.inference_mode() or torch.no_grad() for inference"
+      - "Implement proper model checkpointing and loading procedures"
+      - "Add request queuing and batch processing for high throughput"
+      - "Use model versioning and A/B testing for safe deployments"
+      - "Implement health checks and graceful error handling"
+      - "Use connection pooling and async processing for scalability"
+      - "Monitor and alert on key metrics: latency, error rate, throughput"
+      - "Implement proper resource limits and auto-scaling"
+    prevention:
+      - "Test deployment pipeline in staging environment"
+      - "Implement comprehensive integration tests"
+      - "Use container orchestration for reliable deployments"
+      - "Document deployment requirements and dependencies"
+
+  - issue: "Data Pipeline and Preprocessing Problems"
+    symptoms:
+      - "Training data loading is the bottleneck"
+      - "Inconsistent results across different data splits"
+      - "Data corruption or quality issues affecting model performance"
+      - "Feature engineering pipeline breaks with new data"
+    solutions:
+      - "Implement data validation with Great Expectations or similar tools"
+      - "Use efficient data formats like Parquet or HDF5 for large datasets"
+      - "Add comprehensive data quality checks and monitoring"
+      - "Implement proper train/validation/test splits with stratification"
+      - "Use feature stores for consistent feature computation"
+      - "Add data versioning with DVC or similar tools"
+      - "Implement robust error handling in data processing pipelines"
+      - "Use parallel processing for data preprocessing tasks"
+    prevention:
+      - "Design comprehensive data quality tests from the beginning"
+      - "Document data schemas and transformation logic"
+      - "Implement data lineage tracking"
+      - "Use automated data quality monitoring in production"
+
+  - issue: "Distributed Training and Multi-GPU Issues"
+    symptoms:
+      - "Training speed doesn't scale linearly with number of GPUs"
+      - "Communication timeouts in distributed training"
+      - "Inconsistent model weights across different processes"
+      - "Out of sync issues between different training nodes"
+    solutions:
+      - "Use DistributedDataParallel (DDP) instead of DataParallel for better scaling"
+      - "Implement proper initialization with torch.distributed.init_process_group"
+      - "Use appropriate backend: NCCL for GPU, Gloo for CPU"
+      - "Adjust batch size per GPU to maintain optimal utilization"
+      - "Implement gradient synchronization and proper averaging"
+      - "Use torch.multiprocessing.spawn for robust process management"
+      - "Monitor communication overhead and optimize accordingly"
+      - "Implement fault tolerance with checkpointing and recovery"
+    prevention:
+      - "Test distributed training setup with simple models first"
+      - "Use established frameworks like PyTorch Lightning for distributed training"
+      - "Monitor network bandwidth and latency in distributed setups"
+      - "Implement comprehensive logging across all training processes"
+
+tool_configurations:
+  - tool: "PyTorch"
+    config_file: "pytorch_config.py"
+    recommended_settings:
+      torch_backends:
+        cudnn:
+          benchmark: true
+          deterministic: false
+        cuda:
+          matmul:
+            allow_tf32: true
+          allow_tf32: true
+      torch_compile:
+        mode: "max-autotune"
+        dynamic: false
+        fullgraph: true
+    integration_notes: "Global PyTorch configuration for optimal performance and deterministic training when needed"
+
+  - tool: "MLflow"
+    config_file: "mlflow.yaml"
+    recommended_settings:
+      tracking_uri: "sqlite:///mlflow.db"
+      default_artifact_root: "./mlruns"
+      serve:
+        host: "0.0.0.0"
+        port: 5000
+      autolog:
+        disable: false
+        exclusive: false
+        disable_for_unsupported_versions: false
+    integration_notes: "Comprehensive experiment tracking with automatic logging for PyTorch and transformers"
+
+  - tool: "Weights & Biases"
+    config_file: "wandb.yaml"
+    recommended_settings:
+      project: "ml-experiments"
+      entity: "team-name"
+      mode: "online"
+      save_code: true
+      log_model: true
+      settings:
+        start_method: "fork"
+        _disable_stats: false
+        _disable_meta: false
+    integration_notes: "Advanced experiment tracking with model versioning and collaborative features"
+
+  - tool: "Transformers (HuggingFace)"
+    config_file: "transformers_config.json"
+    recommended_settings:
+      cache_dir: "./hf_cache"
+      offline: false
+      do_lower_case: false
+      model_max_length: 512
+      use_fast: true
+      return_token_type_ids: false
+      trainer:
+        logging_dir: "./logs"
+        logging_strategy: "steps"
+        logging_steps: 100
+        evaluation_strategy: "steps"
+        eval_steps: 500
+        save_strategy: "steps"
+        save_steps: 1000
+        load_best_model_at_end: true
+        metric_for_best_model: "eval_loss"
+        greater_is_better: false
+        dataloader_pin_memory: false
+        remove_unused_columns: false
+    integration_notes: "Optimized configuration for transformers training and inference with caching"
+
+  - tool: "pytest"
+    config_file: "pytest.ini"
+    recommended_settings:
+      testpaths: "tests"
+      python_files: "test_*.py *_test.py"
+      python_classes: "Test*"
+      python_functions: "test_*"
+      addopts: "-v --tb=short --strict-markers --disable-warnings"
+      markers:
+        - "slow: marks tests as slow (deselect with '-m \"not slow\"')"
+        - "gpu: marks tests as requiring GPU"
+        - "integration: marks tests as integration tests"
+        - "unit: marks tests as unit tests"
+    integration_notes: "ML-specific test configuration with markers for different test types and GPU requirements"
+
+  - tool: "DVC"
+    config_file: ".dvc/config"
+    recommended_settings:
+      core:
+        remote: "storage"
+        analytics: false
+        check_update: false
+      remote:
+        storage:
+          url: "s3://ml-data-bucket/dvc-storage"
+      state:
+        row_limit: 10000
+        row_cleanup_quota: 50
+    integration_notes: "Data version control for ML datasets and model artifacts with cloud storage backend"
+
+  - tool: "Docker"
+    config_file: "Dockerfile"
+    recommended_settings:
+      base_image: "pytorch/pytorch:2.1.0-cuda11.8-cudnn8-devel"
+      python_version: "3.9"
+      working_dir: "/workspace"
+      environment_variables:
+        PYTHONPATH: "/workspace"
+        CUDA_VISIBLE_DEVICES: "0"
+        TORCH_CUDA_ARCH_LIST: "7.0;7.5;8.0;8.6"
+      optimization_flags:
+        - "--no-cache-dir"
+        - "--compile"
+    integration_notes: "ML-optimized Docker configuration with CUDA support and PyTorch optimization"
+
+  - tool: "Hydra"
+    config_file: "config.yaml"
+    recommended_settings:
+      defaults:
+        - model: base_model
+        - data: default_dataset
+        - trainer: default_trainer
+        - logger: wandb
+      hydra:
+        run:
+          dir: "outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}"
+        sweep:
+          dir: "multirun/${now:%Y-%m-%d}/${now:%H-%M-%S}"
+          subdir: "${hydra.job.num}"
+    integration_notes: "Configuration management for ML experiments with automatic output organization"
+
+  - tool: "Ray Tune"
+    config_file: "tune_config.yaml"
+    recommended_settings:
+      scheduler: "ASHAScheduler"
+      search_alg: "OptunaSearch"
+      num_samples: 100
+      max_concurrent_trials: 4
+      resources_per_trial:
+        cpu: 2
+        gpu: 1
+      checkpoint_config:
+        num_to_keep: 3
+        checkpoint_score_attr: "val_accuracy"
+        checkpoint_score_order: "max"
+    integration_notes: "Hyperparameter optimization configuration with efficient resource management"
 
 escalation_triggers:
-  - Complex research methodology beyond implementation scope
-  - After 3 failed model performance attempts requiring advanced techniques
-  - Multi-modal or cross-domain AI challenges requiring specialized expertise
-  - Production deployment architecture requiring enterprise AI infrastructure
-  - Advanced optimization techniques beyond standard ML practices
+  - "Complex research methodology beyond implementation scope requiring theoretical foundations"
+  - "After 3 failed model performance attempts requiring advanced optimization techniques"
+  - "Multi-modal or cross-domain AI challenges requiring specialized research expertise"
+  - "Production deployment architecture requiring enterprise AI infrastructure design"
+  - "Advanced optimization techniques beyond standard ML practices (custom operators, distributed systems)"
+  - "Novel neural architecture design requiring deep theoretical understanding"
+  - "Large-scale distributed training issues beyond standard multi-GPU setup"
+  - "Custom loss function development requiring mathematical optimization expertise"
+  - "Regulatory compliance issues requiring specialized AI governance knowledge"
+  - "Research publication and academic collaboration requirements"
+  - "Grant proposal development for AI research funding"
+  - "Cross-institutional research coordination and consortium leadership"
+  - "Technology transfer and commercialization strategy development"
+  - "Advanced statistical analysis and experimental design for AI research"
+  - "Multi-domain synthesis requiring expertise across different AI fields"
 
 coordination_overrides:
   experiment_tracking: Use wandb or mlflow for comprehensive experiment logging

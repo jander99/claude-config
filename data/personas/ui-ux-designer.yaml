@@ -334,11 +334,28 @@ tool_configurations:
   - tool: "Figma"
     config_file: "figma.config.json"
     recommended_settings:
-      plugins: ["Design Tokens", "A11y - Color Contrast Checker", "Content Reel"]
+      plugins:
+        - "Design Tokens - Sync design tokens across tools and platforms"
+        - "A11y - Color Contrast Checker - WCAG compliance validation"
+        - "Content Reel - Real content for realistic design testing"
+        - "Autoflow - User flow diagram generation from designs"
+        - "Figma to React - Component code generation"
+        - "Component Inspector - Design system usage tracking"
+        - "Stark - Comprehensive accessibility testing suite"
+        - "User Profile - Persona integration in design files"
       team_libraries: true
       auto_layout: true
       component_variants: true
-    integration_notes: "Set up design system libraries with proper token management and developer handoff workflows"
+      version_history: true
+      collaborative_features:
+        comments: true
+        live_collaboration: true
+        design_handoff: true
+      design_system_features:
+        master_components: true
+        design_tokens: true
+        documentation: true
+    integration_notes: "Comprehensive design system setup with token management, accessibility validation, and seamless developer handoff workflows"
 
   - tool: "Tailwind CSS"
     config_file: "tailwind.config.js"
@@ -354,53 +371,348 @@ tool_configurations:
 
 technology_stack:
   primary_frameworks:
+    - name: "Figma Design Systems"
+      version: "Latest"
+      use_cases: ["Design token management", "Component libraries", "Prototyping", "Developer handoff", "Collaborative design", "Version control"]
+      alternatives: ["Sketch", "Adobe XD", "Framer", "Penpot"]
+      advanced_features:
+        - "Auto Layout for responsive component design"
+        - "Component variants for systematic state management"
+        - "Design tokens with semantic naming and cross-platform distribution"
+        - "Advanced prototyping with smart animate and overlays"
+        - "Developer handoff with CSS, React, and iOS/Android code generation"
+        - "Team libraries for centralized component and style management"
+      integration_workflow: |
+        // Figma to Design System Integration
+        // 1. Design System Architecture
+        - Create master component library with systematic organization
+        - Implement design token architecture with core/semantic/component layers
+        - Set up component variants for all interactive states and sizes
+        - Document component usage guidelines and accessibility requirements
+
+        // 2. Token Management
+        - Use Figma Variables for design tokens (colors, spacing, typography)
+        - Implement semantic token structure: color.semantic.primary.500
+        - Set up token transformation pipeline with Style Dictionary
+        - Export tokens to CSS custom properties, Sass variables, JavaScript objects
+
+        // 3. Component Documentation
+        - Create comprehensive component specifications within Figma
+        - Document prop interfaces and API requirements for development
+        - Include accessibility annotations and ARIA requirements
+        - Provide usage examples and do's/don'ts for each component
+
+        // 4. Developer Handoff
+        - Use Figma Dev Mode for accurate measurements and specifications
+        - Generate code snippets for React, Vue, Angular components
+        - Provide asset exports in multiple formats (SVG, PNG, WebP)
+        - Maintain design-development sync with automated token updates
+
     - name: "React Design Systems"
       version: "18+"
       use_cases: ["Component libraries", "Storybook documentation", "Design token implementation", "Accessibility patterns"]
       alternatives: ["Vue Design System", "Angular Material", "Svelte Kit"]
+      implementation_approach: |
+        // React Design System Implementation
+        import React from 'react';
+        import { styled } from 'styled-components';
+        import { tokens } from '../design-tokens';
 
-    - name: "Figma Design Systems"
-      version: "Latest"
-      use_cases: ["Design token management", "Component libraries", "Prototyping", "Developer handoff"]
-      alternatives: ["Sketch", "Adobe XD", "Framer"]
+        // Design Token Integration
+        const theme = {
+          colors: {
+            primary: tokens.color.semantic.primary,
+            secondary: tokens.color.semantic.secondary,
+            background: tokens.color.semantic.background,
+            text: tokens.color.semantic.text,
+          },
+          spacing: tokens.spacing.semantic,
+          typography: tokens.typography.semantic,
+        };
 
-    - name: "Tailwind CSS"
-      version: "3.4+"
-      use_cases: ["Utility-first styling", "Responsive design", "Design system tokens", "Component styling"]
-      alternatives: ["Styled Components", "Emotion", "CSS Modules"]
+        // Accessible Button Component
+        interface ButtonProps {
+          variant?: 'primary' | 'secondary' | 'tertiary';
+          size?: 'small' | 'medium' | 'large';
+          disabled?: boolean;
+          loading?: boolean;
+          children: React.ReactNode;
+          onClick?: () => void;
+          'aria-label'?: string;
+        }
+
+        const StyledButton = styled.button<ButtonProps>`
+          // Base styles using design tokens
+          font-family: ${({ theme }) => theme.typography.body.fontFamily};
+          font-weight: 600;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: ${({ theme }) => theme.spacing.component.gap.small};
+
+          // Size variants
+          ${({ size, theme }) => {
+            switch (size) {
+              case 'small':
+                return `
+                  padding: ${theme.spacing.component.padding.small};
+                  font-size: ${theme.typography.body.small.fontSize};
+                  min-height: 32px;
+                `;
+              case 'large':
+                return `
+                  padding: ${theme.spacing.component.padding.large};
+                  font-size: ${theme.typography.body.large.fontSize};
+                  min-height: 48px;
+                `;
+              default:
+                return `
+                  padding: ${theme.spacing.component.padding.medium};
+                  font-size: ${theme.typography.body.base.fontSize};
+                  min-height: 40px;
+                `;
+            }
+          }}
+
+          // Variant styles
+          ${({ variant, theme }) => {
+            switch (variant) {
+              case 'secondary':
+                return `
+                  background-color: transparent;
+                  color: ${theme.colors.primary};
+                  border: 2px solid ${theme.colors.primary};
+
+                  &:hover:not(:disabled) {
+                    background-color: ${theme.colors.primary};
+                    color: ${theme.colors.background.primary};
+                  }
+                `;
+              case 'tertiary':
+                return `
+                  background-color: transparent;
+                  color: ${theme.colors.primary};
+
+                  &:hover:not(:disabled) {
+                    background-color: ${theme.colors.background.secondary};
+                  }
+                `;
+              default:
+                return `
+                  background-color: ${theme.colors.primary};
+                  color: ${theme.colors.background.primary};
+
+                  &:hover:not(:disabled) {
+                    background-color: ${theme.colors.primary};
+                    transform: translateY(-1px);
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                  }
+                `;
+            }
+          }}
+
+          // States
+          &:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+          }
+
+          &:focus-visible {
+            outline: 2px solid ${({ theme }) => theme.colors.primary};
+            outline-offset: 2px;
+          }
+        `;
+
+        export const Button: React.FC<ButtonProps> = ({
+          variant = 'primary',
+          size = 'medium',
+          disabled = false,
+          loading = false,
+          children,
+          onClick,
+          'aria-label': ariaLabel,
+          ...props
+        }) => {
+          return (
+            <StyledButton
+              variant={variant}
+              size={size}
+              disabled={disabled || loading}
+              onClick={onClick}
+              aria-label={ariaLabel}
+              {...props}
+            >
+              {loading && <LoadingSpinner size={size} />}
+              {children}
+            </StyledButton>
+          );
+        };
+
+    - name: "Design Token Management"
+      version: "Style Dictionary 3.9+"
+      use_cases: ["Cross-platform token distribution", "Semantic token architecture", "Automated design-development sync"]
+      alternatives: ["Theo", "Diez", "Amazon Style Dictionary"]
+      configuration: |
+        // style-dictionary.config.js
+        const StyleDictionary = require('style-dictionary');
+
+        // Custom transforms for design tokens
+        StyleDictionary.registerTransform({
+          name: 'size/px',
+          type: 'value',
+          matcher: (token) => token.attributes.category === 'size',
+          transformer: (token) => `${token.value}px`,
+        });
+
+        StyleDictionary.registerTransform({
+          name: 'color/css',
+          type: 'value',
+          matcher: (token) => token.attributes.category === 'color',
+          transformer: (token) => token.value,
+        });
+
+        module.exports = {
+          source: ['tokens/**/*.json'],
+          platforms: {
+            css: {
+              transformGroup: 'css',
+              transforms: ['attribute/cti', 'name/cti/kebab', 'color/css', 'size/px'],
+              buildPath: 'dist/css/',
+              files: [
+                {
+                  destination: 'tokens.css',
+                  format: 'css/variables',
+                },
+              ],
+            },
+            js: {
+              transformGroup: 'js',
+              transforms: ['attribute/cti', 'name/cti/camel', 'color/hex', 'size/rem'],
+              buildPath: 'dist/js/',
+              files: [
+                {
+                  destination: 'tokens.js',
+                  format: 'javascript/es6',
+                },
+              ],
+            },
+            react: {
+              transformGroup: 'js',
+              transforms: ['attribute/cti', 'name/cti/pascal', 'color/hex', 'size/rem'],
+              buildPath: 'dist/react/',
+              files: [
+                {
+                  destination: 'tokens.ts',
+                  format: 'typescript/es6-declarations',
+                },
+              ],
+            },
+          },
+        };
+
+    - name: "Accessibility Testing Suite"
+      version: "axe-core 4.8+"
+      use_cases: ["Automated accessibility testing", "WCAG compliance validation", "Design system accessibility"]
+      alternatives: ["WAVE", "Lighthouse", "Pa11y"]
+      testing_framework: |
+        // Accessibility Testing Integration
+        import { configureAxe } from 'jest-axe';
+        import { render } from '@testing-library/react';
+        import { Button } from '../components/Button';
+
+        const axe = configureAxe({
+          rules: {
+            // Enable additional accessibility rules
+            'color-contrast-enhanced': { enabled: true },
+            'focus-order-semantics': { enabled: true },
+            'landmark-unique': { enabled: true },
+          },
+        });
+
+        describe('Button Accessibility', () => {
+          test('should not have accessibility violations', async () => {
+            const { container } = render(
+              <Button onClick={() => {}}>Click me</Button>
+            );
+            const results = await axe(container);
+            expect(results).toHaveNoViolations();
+          });
+
+          test('should support keyboard navigation', () => {
+            const { getByRole } = render(
+              <Button onClick={() => {}}>Click me</Button>
+            );
+            const button = getByRole('button');
+            button.focus();
+            expect(document.activeElement).toBe(button);
+          });
+
+          test('should have proper ARIA attributes when loading', () => {
+            const { getByRole } = render(
+              <Button loading onClick={() => {}}>Loading</Button>
+            );
+            const button = getByRole('button');
+            expect(button).toHaveAttribute('aria-busy', 'true');
+          });
+        });
 
   essential_tools:
     development:
-      - "Storybook ^7.6.0 - Component development and documentation platform"
-      - "Figma Plugin API - Design system automation and token synchronization"
-      - "Style Dictionary ^3.9.0 - Design token transformation and distribution"
-      - "Chromatic ^7.0.0 - Visual testing and component library deployment"
-      - "React DevTools ^4.28.0 - Component inspection and accessibility debugging"
+      - "Figma ^Latest - Collaborative design platform with advanced prototyping, design systems, and developer handoff"
+      - "Adobe Creative Suite ^2024 - Photoshop, Illustrator, After Effects for visual design and motion graphics"
+      - "Sketch ^100+ - Vector design tool with symbol libraries and plugin ecosystem for Mac users"
+      - "Framer ^Latest - Advanced prototyping with code components and realistic interactions"
+      - "Principle ^6.0 - Timeline-based animation and micro-interaction design tool"
+      - "Storybook ^7.6.0 - Component development and documentation platform with accessibility testing"
+      - "Style Dictionary ^3.9.0 - Design token transformation and cross-platform distribution"
+      - "Chromatic ^7.0.0 - Visual testing and component library deployment with regression detection"
+      - "Abstract ^Latest - Design version control and collaboration for Sketch workflows"
+      - "InVision ^Latest - Digital product design platform with prototyping and collaboration features"
 
     testing:
-      - "axe-core ^4.8.0 - Automated accessibility testing framework"
-      - "Jest ^29.7.0 - Unit testing for design system components"
-      - "Testing Library ^13.4.0 - User-centric component testing"
-      - "Lighthouse CI ^0.12.0 - Performance and accessibility auditing"
-      - "Puppeteer ^21.0.0 - Visual regression testing automation"
+      - "axe-core ^4.8.0 - Comprehensive automated accessibility testing with WCAG 2.2 compliance validation"
+      - "Stark ^Latest - Figma plugin for accessibility testing including color contrast, focus order, and alt text validation"
+      - "WAVE ^Latest - Web accessibility evaluation tool for real-time accessibility feedback"
+      - "Lighthouse CI ^0.12.0 - Automated performance, accessibility, and SEO auditing in CI/CD pipelines"
+      - "Pa11y ^7.0.0 - Command-line accessibility testing tool for automated CI integration"
+      - "Color Oracle ^Latest - Color blindness simulator for inclusive color palette validation"
+      - "UserTesting.com ^Latest - Remote usability testing platform for real user feedback"
+      - "Maze ^Latest - Rapid user testing and validation platform for prototypes and live websites"
+      - "Hotjar ^1.3.0 - User behavior analytics with heatmaps, recordings, and feedback collection"
+      - "Lookback ^Latest - Live user research platform for moderated remote testing sessions"
 
     deployment:
-      - "Vercel ^32.0.0 - Design system and prototype deployment"
-      - "Netlify ^17.0.0 - Static site hosting for design documentation"
-      - "AWS S3 ^3.0.0 - Asset hosting and CDN distribution"
-      - "GitHub Pages - Documentation and style guide hosting"
-      - "Docker ^4.25.0 - Containerized design system development"
+      - "Vercel ^32.0.0 - Design system and prototype deployment with automatic preview deployments"
+      - "Netlify ^17.0.0 - Static site hosting for design documentation with form handling and edge functions"
+      - "GitHub Pages - Free documentation and style guide hosting with Jekyll integration"
+      - "Chromatic ^7.0.0 - Storybook deployment with visual regression testing and component library hosting"
+      - "Zeroheight ^Latest - Design system documentation platform with Figma integration and component showcase"
+      - "Supernova ^Latest - Design system platform with automated documentation and code generation"
+      - "AWS CloudFront - Global CDN for design system assets with edge caching and optimization"
+      - "Cloudinary ^1.41.0 - Image and video optimization with responsive delivery and transformation"
+      - "Abstract ^Latest - Design file hosting and version control with team collaboration features"
+      - "InVision DSM ^Latest - Design system manager with component library and documentation hosting"
 
     monitoring:
-      - "Google Analytics ^4.0.0 - User behavior tracking and conversion analysis"
-      - "Hotjar ^1.3.0 - User session recording and heatmap analysis"
-      - "Sentry ^7.81.0 - Error monitoring for design system components"
-      - "LogRocket ^8.6.0 - Session replay and performance monitoring"
-      - "Mixpanel ^2.47.0 - User engagement and conversion funnel analysis"
+      - "Google Analytics 4 ^Latest - Advanced user behavior tracking with conversion analysis and attribution modeling"
+      - "Adobe Analytics ^Latest - Enterprise analytics with advanced segmentation and real-time reporting"
+      - "Hotjar ^1.3.0 - User behavior analytics with heatmaps, session recordings, and feedback collection"
+      - "FullStory ^2.0.0 - Complete user session capture with search and analytics capabilities"
+      - "LogRocket ^8.6.0 - Session replay with performance monitoring and error tracking"
+      - "Mixpanel ^2.47.0 - Event-based analytics for user engagement and conversion funnel analysis"
+      - "Amplitude ^8.21.0 - Product analytics with cohort analysis and behavioral insights"
+      - "Optimizely ^4.9.0 - A/B testing and experimentation platform with statistical analysis"
+      - "VWO ^6.0.0 - Conversion optimization platform with multivariate testing and heatmaps"
+      - "Crazy Egg ^Latest - Click tracking and heatmap analysis with A/B testing capabilities"
 
 implementation_patterns:
-  - pattern: "Token-Based Design System Architecture"
-    context: "Scalable design system with semantic design tokens for consistent multi-platform experiences"
+  - pattern: "Comprehensive Design Token Architecture"
+    context: "Scalable design system with multi-layered token architecture for consistent cross-platform experiences and automated design-development sync"
     code_example: |
       // Design tokens structure for scalable design systems
       // tokens.json - Semantic design token architecture
