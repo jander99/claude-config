@@ -157,6 +157,143 @@ proactive_triggers:
 - Validate YAML and trait dependencies before committing changes
 - Target 6,000-12,000 lines per agent with template-driven consistency
 
+## 📝 INTELLIGENT MARKDOWN FILE CREATION PROTOCOL
+
+**CORE PRINCIPLE**: Create persistent markdown files for substantial content while maintaining terminal efficiency for immediate responses.
+
+### 🎯 FILE CREATION DECISION MATRIX
+
+**CREATE MARKDOWN FILE WHEN:**
+- User explicitly requests a "report", "analysis", or "documentation"
+- Content exceeds 500 words or contains complex structure/formatting
+- Information needs preservation for future reference or sharing
+- Multi-section analysis with headers, tables, or code blocks
+- Agent workflow artifacts requiring persistence across sessions
+- Long test results, logs, or analysis that could lose terminal context
+- Multi-agent coordination requiring shared artifact handoffs
+
+**SHOW IN TERMINAL WHEN:**
+- Quick answers, explanations, or status updates (<500 words)
+- Simple code snippets or configuration examples
+- Immediate feedback, confirmations, or error messages
+- Interactive workflows requiring immediate user response
+- File paths, command outputs, or brief troubleshooting steps
+
+### 📁 SMART DIRECTORY RESOLUTION
+
+**Priority Order for File Placement:**
+
+1. **Detect Existing Patterns** (use project conventions):
+   - `./docs/` - If exists with markdown files → **User Reports**
+   - `./reports/` - If exists → **Analysis and Reports**
+   - `./tmp/` - If exists → **Temporary System Files**
+   - `./.claude/` - If exists → **Agent Coordination Files**
+
+2. **Create Directory Strategy**:
+   - **User Reports**: `./docs/` (create if needed)
+   - **System Files**: `./tmp/` (create if needed)
+   - **Agent Artifacts**: `./.claude-temp/` (create if needed)
+
+3. **Fallback Chain**: `./docs/` → `./reports/` → `./tmp/` → `./` (current directory)
+
+### 🏷️ FILE NAMING CONVENTIONS
+
+**User Reports** (descriptive, date-stamped):
+```
+project-analysis-2024-01-15.md
+security-audit-report-2024-01-15.md
+performance-review-2024-01-15.md
+```
+
+**System Files** (timestamped, purpose-prefixed):
+```
+claude-context-20240115-143022.md
+claude-test-results-20240115-144530.md
+claude-workflow-state-20240115-145000.md
+```
+
+**Agent Coordination** (agent-specific, task-oriented):
+```
+qa-engineer-test-strategy-20240115-150000.md
+technical-writer-docs-draft-20240115-151000.md
+multi-agent-handoff-20240115-152000.md
+```
+
+**Conflict Resolution**: Append `-{n}` for duplicates (e.g., `report-2024-01-15-2.md`)
+
+### 🤝 AGENT INTEGRATION PROTOCOLS
+
+**Coordination Patterns:**
+- **User-Facing Reports** → Trigger `coordination/documentation-handoff` to technical-writer for review
+- **New Documentation** → Trigger `coordination/version-control-coordination` with git-helper for tracking
+- **Multi-Agent Artifacts** → Use `./.claude-temp/` for workflow handoffs between agents
+- **Long-Running Tasks** → Create progress files for context preservation across sessions
+
+### 💬 USER COMMUNICATION STANDARDS
+
+**File Creation Notifications:**
+```
+✅ Report created: ./docs/security-analysis-2024-01-15.md
+✅ Analysis saved: ./tmp/claude-context-20240115-143022.md for reference
+✅ Multi-agent workflow artifacts: ./.claude-temp/ (3 files)
+✅ Documentation draft: ./docs/api-guide-2024-01-15.md (ready for technical-writer review)
+```
+
+### 🛠️ ERROR HANDLING & FALLBACKS
+
+**Permission Issues:**
+- Try alternative directories in fallback chain
+- If all directories fail → display in terminal with warning message
+- Suggest `mkdir docs` or permission fixes to user
+
+**Git Integration Conflicts:**
+- Check if target directory is gitignored
+- For user reports → prefer tracked directories
+- For system files → prefer gitignored or temporary directories
+- Coordinate with git-helper for appropriate placement
+
+### 📋 IMPLEMENTATION EXAMPLES
+
+**Example 1 - User Report Request:**
+```
+User: "Give me a security analysis report of this codebase"
+→ CREATE: ./docs/security-analysis-2024-01-15.md
+→ NOTIFY: "✅ Security analysis report: ./docs/security-analysis-2024-01-15.md"
+→ COORDINATE: Trigger documentation-handoff to technical-writer
+```
+
+**Example 2 - System Context Preservation:**
+```
+Multi-agent workflow with long analysis
+→ CREATE: ./.claude-temp/context-preservation-20240115-143022.md
+→ NOTIFY: "✅ Workflow context saved: ./.claude-temp/ for session continuity"
+→ NO COORDINATION: Internal system file
+```
+
+**Example 3 - Quick Answer:**
+```
+User: "How do I install this package?"
+→ TERMINAL: Display pip install command directly
+→ NO FILE: Simple, immediate answer doesn't warrant persistence
+```
+
+### 🎯 QUALITY GATES
+
+**Before File Creation:**
+- Verify content substance and structure warrant file creation
+- Check directory permissions and available space
+- Ensure appropriate naming convention for content type
+- Confirm integration needs (agent coordination, git tracking)
+
+**After File Creation:**
+- Provide clear file location with absolute path
+- Trigger appropriate coordination workflows (documentation-handoff, version-control)
+- Log file creation for session context and debugging
+- Verify file was created successfully with expected content
+
+---
+
+**ENFORCEMENT TARGET**: 90% appropriate file creation decisions with seamless directory resolution and clear user communication.
 
 # Claude Agent Ecosystem Coordination Guide
 
