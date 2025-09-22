@@ -19,13 +19,13 @@ This repository uses YAML source files and Jinja2 templates to generate agent ma
 
 ### Agent Library
 
-The system generates 28 specialized agents organized by role with hybrid trait coordination:
+The system generates 29 specialized agents organized by role with hybrid trait coordination:
 
-**Core Development:** `ai-engineer`, `python-engineer`, `java-engineer`, `data-engineer`, `blockchain-engineer`, `mobile-engineer`, `frontend-engineer`, `devops-engineer`, `security-engineer`, `database-engineer`
+**Core Development:** `ai-engineer`, `python-engineer`, `java-engineer`, `data-engineer`, `blockchain-engineer`, `mobile-engineer`, `frontend-engineer`, `devsecops-engineer`, `database-engineer`
 
-**Research & Strategy:** `ai-researcher`, `sr-ai-researcher`, `product-manager`, `business-analyst`, `quant-analyst`, `sr-quant-analyst`
+**Research & Strategy:** `ai-researcher`, `sr-ai-researcher`, `product-manager`, `quant-analyst`, `sr-quant-analyst`
 
-**Quality & Architecture:** `qa-engineer`, `performance-engineer`, `sr-architect`, `integration-architect`, `technical-writer`, `ui-ux-designer`
+**Quality & Architecture:** `qa-engineer`, `test-architect`, `performance-engineer`, `sr-architect`, `integration-architect`, `api-architect`, `technical-writer`, `ui-ux-designer`
 
 **Specialized:** `prompt-engineer`, `git-helper`, `systems-engineer`, `platform-engineer`, `site-reliability-engineer`, `subagent-generator`
 
@@ -365,15 +365,10 @@ The agent ecosystem consists of **28 specialized agents** organized into three p
 - UI components, state management, and progressive web applications
 - Proactive on: package.json, JSX/TSX files, frontend frameworks
 
-**devops-engineer** `model: sonnet`
-- Kubernetes, Docker, CI/CD pipelines, and infrastructure as code
-- Container orchestration, automation, and cloud deployments
-- Proactive on: Dockerfiles, K8s configs, CI/CD pipelines
-
-**security-engineer** `model: sonnet`
-- Application security, vulnerability assessments, and secure coding
-- Security audits, penetration testing, and compliance
-- Proactive on: Security configs, auth systems, vulnerability reports
+**devsecops-engineer** `model: sonnet`
+- Secure infrastructure automation, container security, and compliance automation
+- Zero-trust architecture, security monitoring, and shift-left security practices
+- Proactive on: Dockerfiles, K8s configs, CI/CD pipelines, security configs, compliance requirements
 
 **database-engineer** `model: sonnet`
 - Database design, optimization, and data architecture
@@ -386,15 +381,10 @@ The agent ecosystem consists of **28 specialized agents** organized into three p
 - Academic paper analysis and experimental design
 - Proactive on: Research requests, methodology questions
 
-**business-analyst** `model: sonnet`
-- Market research, competitive analysis, and business intelligence
-- ROI optimization and product development strategy
-- Proactive on: Market research, business intelligence, ROI analysis
-
 **product-manager** `model: sonnet`
-- Agile methodology, user story creation, and product requirements
-- Feature planning and stakeholder coordination
-- Proactive on: Product planning requests, user story needs
+- Agile methodology, user story creation, product requirements, market research, and business intelligence
+- Feature planning, stakeholder coordination, competitive analysis, and ROI optimization
+- Proactive on: Product planning requests, user story needs, market research, competitive analysis
 
 **quant-analyst** `model: sonnet`
 - Financial metrics, market data analysis, and quantitative modeling

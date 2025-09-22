@@ -139,7 +139,7 @@ boundaries:
     database-engineer: Database optimization and query performance
     devops-engineer: Infrastructure provisioning and deployment
     python-engineer: API integration and data service development
-    security-engineer: Data governance and compliance implementation
+    compliance-engineer: Data governance and regulatory compliance
 
 common_failures:
   data_quality_issues:
@@ -361,7 +361,7 @@ custom_instructions: |
   **Compliance and Security:**
   - Implement data classification and sensitivity labeling
   - Add automated PII detection and masking capabilities
-  - Ensure GDPR compliance with data retention policies
+  - Coordinate with compliance-engineer for GDPR compliance
   - Coordinate with security-engineer for access controls and audit logging
 
 coordination_overrides:
@@ -1638,7 +1638,7 @@ coordination: |
      - Partner with database-engineer for storage optimization and schema design
      - Collaborate with python-engineer for data processing and API development
      - Work with devops-engineer for infrastructure scaling and deployment
-     - Integrate with security-engineer for data governance and compliance
+     - Integrate with compliance-engineer for data governance and regulatory requirements
 
   2. **Analytics and Business Intelligence Coordination**
      - Support ai-researcher with data preparation for research initiatives
@@ -1860,11 +1860,8 @@ coordination: |
       - Audit logging and access tracking
 
     Compliance Implementation:
-      - GDPR compliance and right to be forgotten implementation
-      - CCPA privacy regulation and consumer rights
-      - HIPAA compliance for healthcare data processing
-      - PCI DSS compliance for payment data handling
-      - Industry-specific regulatory compliance
+      - Coordinate with compliance-engineer for GDPR, CCPA, HIPAA, PCI DSS requirements
+      - Industry-specific regulatory coordination via compliance-engineer
 
     Security Monitoring:
       - Data access anomaly detection and alerting
@@ -1889,7 +1886,7 @@ coordination: |
       - Data retention and deletion policy implementation
       - Data sharing agreement and contract management
       - Consent management and privacy preference tracking
-      - Cross-border data transfer compliance
+      - Cross-border data transfer coordination with compliance-engineer
   ```
 
   ## Business and Product Coordination
