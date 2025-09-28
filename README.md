@@ -1,6 +1,6 @@
 # Claude Config Generator
 
-A simple, focused YAML-to-Markdown templating tool for generating Claude Code agent configurations. This project provides a set of specialized agents for Claude Code's proactive agent system through a streamlined build-and-deploy process.
+A simple YAML-to-Markdown templating system for generating Claude Code agent configurations. This project provides specialized agent definitions through a focused build-and-deploy process.
 
 ## Table of Contents
 - [Project Overview](#project-overview)
@@ -14,25 +14,25 @@ A simple, focused YAML-to-Markdown templating tool for generating Claude Code ag
 
 ## Project Overview
 
-This repository implements a **simple templating system** for Claude Code agent configurations. The system uses:
+This repository implements a **simple templating system** for Claude Code agent configurations. The system provides:
 
 - **YAML Source Format**: Single YAML file per agent with complete definition
 - **Template-Based Generation**: Jinja2 templates convert YAML to agent markdown
-- **Agent Library**: 25+ specialized agents for software development
-- **Build System**: Python CLI with basic validation and installation
-- **Single Source of Truth**: Each agent defined once in YAML format
+- **Agent Library**: 28+ specialized agents for software development
+- **Build System**: Python CLI with validation, build, and installation
+- **Focused Purpose**: Pure agent configuration generation
 
 ## Features
 
 ### Core Capabilities
-- **YAML-to-Markdown Templating**: Convert YAML agent definitions to markdown
-- **Agent Library**: 25+ specialized development agents
+- **YAML-to-Template Processing**: Convert YAML definitions to agent markdown
+- **Agent Library**: 28+ specialized development agents
 - **CLI Tools**: Build, validate, install, and list commands
-- **Basic Validation**: YAML syntax and structure validation
-- **Installation**: Deploy generated agents to ~/.claude/
+- **Basic Validation**: YAML syntax and structure checking
+- **Simple Installation**: Deploy to ~/.claude/ directory
 
 ### Agent System
-- **25+ Specialized Agents**: Development, research, and architecture roles
+- **28+ Specialized Agents**: Development, research, and architecture roles
 - **Proactive Triggers**: Agents activate based on file patterns and project types
 - **Tier-Based Selection**: Haiku (efficiency), Sonnet (balanced), Opus (strategic)
 - **Coordination Patterns**: Clear handoff protocols between agents
@@ -48,13 +48,13 @@ Agent specifications in YAML format:
 ```yaml
 # data/personas/python-engineer.yaml
 name: python-engineer
-display_name: "Python Engineer" 
+display_name: "Python Engineer"
 model: sonnet
 description: Expert Python developer specializing in web frameworks...
 
 context_priming: |
   You are a senior Python engineer with deep expertise...
-  
+
 responsibilities:
   - Web application development and API design
   - Data processing and automation scripts
@@ -136,14 +136,23 @@ This is a simple, focused templating tool for Claude Code configurations:
 - **✅ Installation**: Deploy to ~/.claude/ directory
 - **✅ Simplified Architecture**: ~500 lines total, focused on core functionality
 
-### Recent Simplifications
+### Architecture Focus
 
-1. **✅ Architecture Simplification**: Removed over-engineered components (2,600+ → ~500 lines)
-2. **✅ Focused Purpose**: Pure templating tool for agent configuration generation
-3. **✅ Removed Complexity**: Eliminated monitoring, security scanning, complex CLI
-4. **✅ Essential Commands**: Build, validate, install, list-agents, help only
-5. **✅ Right-Sized Testing**: 4 focused test files covering core functionality
+**Current State**: Simplified, focused templating tool
 
+**Completed**:
+- ✅ YAML agent definitions (25+ agents)
+- ✅ Simple template-based generation
+- ✅ Basic CLI with essential commands
+- ✅ YAML validation and testing
+- ✅ Architecture simplification (~500 lines total)
+
+**Current Benefits**:
+- 🎯 Simple, focused tool for one purpose
+- 📝 25+ development agents in YAML format
+- ⚡ Fast, lightweight operation
+- 🧹 Clean, maintainable codebase
+- ✨ Right-sized for its purpose
 
 ## Getting Started
 
@@ -214,7 +223,7 @@ The system is built with:
 
 #### CLI (`src/claude_config/cli.py`) - ~100 lines
 ```bash
-claude-config build                    # Build agent configurations  
+claude-config build                    # Build agent configurations
 claude-config validate                 # Validate YAML syntax
 claude-config list-agents              # List available agents
 claude-config install                  # Install to ~/.claude/
@@ -227,9 +236,8 @@ Core templating engine that processes YAML files through Jinja2 templates.
 #### Validator (`src/claude_config/validator.py`) - ~115 lines
 Basic YAML syntax and structure validation.
 
-#### Templates (`src/claude_config/templates/`) 
+#### Templates (`src/claude_config/templates/`)
 Jinja2 template for converting YAML to agent markdown.
-
 
 ## CLI Usage
 
@@ -238,7 +246,7 @@ Jinja2 template for converting YAML to agent markdown.
 # Build all agents
 claude-config build
 
-# Build specific agent  
+# Build specific agent
 claude-config build --agent python-engineer
 ```
 
@@ -303,7 +311,7 @@ Agent definitions use a simple YAML structure:
 
 ```yaml
 name: agent-name                    # Unique identifier
-display_name: "Agent Name"          # Human-readable name  
+display_name: "Agent Name"          # Human-readable name
 model: sonnet|opus|haiku           # LLM model tier
 description: Brief description...   # Purpose and capabilities
 
@@ -316,7 +324,7 @@ responsibilities:                   # What agent handles
 
 expertise:                         # Technical expertise
   - "Technology/framework knowledge"
-  
+
 proactive_triggers:                # When agent activates
   file_patterns: ["*.ext"]
   project_indicators: ["Framework"]
@@ -336,14 +344,14 @@ Create a new file in `data/personas/[agent-name].yaml`:
 
 ```yaml
 name: mobile-engineer
-display_name: Mobile Engineer  
+display_name: Mobile Engineer
 model: sonnet
 description: Expert mobile developer for React Native, Flutter, iOS, and Android.
 
 context_priming: |
   You are a senior mobile engineer. You focus on:
   - Cross-platform compatibility
-  - Performance optimization 
+  - Performance optimization
   - Platform-specific requirements
 
 responsibilities:
@@ -361,7 +369,7 @@ expertise:
 proactive_triggers:
   file_patterns:
     - "*.tsx"
-    - "*.dart" 
+    - "*.dart"
     - "*.swift"
     - "*.kt"
   project_indicators:
@@ -414,7 +422,7 @@ pytest tests/
 The build system:
 
 1. **Validates** YAML syntax
-2. **Generates** agent markdown using Jinja2 templates 
+2. **Generates** agent markdown using Jinja2 templates
 3. **Installs** to Claude Code directory
 
 ```
@@ -430,25 +438,18 @@ YAML Definition → Template Rendering → Agent Markdown → Installation
 
 ## Simplified Architecture
 
-This system was recently simplified from an over-engineered architecture:
-
-### What Was Removed
-- Complex monitoring system (814 lines)
-- Security scanning pipeline  
-- Over-engineered CLI (20+ commands → 5 commands)
-- Complex test suite (159 files → 4 files)
-- Complex validation framework
+This system provides a focused, lightweight approach to agent configuration:
 
 ### Current Architecture
 - **Core templating**: ~200 lines
-- **CLI interface**: ~100 lines  
+- **CLI interface**: ~100 lines
 - **Basic validation**: ~115 lines
-- **Tests**: 4 files, 533 lines
+- **Tests**: 4 files, focused coverage
 - **Total**: ~500-600 lines
 
 ### Benefits
 - **Focused purpose**: Pure YAML-to-Markdown templating
-- **Simple maintenance**: No over-engineering to maintain
+- **Simple maintenance**: No unnecessary complexity
 - **Fast operation**: Minimal overhead and dependencies
 - **Clear boundaries**: Does one thing well
 

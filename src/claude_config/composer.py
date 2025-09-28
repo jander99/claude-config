@@ -11,8 +11,10 @@ from typing import Dict, List, Any, Optional, Union
 import yaml
 import logging
 import re
+import json
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from pydantic import BaseModel, Field
+
 
 
 logger = logging.getLogger(__name__)
@@ -272,6 +274,8 @@ class AgentComposer:
         traits_dir = Path("src/claude_config/traits")
         self.trait_processor = TraitProcessor(traits_dir)
 
+        # Initialize MCP processor
+
         # Initialize Jinja2 environment
         self.jinja_env = Environment(
             loader=FileSystemLoader(str(self.template_dir)),
@@ -428,3 +432,4 @@ class AgentComposer:
             timestamp=datetime.now(),
             agent_count=len(agents)
         )
+

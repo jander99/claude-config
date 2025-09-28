@@ -92,28 +92,30 @@ def build_agents(data_dir: Path, output_dir: Path, agent: List[str], validate: b
 
 
 @cli.command()
-@click.option("--data-dir", "-d", type=click.Path(exists=True, path_type=Path), 
+@click.option("--data-dir", "-d", type=click.Path(exists=True, path_type=Path),
               default="data", help="Data directory path")
 def validate(data_dir: Path):
     """Validate agent configurations."""
     console.print("🔍 Validating configurations...", style="yellow")
-    
+
     validator = ConfigValidator(data_dir)
-    
+
     with Progress(
         SpinnerColumn(),
         TextColumn("[progress.description]{task.description}"),
         console=console
     ) as progress:
         task = progress.add_task("Validating...", total=None)
+
+        # Validate agent configurations
         is_valid = validator.validate_all()
+        if is_valid:
+            console.print("✅ All configurations are valid!", style="green")
+        else:
+            console.print("❌ Validation failed. Check errors above.", style="red")
+            sys.exit(1)
+
         progress.advance(task)
-    
-    if is_valid:
-        console.print("✅ All configurations are valid!", style="green")
-    else:
-        console.print("❌ Validation failed. Check errors above.", style="red")
-        sys.exit(1)
 
 
 @cli.command()
@@ -265,6 +267,8 @@ def install(output_dir: Path, target: Optional[Path], dry_run: bool, no_clean: b
         if cleaned_files and not no_clean:
             console.print(f"Would clean {len(cleaned_files)} existing agents", style="yellow")
         console.print(f"Would install {len(list(output_dir.rglob('*')))} items", style="yellow")
+
+
 
 
 def main():
