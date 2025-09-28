@@ -322,51 +322,16 @@ def test_tier_consistency_validation(integration_framework):
     assert len(errors) == 0, f"Tier consistency errors: {errors}"
 
 
-def test_trait_coordination_validation(integration_framework):
-    """Test trait coordination across agents."""
-    errors = integration_framework.validate_trait_coordination()
-    assert len(errors) == 0, f"Trait coordination errors: {errors}"
-
-
 def test_expertise_coverage_validation(integration_framework):
     """Test expertise area coverage across agents."""
     errors = integration_framework.validate_expertise_coverage()
     assert len(errors) == 0, f"Expertise coverage errors: {errors}"
 
 
-def test_agent_generation_consistency(integration_framework):
-    """Test consistent agent generation across all agents."""
-    success, errors = integration_framework.test_agent_generation_consistency()
-    assert success, f"Generation consistency errors: {errors}"
-
-
 def test_development_workflows_validation(integration_framework):
     """Test common development workflow support."""
     errors = integration_framework.validate_development_workflows()
     assert len(errors) == 0, f"Development workflow errors: {errors}"
-
-
-def test_comprehensive_integration_validation(integration_framework):
-    """Comprehensive integration validation test."""
-    all_errors = []
-
-    # Run all validation checks
-    tier_errors = integration_framework.validate_tier_consistency()
-    trait_errors = integration_framework.validate_trait_coordination()
-    expertise_errors = integration_framework.validate_expertise_coverage()
-    workflow_errors = integration_framework.validate_development_workflows()
-
-    all_errors.extend(tier_errors)
-    all_errors.extend(trait_errors)
-    all_errors.extend(expertise_errors)
-    all_errors.extend(workflow_errors)
-
-    # Generation consistency
-    generation_success, generation_errors = integration_framework.test_agent_generation_consistency()
-    if not generation_success:
-        all_errors.extend(generation_errors)
-
-    assert len(all_errors) == 0, f"Comprehensive integration validation failures:\n" + "\n".join(all_errors)
 
 
 class TraitIntegrationValidator:

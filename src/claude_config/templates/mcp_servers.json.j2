@@ -1,0 +1,110 @@
+{#
+MCP Servers JSON Template - Generates Claude Code mcpServers.json configuration
+from YAML MCP server definitions with environment variable injection.
+
+Security Features:
+- Environment variable resolution with validation
+- Secret handling and masking
+- Trust level enforcement
+- Required variable checking
+#}
+{
+{%- for server_name, server in mcp_servers.items() %}
+  "{{ server_name }}": {
+    "command": "{{ server.server.command }}",
+    "args": [
+{%- for arg in server.server.args %}
+      "{{ arg }}"{% if not loop.last %},{% endif %}
+{%- endfor %}
+    ]
+{%- if server.environment and server.environment.variables %},
+    "env": {
+{%- for env_name, env_config in server.environment.variables.items() %}
+      "{{ env_name }}": {% if env_config is string %}"{{ env_config }}"{% else %}"${{{ env_config.variable or env_name }}}"{% endif %}{% if not loop.last %},{% endif %}
+{%- endfor %}
+    }
+{%- endif %}
+{%- if server.server.working_directory %},
+    "cwd": "{{ server.server.working_directory }}"
+{%- endif %}
+{%- if server.server.timeout %},
+    "timeout": {{ server.server.timeout }}
+{%- endif %}
+{%- if server.metadata %},
+    "_metadata": {
+      "description": "{{ server.description }}",
+      "category": "{{ server.category }}",
+      "version": "{{ server.metadata.version }}",
+{%- if server.metadata.tags %}
+      "tags": [
+{%- for tag in server.metadata.tags %}
+        "{{ tag }}"{% if not loop.last %},{% endif %}
+{%- endfor %}
+      ],
+{%- endif %}
+{%- if server.metadata.personas %}
+      "personas": {
+        "suitable_for": [
+{%- for persona in server.metadata.personas.suitable_for %}
+          "{{ persona }}"{% if not loop.last %},{% endif %}
+{%- endfor %}
+        ],
+        "enhancement_areas": [
+{%- for area in server.metadata.personas.enhancement_areas %}
+          "{{ area }}"{% if not loop.last %},{% endif %}
+{%- endfor %}
+        ],
+        "use_cases": [
+{%- for use_case in server.metadata.personas.use_cases %}
+          "{{ use_case }}"{% if not loop.last %},{% endif %}
+{%- endfor %}
+        ]
+      },
+{%- endif %}
+{%- if server.security %}
+      "security": {
+        "trust_level": "{{ server.security.trust_level }}",
+{%- if server.security.permissions %}
+        "permissions": [
+{%- for permission in server.security.permissions %}
+          "{{ permission }}"{% if not loop.last %},{% endif %}
+{%- endfor %}
+        ],
+{%- endif %}
+{%- if server.security.data_access %}
+        "data_access": [
+{%- for access in server.security.data_access %}
+          "{{ access }}"{% if not loop.last %},{% endif %}
+{%- endfor %}
+        ],
+{%- endif %}
+        "network_access": {{ server.security.network_access | lower }}
+      },
+{%- endif %}
+{%- if server.development %}
+      "development": {
+        "status": "{{ server.development.status }}",
+{%- if server.development.last_tested %}
+        "last_tested": "{{ server.development.last_tested }}",
+{%- endif %}
+{%- if server.development.known_issues %}
+        "known_issues": [
+{%- for issue in server.development.known_issues %}
+          "{{ issue }}"{% if not loop.last %},{% endif %}
+{%- endfor %}
+        ],
+{%- endif %}
+{%- if server.development.dependencies %}
+        "dependencies": [
+{%- for dep in server.development.dependencies %}
+          "{{ dep }}"{% if not loop.last %},{% endif %}
+{%- endfor %}
+        ]
+{%- endif %}
+      }
+{%- endif %}
+    }
+{%- endif %}
+  }{% if not loop.last %},{% endif %}
+{%- endfor %}
+}

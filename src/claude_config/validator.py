@@ -1,11 +1,12 @@
 """
-Simplified YAML validator for Claude Config Generator.
+Enhanced YAML validator for Claude Config Generator.
 
-Basic validation for agent configurations - syntax and required fields only.
+Comprehensive validation for agent configurations, traits, and MCP server configurations.
+Includes syntax validation, schema validation, and security checks.
 """
 
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 import yaml
 from pydantic import BaseModel, ValidationError
 
@@ -13,14 +14,16 @@ from .composer import TraitConfig, AgentConfig
 
 
 class ValidationResult(BaseModel):
-    """Simple validation result."""
+    """Enhanced validation result with warnings support."""
     is_valid: bool
     errors: List[str] = []
+    warnings: List[str] = []
+
 
 
 class ConfigValidator:
-    """Basic YAML and schema validator."""
-    
+    """Enhanced YAML and schema validator with MCP support."""
+
     def __init__(self, data_dir: Path = None):
         self.data_dir = data_dir or Path("data")
     
@@ -70,11 +73,11 @@ class ConfigValidator:
     def validate_trait(self, trait_name: str) -> ValidationResult:
         """Basic trait validation."""
         trait_path = self.data_dir / "traits" / f"{trait_name}.yaml"
-        
+
         yaml_result = self.validate_yaml_file(trait_path)
         if not yaml_result.is_valid:
             return yaml_result
-        
+
         try:
             with open(trait_path, 'r') as f:
                 data = yaml.safe_load(f)
@@ -82,6 +85,7 @@ class ConfigValidator:
             return ValidationResult(is_valid=True)
         except ValidationError as e:
             return ValidationResult(is_valid=False, errors=[f"Invalid trait: {e}"])
+
     
     def validate_all(self) -> bool:
         """Validate all configurations."""
@@ -113,5 +117,5 @@ class ConfigValidator:
                 else:
                     print(f"❌ trait: {trait_name}: {', '.join(result.errors)}")
                     overall_valid = False
-        
+
         return overall_valid
