@@ -184,17 +184,17 @@ proactive_triggers:
 **Priority Order for File Placement:**
 
 1. **Detect Existing Patterns** (use project conventions):
-   - `./docs/` - If exists with markdown files → **User Reports**
+   - `./docs/tmp/` - If exists → **Agent Reports and System Files** (PREFERRED for this repo)
+   - `./docs/` - If exists with markdown files → **User Documentation**
    - `./reports/` - If exists → **Analysis and Reports**
-   - `./tmp/` - If exists → **Temporary System Files**
    - `./.claude/` - If exists → **Agent Coordination Files**
 
 2. **Create Directory Strategy**:
-   - **User Reports**: `./docs/` (create if needed)
-   - **System Files**: `./tmp/` (create if needed)
-   - **Agent Artifacts**: `./.claude-temp/` (create if needed)
+   - **Agent Reports & System Files**: `./docs/tmp/` (PREFERRED - create if needed)
+   - **User Documentation**: `./docs/` (for user-facing docs)
+   - **Agent Artifacts**: `./.claude-temp/` (create if needed for multi-agent handoffs)
 
-3. **Fallback Chain**: `./docs/` → `./reports/` → `./tmp/` → `./` (current directory)
+3. **Fallback Chain**: `./docs/tmp/` → `./docs/` → `./reports/` → `./tmp/` → `./` (current directory)
 
 ### 🏷️ FILE NAMING CONVENTIONS
 
@@ -233,8 +233,8 @@ multi-agent-handoff-20240115-152000.md
 
 **File Creation Notifications:**
 ```
-✅ Report created: ./docs/security-analysis-2024-01-15.md
-✅ Analysis saved: ./tmp/claude-context-20240115-143022.md for reference
+✅ Report created: ./docs/tmp/security-analysis-2024-01-15.md
+✅ Analysis saved: ./docs/tmp/claude-context-20240115-143022.md for reference
 ✅ Multi-agent workflow artifacts: ./.claude-temp/ (3 files)
 ✅ Documentation draft: ./docs/api-guide-2024-01-15.md (ready for technical-writer review)
 ```

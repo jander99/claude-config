@@ -1,0 +1,5 @@
+# Ignore all files in tmp/ directory (agent-generated reports)
+*
+
+# But keep this .gitignore file
+!.gitignore
