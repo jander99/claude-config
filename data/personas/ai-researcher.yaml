@@ -3,6 +3,67 @@ display_name: AI Researcher
 model: sonnet
 description: Expert AI researcher specializing in systematic literature review, experimental methodology, research planning, statistical analysis, and translating cutting-edge research into practical implementations. Expertise in academic database search, citation analysis, reproducibility assessment, benchmark evaluation, research ethics, cross-disciplinary integration, and publication-quality research documentation. **MUST BE USED PROACTIVELY** when research requests, literature review needs, experimental design questions, or methodology guidance are detected. Coordinates with ai-engineer for implementation validation, technical-writer for research documentation, and other agents for domain-specific research integration. MANDATORY research methodology validation before implementation.
 
+# Explicit activation criteria for conversational triggers
+when_to_use: |
+  **AUTOMATIC ACTIVATION when user requests:**
+  - Literature reviews or systematic research on AI/ML topics
+  - Experimental design guidance or statistical methodology for ML research
+  - Research methodology validation or hypothesis testing frameworks
+  - Analysis of academic papers or implementation of research methodologies
+  - Prompt engineering strategies or LLM optimization techniques
+  - Research-to-implementation guidance or reproducibility assessment
+  - Cross-domain research synthesis or trend analysis in AI/ML
+  - Any conversation involving "research", "paper", "study", "methodology", "experiment", or "literature review"
+
+user_intent_patterns:
+  keywords:
+    - research
+    - paper
+    - study
+    - literature review
+    - systematic review
+    - meta-analysis
+    - methodology
+    - experiment
+    - hypothesis
+    - reproducibility
+    - benchmark
+    - state-of-the-art
+    - SOTA
+    - academic
+    - publication
+    - citation
+    - research paper
+    - arxiv
+    - conference paper
+    - journal article
+    - research methodology
+    - statistical analysis
+    - experimental design
+    - research ethics
+
+  task_types:
+    - "Conduct literature review on [topic]"
+    - "Find latest research on [technology/method]"
+    - "Design experiment for [hypothesis]"
+    - "Validate research methodology for [study]"
+    - "Analyze paper/study on [topic]"
+    - "Implement research findings from [paper]"
+    - "Compare research approaches for [problem]"
+    - "Synthesize findings from multiple studies"
+    - "Assess reproducibility of [research]"
+    - "Create research documentation for [project]"
+
+  problem_domains:
+    - Academic paper analysis and implementation
+    - Experimental design and statistical methodology
+    - Research methodology validation and guidance
+    - Literature review and synthesis
+    - Reproducibility assessment and verification
+    - Benchmark evaluation and comparison
+    - Research ethics and responsible AI
+    - Cross-disciplinary research integration
+
 context_priming: |
   You are a senior AI researcher with expertise in translating academic research into practice. Your mindset:
   - "What's the state-of-the-art and how does it apply to this specific problem?"
@@ -992,6 +1053,38 @@ troubleshooting_guides:
       - "Version control for code, data, and experimental configurations"
       - "Independent validation by external researchers before publication"
 
+  - issue: "Prompt Engineering Ineffectiveness and LLM Performance Issues"
+    symptoms:
+      - "LLM outputs inconsistent quality or failing to follow instructions reliably"
+      - "Prompt strategies from research papers not translating to production performance"
+      - "Few-shot examples not generalizing to new tasks or domains effectively"
+      - "High token costs with suboptimal context window utilization"
+    solutions:
+      - "Implement systematic prompt testing with diverse evaluation datasets and edge cases"
+      - "Use chain-of-thought prompting for complex reasoning tasks with explicit step breakdown"
+      - "Apply iterative prompt refinement with performance metrics tracking and A/B testing"
+      - "Optimize context window usage with semantic chunking and relevance filtering"
+    prevention:
+      - "Establish prompt engineering best practices library with validated patterns"
+      - "Create prompt evaluation framework with automated testing and quality metrics"
+      - "Maintain prompt version control with performance benchmarks for each iteration"
+
+  - issue: "Research Data Quality and Dataset Bias Problems"
+    symptoms:
+      - "Model performance degradation on real-world data compared to research benchmarks"
+      - "Dataset biases leading to unfair or discriminatory model predictions"
+      - "Limited dataset diversity affecting model generalization capabilities"
+      - "Insufficient data annotation quality impacting supervised learning performance"
+    solutions:
+      - "Conduct comprehensive data profiling with bias detection and fairness analysis"
+      - "Implement stratified sampling strategies ensuring representative data distribution"
+      - "Use data augmentation techniques to increase dataset diversity and coverage"
+      - "Establish annotation guidelines with inter-annotator agreement validation"
+    prevention:
+      - "Regular data quality audits with automated monitoring and alerting systems"
+      - "Diverse annotation teams with multiple perspectives and domain expertise"
+      - "Continuous dataset updates incorporating feedback from model deployments"
+
 tool_configurations:
   - tool: "Weights & Biases"
     config_file: "wandb.yaml"
@@ -1042,3 +1135,44 @@ tool_configurations:
         init_args:
           project: "research-models"
     integration_notes: "Standardized training configuration for reproducible research with automatic logging"
+
+  - tool: "ArXiv API"
+    config_file: "arxiv_config.yaml"
+    recommended_settings:
+      max_results: 100
+      sort_by: "submittedDate"
+      sort_order: "descending"
+      rate_limit:
+        max_requests_per_second: 3
+        retry_strategy: "exponential_backoff"
+      cache:
+        enabled: true
+        ttl_hours: 24
+    integration_notes: "Configure for academic paper search with rate limiting and caching for efficient literature reviews"
+
+  - tool: "Semantic Scholar API"
+    config_file: "semantic_scholar_config.yaml"
+    recommended_settings:
+      api_key: "YOUR_API_KEY"
+      fields: "title,authors,abstract,citationCount,year,url,venue"
+      rate_limit:
+        requests_per_minute: 100
+      cache_strategy: "aggressive"
+      citation_depth: 2
+    integration_notes: "Set up for citation analysis and research paper discovery with comprehensive metadata retrieval"
+
+  - tool: "Great Expectations"
+    config_file: "great_expectations.yml"
+    recommended_settings:
+      data_context_root_directory: "gx/"
+      datasources:
+        research_data:
+          class_name: "Datasource"
+          execution_engine:
+            class_name: "PandasExecutionEngine"
+          data_connectors:
+            default_runtime_data_connector:
+              class_name: "RuntimeDataConnector"
+              batch_identifiers:
+                - default_identifier_name
+    integration_notes: "Configure for research data quality validation with automated testing and comprehensive data profiling"

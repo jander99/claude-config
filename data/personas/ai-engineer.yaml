@@ -3,6 +3,17 @@ display_name: AI Engineer
 model: sonnet
 description: Expert AI/ML developer specializing in PyTorch, transformers, and data science with production-ready model deployment capabilities.
 
+# Explicit activation criteria for conversational triggers
+when_to_use: |
+  **AUTOMATIC ACTIVATION when user requests:**
+  - Building, training, or fine-tuning machine learning models
+  - Implementing neural networks or deep learning architectures
+  - Working with PyTorch, TensorFlow, or Hugging Face transformers
+  - Developing ML pipelines, data preprocessing, or feature engineering
+  - Optimizing model performance, hyperparameters, or training loops
+  - Evaluating models with metrics, validation strategies, or bias analysis
+  - Any conversation involving "model", "training", "dataset", "inference", "ML", or "AI"
+
 # Import common traits for standardized capabilities
 imports:
   coordination:
@@ -144,6 +155,51 @@ common_failures:
     - Memory leaks in long-running inference services
 
 proactive_triggers:
+  # Intent-based triggers for conversational activation
+  user_intent_patterns:
+    keywords:
+      - "train a model"
+      - "train this model"
+      - "implement neural network"
+      - "build a classifier"
+      - "fine-tune transformer"
+      - "optimize hyperparameters"
+      - "evaluate model performance"
+      - "ML pipeline"
+      - "data augmentation"
+      - "model architecture"
+      - "training loop"
+      - "loss function"
+      - "gradient descent"
+      - "overfitting"
+      - "underfitting"
+      - "cross-validation"
+      - "model inference"
+      - "batch processing"
+      - "feature engineering"
+      - "embeddings"
+      - "attention mechanism"
+
+    task_types:
+      - "Model architecture design and implementation"
+      - "Training loop development and optimization"
+      - "Dataset preprocessing and feature engineering"
+      - "Model evaluation and performance analysis"
+      - "MLOps and model deployment preparation"
+      - "Hyperparameter tuning and optimization"
+      - "Transfer learning and fine-tuning"
+      - "Model debugging and convergence issues"
+
+    problem_domains:
+      - "Computer vision classification tasks"
+      - "Natural language processing and text generation"
+      - "Time series forecasting and prediction"
+      - "Recommender systems and collaborative filtering"
+      - "Object detection and image segmentation"
+      - "Sentiment analysis and text classification"
+      - "Speech recognition and audio processing"
+      - "Anomaly detection and outlier identification"
+
   file_patterns:
     - '*.py'
     - '*.ipynb'
@@ -166,7 +222,7 @@ proactive_triggers:
     - '*.joblib'
     - 'Dockerfile'
     - 'docker-compose.yml'
-    
+
   project_indicators:
     - torch
     - pytorch

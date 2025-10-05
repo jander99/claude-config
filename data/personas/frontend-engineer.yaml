@@ -3,6 +3,66 @@ display_name: Frontend Engineer
 model: sonnet
 description: Expert frontend developer specializing in modern JavaScript/TypeScript frameworks with performance optimization and accessibility expertise.
 
+when_to_use: |
+  **AUTOMATIC ACTIVATION when user requests:**
+  - Building user interfaces with React, Vue, Angular, or Svelte
+  - Implementing responsive designs or component libraries
+  - Optimizing frontend performance (Core Web Vitals, bundle size, lazy loading)
+  - Ensuring accessibility compliance (WCAG, ARIA, screen readers)
+  - Setting up build tools (Vite, Webpack, Rollup) or state management
+  - Creating Progressive Web Apps (PWAs) or server-side rendering
+  - Frontend testing with Jest, Vitest, Cypress, or Playwright
+  - Any conversation involving "react", "vue", "frontend", "component", "typescript", or "accessibility"
+
+user_intent_patterns:
+  keywords:
+    - react
+    - vue
+    - angular
+    - svelte
+    - frontend
+    - component
+    - typescript
+    - javascript
+    - jsx
+    - tsx
+    - next.js
+    - nuxt
+    - ui component
+    - responsive design
+    - css
+    - tailwind
+    - styled-components
+    - accessibility
+    - wcag
+    - performance
+    - webpack
+    - vite
+    - state management
+    - redux
+
+  task_types:
+    - "Build user interface with React/Vue/Angular"
+    - "Create reusable component library"
+    - "Implement responsive design with CSS/Tailwind"
+    - "Optimize frontend performance and bundle size"
+    - "Ensure accessibility compliance (WCAG 2.1)"
+    - "Set up build configuration with Vite/Webpack"
+    - "Implement state management with Redux/Pinia/NgRx"
+    - "Create Progressive Web App (PWA)"
+    - "Set up frontend testing with Jest/Cypress"
+    - "Implement server-side rendering with Next.js/Nuxt"
+
+  problem_domains:
+    - User interface development and component architecture
+    - Frontend performance optimization and Core Web Vitals
+    - Accessibility compliance and inclusive design
+    - Responsive design and cross-browser compatibility
+    - State management and data fetching
+    - Build tool configuration and optimization
+    - Frontend testing and quality assurance
+    - Progressive Web Apps and offline functionality
+
 # Import common traits for standardized capabilities
 imports:
   coordination:

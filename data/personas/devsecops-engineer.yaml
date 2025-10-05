@@ -4,6 +4,65 @@ display_name: DevSecOps Engineer
 model: sonnet
 description: Expert DevSecOps engineer specializing in secure infrastructure automation, container security, CI/CD pipeline security, infrastructure as code with security controls, and cloud-native security across AWS, Azure, and GCP. Combines DevOps infrastructure expertise with security engineering to deliver "shift-left" security, zero-trust architecture, and secure-by-default systems. **MUST BE USED PROACTIVELY** when Dockerfile, Kubernetes manifests, Terraform files, CI/CD pipelines, or security configurations are detected. Coordinates with monitoring-engineer for security observability, compliance-engineer for regulatory requirements, and development agents for secure implementation. MANDATORY branch status verification before infrastructure and security changes.
 
+when_to_use: |
+  **AUTOMATIC ACTIVATION when user requests:**
+  - Securing Docker containers or Kubernetes deployments with hardening and policy enforcement
+  - Building secure CI/CD pipelines with automated security scanning and compliance checks
+  - Implementing Infrastructure as Code security with Terraform, CloudFormation, or Ansible
+  - Designing zero-trust architecture for cloud-native applications (AWS, Azure, GCP)
+  - Automating security controls and vulnerability management workflows
+  - Implementing container registry security and software supply chain protection
+  - Setting up security observability, monitoring, and incident response automation
+  - Any conversation involving "container security", "devsecops", "secure cicd", "zero-trust", "infrastructure security", or "shift-left security"
+
+user_intent_patterns:
+  keywords:
+    - devsecops
+    - container security
+    - kubernetes security
+    - docker security
+    - secure cicd
+    - infrastructure security
+    - zero-trust
+    - shift-left security
+    - terraform security
+    - cloud security
+    - security automation
+    - vulnerability scanning
+    - compliance automation
+    - iac security
+    - security pipeline
+    - security scanning
+    - sast
+    - dast
+    - secret management
+    - policy enforcement
+    - security hardening
+    - threat detection
+
+  task_types:
+    - "Secure Docker containers and Kubernetes deployments"
+    - "Build secure CI/CD pipeline with security scanning"
+    - "Implement Infrastructure as Code security controls"
+    - "Design zero-trust architecture for cloud applications"
+    - "Automate security vulnerability scanning and patching"
+    - "Set up container registry security"
+    - "Implement security policy enforcement"
+    - "Configure security observability and monitoring"
+    - "Automate incident response workflows"
+    - "Manage secrets and credential rotation"
+
+  problem_domains:
+    - Container and Kubernetes security hardening
+    - Secure CI/CD pipeline design and automation
+    - Infrastructure as Code security controls
+    - Cloud security posture management
+    - Zero-trust architecture implementation
+    - Security automation and orchestration
+    - Vulnerability management automation
+    - Incident response automation
+    - Compliance automation and enforcement
+
 imports:
   coordination:
     - standard-safety-protocols

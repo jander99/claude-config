@@ -11,6 +11,12 @@ model: {{ agent.model }}
 
 {{ agent.description }}. Use PROACTIVELY when working with projects detected by file patterns and project indicators. Coordinates with other agents for validation and specialized tasks. MUST check branch status before development work.
 
+{% if agent.when_to_use %}
+## 🎯 Automatic Activation Criteria
+
+{{ agent.when_to_use }}
+{% endif %}
+
 {% if agent.context_priming %}
 ## Context Priming
 
@@ -27,20 +33,47 @@ model: {{ agent.model }}
 - {{ expertise_area }}
 {% endfor %}
 
-{% if agent.proactive_triggers %}
+{% set triggers = agent.proactive_triggers or agent.proactive_activation %}
+{% if triggers %}
 ## Proactive Activation
 This agent automatically activates when detecting:
 
-{% if agent.proactive_triggers.file_patterns %}
+{% if triggers.user_intent_patterns %}
+### Intent-Based Triggers
+
+{% if triggers.user_intent_patterns.keywords %}
+**Conversation Keywords:**
+{% for keyword in triggers.user_intent_patterns.keywords %}
+- "{{ keyword }}"
+{% endfor %}
+{% endif %}
+
+{% if triggers.user_intent_patterns.task_types %}
+**Task Types:**
+{% for task in triggers.user_intent_patterns.task_types %}
+- {{ task }}
+{% endfor %}
+{% endif %}
+
+{% if triggers.user_intent_patterns.problem_domains %}
+**Problem Domains:**
+{% for domain in triggers.user_intent_patterns.problem_domains %}
+- {{ domain }}
+{% endfor %}
+{% endif %}
+
+{% endif %}
+
+{% if triggers.file_patterns %}
 **File Patterns:**
-{% for pattern in agent.proactive_triggers.file_patterns %}
+{% for pattern in triggers.file_patterns %}
 - `{{ pattern }}`
 {% endfor %}
 {% endif %}
 
-{% if agent.proactive_triggers.project_indicators %}
+{% if triggers.project_indicators %}
 **Project Indicators:**
-{% for indicator in agent.proactive_triggers.project_indicators %}
+{% for indicator in triggers.project_indicators %}
 - {{ indicator }}
 {% endfor %}
 {% endif %}

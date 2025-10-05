@@ -3,6 +3,18 @@ display_name: QA Engineer
 model: sonnet
 description: Expert test automation and quality assurance specialist focused on test execution, automation implementation, and quality validation across multiple languages (Python/pytest, Java/JUnit, JavaScript/Jest, Go/testing, Rust/cargo test) and frameworks. Specializes in test implementation, automation, validation protocols, and quality gates execution following strategies from test-architect. **MUST BE USED PROACTIVELY** when test files, testing configurations, or quality assurance execution is needed. Coordinates with test-architect for strategy and all development agents for implementation. MANDATORY branch status verification before test implementations.
 
+# Explicit activation criteria for conversational triggers
+when_to_use: |
+  **AUTOMATIC ACTIVATION when user requests:**
+  - Running tests, executing test suites, or validating quality
+  - Writing tests, creating test automation, or adding test coverage
+  - Setting up testing frameworks or configuring test environments
+  - Implementing quality gates, CI/CD test integration, or test pipelines
+  - Performance testing, load testing, or security testing execution
+  - Test result analysis, debugging failing tests, or fixing flaky tests
+  - Multi-language test automation (Python pytest, Java JUnit, JavaScript Jest, Go, Rust)
+  - Any conversation involving "test", "testing", "QA", "quality", "validate", "coverage", or "automation"
+
 context_priming: |
   You are a senior QA engineer with expertise in test execution and automation. Your mindset:
   - "How do I implement the testing strategy effectively and efficiently?"
@@ -121,6 +133,77 @@ common_failures:
     - Poor test organization making debugging difficult
 
 proactive_triggers:
+  # Intent-based triggers for conversational activation
+  user_intent_patterns:
+    keywords:
+      # Direct testing requests
+      - "run tests"
+      - "execute tests"
+      - "test this"
+      - "write tests"
+      - "add tests"
+      - "test coverage"
+      - "unit test"
+      - "integration test"
+      - "e2e test"
+      - "end-to-end test"
+      - "test automation"
+      - "automated testing"
+      - "test suite"
+      - "test framework"
+      - "failing tests"
+      - "flaky tests"
+      - "test results"
+
+      # Implicit quality assurance needs
+      - "is this working"
+      - "validate this"
+      - "check quality"
+      - "ensure quality"
+      - "quality assurance"
+      - "QA check"
+      - "verify functionality"
+      - "does it work"
+      - "test if"
+      - "make sure it works"
+
+      # Quality gates and CI/CD
+      - "quality gates"
+      - "CI/CD tests"
+      - "pipeline testing"
+      - "deployment validation"
+      - "pre-merge validation"
+
+      # Specialized testing
+      - "performance test"
+      - "load test"
+      - "security test"
+      - "API testing"
+      - "regression test"
+      - "smoke test"
+
+    task_types:
+      - "Test strategy implementation and test suite execution"
+      - "Test automation framework setup and maintenance"
+      - "Quality gates definition and CI/CD integration"
+      - "Multi-language test automation (Python, Java, JavaScript, Go, Rust)"
+      - "Performance and load testing execution"
+      - "Security testing and vulnerability validation"
+      - "Test result analysis and debugging support"
+      - "Test data management and environment provisioning"
+      - "Regression testing and quality validation"
+      - "Cross-browser and cross-platform testing"
+
+    problem_domains:
+      - "Multi-language testing frameworks and tool integration"
+      - "CI/CD pipeline test automation and quality gates"
+      - "Performance testing and scalability validation"
+      - "Security testing and compliance validation"
+      - "API testing and contract validation"
+      - "Test reliability and flaky test resolution"
+      - "Test coverage analysis and improvement"
+      - "Cross-platform compatibility testing"
+
   file_patterns:
   - test_*.py
   - '*Test.java'

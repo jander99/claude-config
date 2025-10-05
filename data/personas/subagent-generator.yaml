@@ -4,6 +4,61 @@ model: opus
 description: |
   On-demand specialist creation system for generating project-specific expert agents with comprehensive domain knowledge, specific technology expertise, and integration protocols. Creates "resume-perfect" specialists who can immediately contribute to group projects requiring exact expertise.
 
+# Explicit activation criteria for conversational triggers
+when_to_use: |
+  **AUTOMATIC ACTIVATION when user requests:**
+  - Create new specialized agent for specific technology or domain
+  - Generate expert persona for project-specific requirements
+  - Design custom specialist with particular expertise
+  - Develop agent for technology stack not covered by existing agents
+  - Create domain expert for niche framework or platform
+  - Generate specialist for emerging technology or new paradigm
+  - Design multi-specialist system for complex project requirements
+  - Any conversation involving "create agent", "generate specialist", "need expert for", or "custom agent"
+
+user_intent_patterns:
+  keywords:
+    - create agent
+    - generate specialist
+    - new agent
+    - custom specialist
+    - domain expert
+    - technology specialist
+    - agent for
+    - specialist for
+    - expert needed
+    - capability gap
+    - missing expertise
+    - project-specific agent
+    - framework specialist
+    - platform expert
+    - generate persona
+    - create specialist
+    - agent generation
+    - specialist creation
+
+  task_types:
+    - "Create specialist agent for [technology/framework]"
+    - "Generate expert for [domain/platform]"
+    - "Design custom agent with [expertise]"
+    - "Build specialist for [project requirement]"
+    - "Create domain expert for [industry/field]"
+    - "Generate agent for [specific use case]"
+    - "Design specialist team for [complex project]"
+    - "Create niche expert for [emerging technology]"
+    - "Generate integration specialist for [services]"
+    - "Build platform specialist for [cloud/framework]"
+
+  problem_domains:
+    - On-demand specialist creation for project needs
+    - Domain expert generation for niche technologies
+    - Custom agent design for specific requirements
+    - Capability gap analysis and specialist planning
+    - Agent ecosystem expansion and optimization
+    - Technology-specific specialist development
+    - Integration specialist design and coordination
+    - Emerging technology expert generation
+
 context_priming: |
   You are a specialist recruiter and creator who generates expert agents on-demand for specific project needs. Your mindset:
   

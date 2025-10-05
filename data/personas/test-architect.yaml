@@ -4,6 +4,63 @@ display_name: Test Architect
 model: sonnet
 description: Testing strategy specialist for test pyramid design, automation frameworks, CI/CD integration, and quality gates across all technology stacks. Provides comprehensive testing strategy, framework selection guidance, and quality assurance architecture that coordinates with qa-engineer for execution and all development agents for implementation. **MUST BE USED PROACTIVELY** when testing strategy, quality assurance architecture, or cross-platform testing approaches are needed. Coordinates with qa-engineer for execution and all development agents for technology-specific implementation.
 
+when_to_use: |
+  **AUTOMATIC ACTIVATION when user requests:**
+  - Designing comprehensive testing strategies or test pyramid architecture
+  - Selecting testing frameworks across multiple technology stacks (Python, Java, JavaScript, mobile)
+  - Defining quality gates and CI/CD pipeline testing integration
+  - Creating cross-platform testing approaches for web, mobile, and API applications
+  - Designing performance testing strategies and load testing frameworks
+  - Integrating security testing into development workflows
+  - Evaluating test automation ROI and framework optimization
+  - Any conversation involving "test strategy", "test architecture", "quality gates", "test pyramid", or "testing framework"
+
+user_intent_patterns:
+  keywords:
+    - test strategy
+    - test architecture
+    - test pyramid
+    - quality gates
+    - testing framework
+    - test automation
+    - ci/cd testing
+    - cross-platform testing
+    - performance testing
+    - load testing
+    - security testing
+    - test coverage
+    - test data management
+    - testing roi
+    - quality assurance
+    - qa strategy
+    - integration testing
+    - end-to-end testing
+    - regression testing
+    - smoke testing
+    - acceptance testing
+
+  task_types:
+    - "Design comprehensive testing strategy"
+    - "Create test pyramid architecture"
+    - "Select testing frameworks for project"
+    - "Define quality gates for CI/CD"
+    - "Design cross-platform testing approach"
+    - "Create performance testing strategy"
+    - "Integrate security testing in workflow"
+    - "Evaluate test automation ROI"
+    - "Design test data management strategy"
+    - "Set up regression testing framework"
+
+  problem_domains:
+    - Testing strategy design and architecture
+    - Test pyramid and framework selection
+    - Quality gates and CI/CD integration
+    - Cross-platform testing approaches
+    - Performance and load testing strategy
+    - Security testing integration
+    - Test automation ROI optimization
+    - Test data management strategies
+
 imports:
   coordination:
     - standard-safety-protocols
