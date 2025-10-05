@@ -1,10 +1,15 @@
-# API Reference Documentation
+# Claude Config API Reference Documentation
 
 ## Table of Contents
+- [Overview](#overview)
 - [Python Package API](#python-package-api)
 - [CLI Command Reference](#cli-command-reference)
 - [Configuration Schema](#configuration-schema)
 - [Template System](#template-system)
+
+## Overview
+
+Claude Config is a specialized tool for generating and managing agent configurations through YAML-driven templates. It provides a flexible system for defining Claude Code agents with consistent formatting and validation.
 
 ## Python Package API
 
@@ -13,195 +18,144 @@
 #### `claude_config.composer`
 
 **Class: `AgentComposer`**
-Core templating engine for processing YAML agent definitions through Jinja2 templates.
+Process YAML agent definitions into markdown documentation.
 
 ```python
 class AgentComposer:
-    """Simple templating engine for converting YAML to agent markdown."""
-    
-    def __init__(self, config_path: str, template_path: str) -> None:
-        """Initialize composer with YAML and template paths."""
-    
-    def generate_agent(self, agent_name: str) -> str:
-        """Generate agent markdown from YAML definition via template.
-        
-        Args:
-            agent_name: Name of agent to generate
-            
-        Returns:
-            Agent markdown as string
-            
-        Raises:
-            AgentNotFoundError: If YAML file doesn't exist
-            ValidationError: If YAML is invalid
+    """Generates markdown documentation from YAML agent configurations."""
+
+    def __init__(self, config_dir: str, template_dir: str):
         """
-    
+        Initialize composer with configuration and template directories.
+
+        Args:
+            config_dir: Path to directory containing YAML agent definitions
+            template_dir: Path to Jinja2 template directory
+        """
+
+    def generate_agent(self, agent_name: str) -> str:
+        """
+        Generate markdown for a specific agent.
+
+        Args:
+            agent_name: Identifier of agent to generate
+
+        Returns:
+            Markdown-formatted agent documentation
+
+        Raises:
+            AgentNotFoundError: If agent YAML is missing
+            ValidationError: If agent configuration is invalid
+        """
+
     def list_available_agents(self) -> List[str]:
-        """Return list of available agents from YAML files."""
+        """
+        Retrieve list of agent names from YAML configuration directory.
+
+        Returns:
+            List of available agent names
+        """
 ```
 
 **Usage Example:**
 ```python
 from claude_config.composer import AgentComposer
 
+# Initialize composer with configuration paths
 composer = AgentComposer(
-    config_path="data/personas",
-    template_path="src/claude_config/templates"
+    config_dir="data/personas",
+    template_dir="src/claude_config/templates"
 )
 
-# Generate agent markdown
+# Generate markdown for a specific agent
 agent_markdown = composer.generate_agent("python-engineer")
 
-# List available agents  
+# List all available agents
 agents = composer.list_available_agents()
-print(f"Available agents: {agents}")
 ```
 
 #### `claude_config.validator`
 
 **Class: `ConfigValidator`**
-Basic YAML syntax and structure validation.
+Validates YAML agent configurations against defined rules.
 
 ```python
 class ConfigValidator:
-    """Basic YAML validation for agent configurations."""
-    
-    def __init__(self) -> None:
-        """Initialize validator."""
-    
+    """Validates YAML agent configuration files."""
+
     def validate_agent_yaml(self, yaml_path: str) -> ValidationResult:
-        """Validate agent YAML syntax and required fields.
-        
-        Args:
-            yaml_path: Path to YAML file
-            
-        Returns:
-            ValidationResult with basic errors
         """
-    
+        Validate an agent's YAML configuration.
+
+        Args:
+            yaml_path: Path to agent YAML file
+
+        Returns:
+            ValidationResult with validation status and errors
+        """
+
     def validate_required_fields(self, config: Dict[str, Any]) -> List[str]:
-        """Check for required fields in agent configuration."""
+        """
+        Check for presence of required configuration fields.
+
+        Args:
+            config: Parsed YAML configuration dictionary
+
+        Returns:
+            List of missing or invalid field errors
+        """
 ```
 
-**Usage Example:**
-```python
-from claude_config.validator import ConfigValidator
-
-validator = ConfigValidator()
-
-# Validate agent YAML file
-result = validator.validate_agent_yaml("data/personas/python-engineer.yaml")
-if result.is_valid:
-    print("YAML is valid")
-else:
-    for error in result.errors:
-        print(f"Error: {error}")
-```
-
-#### `claude_config.exceptions`
-
-**Custom Exception Classes**
+### Exceptions
 
 ```python
 class ClaudeConfigError(Exception):
     """Base exception for claude-config package."""
 
 class AgentNotFoundError(ClaudeConfigError):
-    """Raised when requested agent YAML file doesn't exist."""
+    """Raised when requested agent configuration is missing."""
 
 class ValidationError(ClaudeConfigError):
-    """Raised when YAML syntax or structure is invalid."""
-    
-class TemplateError(ClaudeConfigError):
-    """Raised when template rendering fails."""
-```
-
-### Data Models
-
-#### `claude_config.models`
-
-**Basic Models for YAML Configuration**
-
-```python
-from typing import List, Dict, Optional
-
-class AgentConfig:
-    """Basic YAML agent configuration."""
-    
-    def __init__(self, yaml_data: Dict):
-        self.name = yaml_data['name']
-        self.display_name = yaml_data['display_name']
-        self.model = yaml_data['model']
-        self.description = yaml_data['description']
-        self.context_priming = yaml_data['context_priming']
-        self.responsibilities = yaml_data.get('responsibilities', [])
-        self.expertise = yaml_data.get('expertise', [])
-        self.proactive_triggers = yaml_data.get('proactive_triggers', {})
-
-class ValidationResult:
-    """Result of basic YAML validation."""
-    
-    def __init__(self):
-        self.is_valid = True
-        self.errors = []
-        self.warnings = []
+    """Raised when agent configuration fails validation."""
 ```
 
 ---
 
 ## CLI Command Reference
 
-### Installation Commands
+### Package Installation
 
 ```bash
-# Install claude-config package
+# Install package in editable mode
 pip install -e .
 
 # Install with development dependencies
 pip install -e ".[dev]"
-
-# Using uv (recommended)
-uv pip install -e .
 ```
 
-### Build Commands
-
-```bash
-# Build all agent configurations
-claude-config build
-
-# Build specific agent
-claude-config build --agent python-engineer
-```
-
-### Validation Commands
-
-```bash
-# Validate all YAML files
-claude-config validate
-
-# Validate specific agent
-claude-config validate --agent python-engineer
-```
-
-### List Commands
+### Configuration Management
 
 ```bash
 # List all available agents
 claude-config list-agents
+
+# Build agent configurations
+claude-config build
+
+# Build specific agent configuration
+claude-config build --agent python-engineer
+
+# Validate configurations
+claude-config validate
+
+# Validate specific agent configuration
+claude-config validate --agent python-engineer
 ```
 
-### Installation Commands
+### Help and Information
 
 ```bash
-# Install to ~/.claude/ directory
-claude-config install
-```
-
-### Help Commands
-
-```bash
-# Show usage information
+# Show CLI help
 claude-config --help
 
 # Show command-specific help
@@ -212,167 +166,97 @@ claude-config build --help
 
 ## Configuration Schema
 
-### Agent Configuration Schema
+### Agent Configuration
 
-**File Location**: `data/personas/{agent-name}.yaml`
+**Location**: `data/personas/{agent-name}.yaml`
 
+**Required Fields**:
+- `name`: Unique kebab-case identifier
+- `display_name`: Human-readable name
+- `model`: Agent model tier (haiku, sonnet, opus)
+- `description`: Purpose and capabilities
+
+**Example Configuration**:
 ```yaml
-# Required fields
-name: string                    # Agent identifier (kebab-case)
-display_name: string           # Human-readable name
-model: haiku|sonnet|opus       # Claude model tier
-description: string            # Agent purpose and capabilities
+name: python-engineer
+display_name: Python Engineer
+model: sonnet
+description: Backend development and Python ecosystem specialist
 
-# Core agent definition
-context_priming: |             # Multi-line string with agent mindset
-  You are a [role] with [experience]. Your mindset:
-  - "[thought pattern 1]"
-  - "[thought pattern 2]"
+context_priming: |
+  You specialize in Python web frameworks, data processing, and backend architectures.
 
-responsibilities:              # List of what agent handles
-- "Primary responsibility"
-- "Secondary responsibility"
+responsibilities:
+- Web API development
+- Backend system design
+- Python package creation
 
-expertise:                     # List of technical expertise areas
-- "Technology 1 with specific frameworks"
-- "Technology 2 with specific tools"
-
-# Optional fields
-proactive_triggers:            # Auto-activation patterns
-  file_patterns:
-  - "*.py"
-  - "requirements.txt"
-  project_indicators:
-  - "Django"
-  - "FastAPI"
+expertise:
+- Django and FastAPI frameworks
+- Asynchronous programming
+- Microservices architecture
 ```
-
-
 
 ---
 
 ## Template System
 
-### Jinja2 Template
+### Jinja2 Template Processing
 
 **Template Location**: `src/claude_config/templates/agent.md.j2`
 
-Single template that converts YAML to agent markdown:
+Converts YAML configurations to markdown documentation using Jinja2 templating.
+
+**Key Template Features**:
+- Dynamic section generation
+- Conditional rendering
+- List iteration
+- Basic text transformations
 
 ```jinja2
----
-name: {{ agent.name }}
-model: {{ agent.model }}
----
-
 # {{ agent.display_name }}
 
 {{ agent.description }}
 
-## Context Priming
-
-{{ agent.context_priming }}
-
 ## Responsibilities
-
 {% for responsibility in agent.responsibilities %}
 - {{ responsibility }}
-{% endfor %}
-
-## Expertise
-
-{% for item in agent.expertise %}
-- {{ item }}
-{% endfor %}
-
-{% if agent.proactive_triggers %}
-## Proactive Triggers
-
-### File Patterns
-{% for pattern in agent.proactive_triggers.file_patterns %}
-- `{{ pattern }}`
-{% endfor %}
-
-### Project Indicators
-{% for indicator in agent.proactive_triggers.project_indicators %}
-- {{ indicator }}
-{% endfor %}
-{% endif %}
-```
-
-#### Basic Template Functions
-
-**Available in Templates**:
-
-```jinja2
-# Basic string formatting
-{{ value | title }}          # Title Case
-{{ value | upper }}          # UPPERCASE  
-{{ value | lower }}          # lowercase
-
-# List operations
-{{ items | join(", ") }}     # Join list with separator
-
-# Conditional rendering
-{% if condition %}
-Content when true
-{% endif %}
-
-# Loop over lists
-{% for item in list %}
-- {{ item }}
 {% endfor %}
 ```
 
 ---
 
-### Basic Validation
+## Validation Rules
 
-#### Validation Rules
-- **YAML Syntax**: Must be valid YAML
-- **Required Fields**: name, display_name, model, description must be present
-- **Model Tier**: Must be one of haiku, sonnet, opus
-- **Template Variables**: All variables must be resolvable
+- YAML must be valid syntax
+- Required fields must be present
+- Model tier must be one of: haiku, sonnet, opus
+- All template variables must be resolvable
 
-#### Validation Commands
-
-```bash
-# Validate all agents
-claude-config validate
-
-# Validate specific agent
-claude-config validate --agent python-engineer
+**Validation Example**:
 ```
-
-#### Validation Output Example
-
-```
-✅ YAML syntax validation passed (25/25 agents)
-❌ Required field validation failed:
-  - mobile-engineer.yaml: Missing 'responsibilities' field
-  - data-engineer.yaml: Empty 'expertise' field
-
-Validation Summary:
-- 23 agents valid
-- 2 agents with errors
+✅ Validation passed: 25/25 agents
+❌ Validation errors:
+  - mobile-engineer.yaml: Missing 'responsibilities'
+  - data-engineer.yaml: Empty 'expertise'
 ```
 
 ---
 
 ## Error Handling
 
-### Common Errors and Solutions
+### Common Errors
 
 #### `AgentNotFoundError`
-**Cause**: Requested agent YAML file doesn't exist
-**Solution**: Check available agents with `claude-config list-agents`
+- **Cause**: Missing agent YAML configuration
+- **Solution**: Verify agent name with `claude-config list-agents`
 
 #### `ValidationError`
-**Cause**: YAML syntax or required fields invalid
-**Solution**: Run `claude-config validate --agent <name>` for specific errors
+- **Cause**: Invalid YAML configuration
+- **Solution**: Run `claude-config validate` for detailed errors
 
-#### `TemplateError`  
-**Cause**: Template rendering failed due to missing variables
-**Solution**: Check YAML fields match template expectations
+## Source Code Reference
 
-This API reference documents the simplified claude-config templating tool for generating Claude Code agent configurations.
+For the most up-to-date API details, refer to the source code:
+- [GitHub Repository](https://github.com/your-org/claude-config)
+- Source files: `src/claude_config/`
