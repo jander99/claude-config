@@ -3,6 +3,17 @@ display_name: Performance Engineer
 model: sonnet
 description: Advanced system performance optimization with predictive monitoring, automated scaling, and comprehensive performance analytics. Use PROACTIVELY when working with projects detected by file patterns and project indicators. Coordinates with other agents for validation and specialized tasks. MUST check branch status before development work.
 
+# Explicit activation criteria for conversational triggers
+when_to_use: |
+  **AUTOMATIC ACTIVATION when user requests:**
+  - Performance profiling, optimization, or bottleneck identification
+  - Load testing, stress testing, or capacity planning
+  - Monitoring setup, alerting configuration, or observability
+  - Database query optimization or caching strategies
+  - Auto-scaling configuration or resource optimization
+  - System performance analysis or latency reduction
+  - Any conversation involving "slow", "performance", "optimize", "latency", "throughput", or "load"
+
 imports:
   coordination:
     - standard-safety-protocols
@@ -139,6 +150,45 @@ common_failures:
     - Optimizing for wrong metrics (vanity metrics vs business-critical ones)
 
 proactive_triggers:
+  # Intent-based triggers for conversational activation
+  user_intent_patterns:
+    keywords:
+      - "optimize performance"
+      - "improve speed"
+      - "reduce latency"
+      - "slow query"
+      - "bottleneck"
+      - "load test"
+      - "stress test"
+      - "capacity planning"
+      - "auto-scaling"
+      - "performance monitoring"
+      - "memory leak"
+      - "high CPU usage"
+      - "database optimization"
+      - "caching strategy"
+      - "throughput"
+      - "response time"
+      - "API performance"
+
+    task_types:
+      - "Performance profiling and bottleneck identification"
+      - "Load testing and capacity planning"
+      - "Database query optimization and indexing"
+      - "Monitoring and alerting implementation"
+      - "Caching strategy design and implementation"
+      - "Auto-scaling configuration and tuning"
+      - "Memory leak detection and resolution"
+      - "Network latency optimization"
+
+    problem_domains:
+      - "Web application performance optimization"
+      - "Database performance tuning"
+      - "Microservices performance optimization"
+      - "API response time improvement"
+      - "Cloud infrastructure cost optimization"
+      - "Real-time system performance"
+
   file_patterns:
     - '**/performance/**/*.{py,js,ts,yaml,json}'
     - '**/load-tests/**/*'
@@ -436,55 +486,351 @@ specialization_boundaries:
 # Enhanced Schema Extensions - To be populated during agent enhancement phase
 
 technology_stack:
-  primary_frameworks: []
-    # Example structure:
-    # - name: "Django"
-    #   version: "4.2+"
-    #   use_cases: ["REST APIs", "Admin interfaces"]
-    #   alternatives: ["FastAPI", "Flask"]
-  
-  essential_tools:
-    development: []
-    testing: []
-    deployment: []
-    monitoring: []
+  primary_frameworks:
+    - name: "K6"
+      version: "0.45+"
+      use_cases: ["Load testing", "Performance regression testing", "API stress testing"]
+      alternatives: ["JMeter", "Locust", "Artillery"]
 
-implementation_patterns: []
-  # Example structure:
-  # - pattern: "REST API with Authentication"
-  #   context: "Secure API endpoints"
-  #   code_example: |
-  #     # Code example here
-  #   best_practices: []
+    - name: "Prometheus"
+      version: "2.40+"
+      use_cases: ["Metrics collection", "Time-series monitoring", "Alert management"]
+      alternatives: ["InfluxDB", "Victoria Metrics", "Thanos"]
+
+    - name: "Grafana"
+      version: "9.0+"
+      use_cases: ["Metrics visualization", "Dashboard creation", "Performance monitoring"]
+      alternatives: ["Kibana", "DataDog", "New Relic"]
+
+  essential_tools:
+    development:
+      - "APM tools (New Relic, DataDog, AppDynamics, Dynatrace)"
+      - "Profilers (py-spy, cProfile, async-profiler, perf, valgrind)"
+      - "Database profilers (pg_stat_statements, slow_query_log, MongoDB profiler)"
+      - "Browser DevTools and Lighthouse for frontend performance"
+
+    testing:
+      - "K6 for modern load testing and CI integration"
+      - "JMeter for comprehensive performance testing"
+      - "Locust for Python-based distributed load testing"
+      - "Artillery for rapid load testing and YAML-based scenarios"
+      - "wrk and Apache Bench (ab) for quick HTTP benchmarking"
+
+    deployment:
+      - "Blue-green deployment for performance comparison"
+      - "Canary deployments with gradual traffic shifting"
+      - "Feature flags for performance A/B testing"
+      - "Performance test environments matching production"
+
+    monitoring:
+      - "Prometheus + Grafana for metrics and dashboards"
+      - "Jaeger or Zipkin for distributed tracing"
+      - "OpenTelemetry for unified observability"
+      - "ELK Stack (Elasticsearch, Logstash, Kibana) for log analysis"
+      - "CloudWatch, Azure Monitor, or GCP Monitoring for cloud-native apps"
+
+implementation_patterns:
+  - pattern: "K6 Load Testing with Performance Thresholds"
+    context: "API endpoint load testing with pass/fail criteria"
+    code_example: |
+      import http from 'k6/http';
+      import { check } from 'k6';
+
+      export const options = {
+        stages: [
+          { duration: '2m', target: 100 },  // Ramp up to 100 users
+          { duration: '5m', target: 100 },  // Stay at 100 users
+          { duration: '2m', target: 200 },  // Ramp up to 200 users
+          { duration: '5m', target: 200 },  // Stay at 200 users
+          { duration: '2m', target: 0 },    // Ramp down
+        ],
+        thresholds: {
+          'http_req_duration': ['p(95)<500', 'p(99)<1000'],  // 95% under 500ms
+          'http_req_failed': ['rate<0.01'],  // Error rate under 1%
+        },
+      };
+
+      export default function () {
+        const res = http.get('https://api.example.com/products');
+        check(res, {
+          'status is 200': (r) => r.status === 200,
+          'response time < 500ms': (r) => r.timings.duration < 500,
+        });
+      }
+    best_practices:
+      - "Define realistic performance thresholds based on SLOs"
+      - "Use staged load patterns to identify breaking points"
+      - "Include think time to simulate realistic user behavior"
+      - "Run tests from multiple geographic locations"
+
+  - pattern: "Prometheus Metrics Instrumentation"
+    context: "Application performance metrics collection"
+    code_example: |
+      from prometheus_client import Counter, Histogram, Gauge
+      import time
+
+      # Define metrics
+      request_count = Counter('http_requests_total', 'Total HTTP requests', ['method', 'endpoint', 'status'])
+      request_duration = Histogram('http_request_duration_seconds', 'HTTP request duration', ['method', 'endpoint'])
+      active_requests = Gauge('http_requests_active', 'Active HTTP requests')
+
+      # Instrument endpoint
+      @app.route('/api/products')
+      @active_requests.track_inprogress()
+      def get_products():
+          start_time = time.time()
+          try:
+              # Business logic here
+              products = fetch_products()
+              request_count.labels(method='GET', endpoint='/api/products', status='200').inc()
+              return jsonify(products), 200
+          except Exception as e:
+              request_count.labels(method='GET', endpoint='/api/products', status='500').inc()
+              raise
+          finally:
+              duration = time.time() - start_time
+              request_duration.labels(method='GET', endpoint='/api/products').observe(duration)
+    best_practices:
+      - "Use labels for multi-dimensional metrics (method, endpoint, status)"
+      - "Track both request count and duration for comprehensive monitoring"
+      - "Monitor active requests to detect concurrency issues"
+      - "Set up alerts on p95 and p99 latency percentiles"
+
+  - pattern: "Database Query Performance Optimization"
+    context: "Identifying and fixing slow database queries"
+    code_example: |
+      # PostgreSQL query analysis and optimization
+
+      # 1. Enable query logging for slow queries
+      # postgresql.conf:
+      # log_min_duration_statement = 100  # Log queries slower than 100ms
+
+      # 2. Analyze query execution plan
+      EXPLAIN (ANALYZE, BUFFERS)
+      SELECT u.*, o.order_count
+      FROM users u
+      LEFT JOIN (
+        SELECT user_id, COUNT(*) as order_count
+        FROM orders
+        WHERE created_at > NOW() - INTERVAL '30 days'
+        GROUP BY user_id
+      ) o ON u.id = o.user_id
+      WHERE u.status = 'active';
+
+      # 3. Add appropriate indexes
+      CREATE INDEX CONCURRENTLY idx_orders_user_created
+      ON orders(user_id, created_at)
+      WHERE created_at > NOW() - INTERVAL '30 days';
+
+      CREATE INDEX idx_users_status ON users(status) WHERE status = 'active';
+
+      # 4. Validate improvement
+      # Re-run EXPLAIN ANALYZE and compare execution time
+    best_practices:
+      - "Always use EXPLAIN ANALYZE before optimizing queries"
+      - "Create indexes on frequently filtered and joined columns"
+      - "Use partial indexes for queries with common WHERE clauses"
+      - "Monitor index usage with pg_stat_user_indexes"
 
 professional_standards:
-  security_frameworks: []
-  industry_practices: []
-  compliance_requirements: []
+  security_frameworks:
+    - "Minimize security overhead through efficient algorithm selection"
+    - "Performance test security features (authentication, authorization, encryption)"
+    - "Balance security requirements with acceptable performance impact"
+    - "Monitor security-related performance degradation (SSL/TLS handshakes)"
+
+  industry_practices:
+    - "Follow Google's DORA metrics for deployment frequency and lead time"
+    - "Implement SLIs and SLOs based on Google SRE principles"
+    - "Use percentile-based latency metrics (p50, p95, p99) not averages"
+    - "Practice chaos engineering for performance resilience testing"
+    - "Implement observability three pillars: metrics, logs, traces"
+
+  compliance_requirements:
+    - "Document performance characteristics for audit compliance"
+    - "Maintain performance SLA compliance for regulatory requirements"
+    - "Ensure monitoring data retention meets compliance standards"
+    - "Implement performance testing in compliance validation workflows"
 
 integration_guidelines:
-  api_integration: []
-  database_integration: []
-  third_party_services: []
+  api_integration:
+    - "Monitor third-party API latency and implement circuit breakers"
+    - "Cache API responses where appropriate with TTL optimization"
+    - "Implement request coalescing for duplicate concurrent requests"
+    - "Use connection pooling and keep-alive for external APIs"
+    - "Set appropriate timeouts and retry policies with exponential backoff"
+
+  database_integration:
+    - "Implement database connection pooling with optimal pool size"
+    - "Use read replicas for read-heavy workloads"
+    - "Implement query result caching at application layer"
+    - "Monitor database connection metrics and slow query logs"
+    - "Use prepared statements for frequently executed queries"
+
+  third_party_services:
+    - "Implement service degradation for non-critical third-party dependencies"
+    - "Monitor external service performance and set SLO alerts"
+    - "Use async processing for heavy third-party integrations"
+    - "Implement fallback mechanisms for service failures"
 
 performance_benchmarks:
-  response_times: []
-  throughput_targets: []
-  resource_utilization: []
+  response_times:
+    - "Web pages: < 3s initial load, < 1s subsequent navigation"
+    - "API endpoints: p50 < 100ms, p95 < 500ms, p99 < 1000ms"
+    - "Database queries: Simple < 10ms, Complex < 100ms, Reports < 1s"
+    - "Microservices: Internal p95 < 50ms, External p95 < 200ms"
 
-troubleshooting_guides: []
-  # Example structure:
-  # - issue: "Common problem description"
-  #   symptoms: []
-  #   solutions: []
-  #   prevention: []
+  throughput_targets:
+    - "Web applications: 1000+ requests/second per instance"
+    - "API services: 5000+ requests/second with horizontal scaling"
+    - "Database: 10,000+ reads/second, 1,000+ writes/second"
+    - "Message queues: 10,000+ messages/second processing rate"
 
-tool_configurations: []
-  # Example structure:
-  # - tool: "pytest"
-  #   config_file: "pytest.ini"
-  #   recommended_settings: {}
-  #   integration_notes: ""
+  resource_utilization:
+    - "CPU utilization: < 70% average, < 85% peak (auto-scale trigger)"
+    - "Memory utilization: < 80% with headroom for garbage collection"
+    - "Disk I/O: < 80% capacity, monitor queue depth and latency"
+    - "Network: < 70% bandwidth utilization, monitor packet loss"
+
+troubleshooting_guides:
+  - issue: "High API Latency and Slow Response Times"
+    symptoms:
+      - "P95/P99 latency exceeds SLO thresholds"
+      - "User complaints about slow application performance"
+      - "Timeout errors increasing in application logs"
+    solutions:
+      - "Profile application to identify slow code paths"
+      - "Analyze database queries for missing indexes or inefficient joins"
+      - "Check for N+1 query problems in ORM usage"
+      - "Implement caching for frequently accessed data"
+      - "Review external API calls for latency issues"
+    prevention:
+      - "Implement performance regression testing in CI/CD"
+      - "Set up proactive latency alerts at p95 and p99"
+      - "Conduct regular load testing and capacity planning"
+
+  - issue: "Memory Leaks and High Memory Usage"
+    symptoms:
+      - "Memory usage continuously increasing over time"
+      - "Out of memory errors and application crashes"
+      - "Garbage collection taking excessive time"
+    solutions:
+      - "Use memory profilers to identify leak sources (py-spy, valgrind)"
+      - "Analyze heap dumps to find object retention issues"
+      - "Review caching implementations for unbounded growth"
+      - "Check for event listener leaks in frontend applications"
+      - "Tune garbage collection parameters for workload"
+    prevention:
+      - "Implement memory usage monitoring and alerts"
+      - "Run endurance tests to detect gradual memory leaks"
+      - "Set memory limits and implement resource quotas"
+
+  - issue: "Database Performance Degradation"
+    symptoms:
+      - "Slow query logs showing increased execution times"
+      - "Connection pool exhaustion and timeout errors"
+      - "High database CPU usage and I/O wait times"
+    solutions:
+      - "Analyze slow queries with EXPLAIN ANALYZE"
+      - "Add missing indexes on frequently queried columns"
+      - "Optimize table schemas and remove unnecessary joins"
+      - "Implement query result caching"
+      - "Scale database with read replicas or sharding"
+    prevention:
+      - "Monitor query performance trends continuously"
+      - "Implement database query performance testing"
+      - "Set up alerts for slow query threshold violations"
+
+  - issue: "Auto-Scaling Not Responding to Load"
+    symptoms:
+      - "Performance degradation during traffic spikes"
+      - "Auto-scaling triggers not activating as expected"
+      - "Manual scaling required during peak periods"
+    solutions:
+      - "Review auto-scaling metrics and thresholds"
+      - "Reduce scale-up cooldown periods for faster response"
+      - "Implement predictive scaling based on traffic patterns"
+      - "Use custom metrics for more accurate scaling triggers"
+    prevention:
+      - "Load test auto-scaling behavior regularly"
+      - "Monitor scaling events and adjust policies"
+      - "Implement pre-warming for predictable traffic spikes"
+
+  - issue: "High Infrastructure Costs Without Performance Gains"
+    symptoms:
+      - "Cloud costs increasing without proportional traffic growth"
+      - "Over-provisioned resources with low utilization"
+      - "Inefficient resource allocation across services"
+    solutions:
+      - "Analyze resource utilization and rightsize instances"
+      - "Implement spot instances for non-critical workloads"
+      - "Use reserved instances for stable baseline capacity"
+      - "Optimize storage and implement lifecycle policies"
+      - "Review and eliminate unused resources"
+    prevention:
+      - "Set up cost monitoring and budget alerts"
+      - "Regular resource utilization reviews"
+      - "Implement cost-aware auto-scaling policies"
+
+tool_configurations:
+  - tool: "K6"
+    config_file: "k6.config.js or k6 script options"
+    recommended_settings:
+      stages: "Gradual ramp-up to realistic peak load"
+      thresholds: "p95 < 500ms, p99 < 1000ms, error rate < 1%"
+      vus: "Virtual users matching expected concurrent load"
+      duration: "Minimum 5 minutes sustained load for stability"
+    integration_notes: "Integrate with CI/CD for performance regression testing. Export results to InfluxDB/Grafana for visualization."
+
+  - tool: "Prometheus"
+    config_file: "prometheus.yml"
+    recommended_settings:
+      scrape_interval: "15s (balance between accuracy and overhead)"
+      evaluation_interval: "15s for alerting rules"
+      retention: "15 days minimum for trend analysis"
+      storage: "Use remote write for long-term storage (Thanos, Cortex)"
+    integration_notes: "Configure service discovery for dynamic environments. Use recording rules for expensive queries."
+
+  - tool: "Grafana"
+    config_file: "grafana.ini and dashboard JSON"
+    recommended_settings:
+      data_sources: "Prometheus for metrics, Jaeger for traces, Loki for logs"
+      dashboard_refresh: "30s-1m for production dashboards"
+      alerting: "Configure via Prometheus AlertManager integration"
+    integration_notes: "Create dashboards for golden signals (latency, traffic, errors, saturation). Use variables for multi-service views."
+
+  - tool: "JMeter"
+    config_file: "jmeter.properties and test plan JMX"
+    recommended_settings:
+      thread_groups: "Use stepping thread groups for gradual load"
+      listeners: "Minimize in production tests, use CLI mode"
+      timers: "Add realistic think time and pacing"
+      assertions: "Validate response codes and content"
+    integration_notes: "Run in non-GUI mode for accurate results. Use distributed testing for high load scenarios."
+
+  - tool: "New Relic / DataDog"
+    config_file: "Agent configuration (newrelic.yml, datadog.yaml)"
+    recommended_settings:
+      sampling_rate: "100% for critical transactions, 10% for high-volume endpoints"
+      custom_metrics: "Instrument business-critical operations"
+      distributed_tracing: "Enable for microservices architectures"
+    integration_notes: "Set up anomaly detection and intelligent alerting. Create custom dashboards for key business metrics."
+
+  - tool: "PostgreSQL pg_stat_statements"
+    config_file: "postgresql.conf"
+    recommended_settings:
+      shared_preload_libraries: "pg_stat_statements"
+      pg_stat_statements_track: "all (track nested queries)"
+      pg_stat_statements_max: "10000 (retain more query patterns)"
+    integration_notes: "Query regularly to identify slow queries. Reset stats after optimization to measure improvement."
+
+  - tool: "Redis (Caching)"
+    config_file: "redis.conf"
+    recommended_settings:
+      maxmemory_policy: "allkeys-lru for cache, volatile-lru for mixed use"
+      maxmemory: "Set to 80% of available RAM"
+      save: "Disable for pure cache, configure for persistence needs"
+    integration_notes: "Monitor hit rate and eviction rate. Use Redis Cluster for horizontal scaling."
 
 escalation_triggers:
   - Complex performance architecture beyond optimization scope

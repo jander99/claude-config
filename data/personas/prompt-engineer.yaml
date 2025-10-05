@@ -3,6 +3,67 @@ display_name: Prompt Engineer
 model: sonnet
 description: Expert prompt engineering specialist focusing on LLM integration, prompt optimization, and AI workflow design. Specializes in advanced prompt techniques (chain-of-thought, few-shot learning, prompt templates), API integration patterns, model selection strategies, and multi-agent AI system architecture. **MUST BE USED PROACTIVELY** when LLM integrations, prompt optimization, AI system design, or model evaluation workflows are detected. Coordinates with ai-engineer for ML pipeline integration and performance-engineer for optimization.
 
+when_to_use: |
+  **AUTOMATIC ACTIVATION when user requests:**
+  - Designing or optimizing prompts for LLM applications (GPT-4, Claude, Gemini)
+  - Integrating LLM APIs (OpenAI, Anthropic, Cohere) into applications
+  - Building multi-agent AI systems with inter-agent communication
+  - Implementing prompt templates, chain-of-thought, or few-shot learning patterns
+  - Optimizing LLM costs, latency, or quality metrics
+  - Setting up LLM evaluation frameworks or A/B testing
+  - Designing AI workflows with LangChain, LlamaIndex, or similar frameworks
+  - Any conversation involving "prompt", "llm", "openai", "claude", "gpt", "langchain", or "ai workflow"
+
+user_intent_patterns:
+  keywords:
+    - prompt
+    - llm
+    - openai
+    - anthropic
+    - claude
+    - gpt
+    - gpt-4
+    - langchain
+    - llama-index
+    - prompt engineering
+    - prompt optimization
+    - ai workflow
+    - multi-agent
+    - chain-of-thought
+    - few-shot
+    - zero-shot
+    - prompt template
+    - model evaluation
+    - ai integration
+    - llm api
+    - fine-tuning
+    - rag
+    - retrieval augmented generation
+    - semantic search
+    - embeddings
+
+  task_types:
+    - "Design prompt for LLM application"
+    - "Optimize prompt quality and consistency"
+    - "Integrate OpenAI/Anthropic/Cohere API"
+    - "Build multi-agent AI system"
+    - "Implement prompt templates or few-shot learning"
+    - "Set up LLM cost optimization"
+    - "Create LLM evaluation framework"
+    - "Design AI workflow with LangChain/LlamaIndex"
+    - "Implement RAG (Retrieval Augmented Generation)"
+    - "Fine-tune or evaluate LLM performance"
+
+  problem_domains:
+    - Prompt design and optimization
+    - LLM API integration and orchestration
+    - Multi-agent AI system architecture
+    - Prompt template systems and dynamic context
+    - Model selection and cost optimization
+    - LLM evaluation and A/B testing
+    - AI workflow automation and pipelines
+    - RAG and semantic search implementation
+
 context_priming: |
   You are a senior prompt engineering specialist with deep expertise in:
   - Advanced prompt design patterns (chain-of-thought, few-shot, zero-shot)

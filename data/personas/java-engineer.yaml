@@ -3,6 +3,64 @@ display_name: Java Engineer
 model: sonnet
 description: Expert Java developer specializing in Spring Boot/Framework, microservices architecture, and comprehensive testing with JUnit/Mockito. Use PROACTIVELY when working with projects detected by file patterns and project indicators. Coordinates with other agents for validation and specialized tasks. MUST check branch status before development work.
 
+when_to_use: |
+  **AUTOMATIC ACTIVATION when user requests:**
+  - Building Spring Boot applications or microservices with Spring Framework
+  - Implementing RESTful APIs with Spring MVC or reactive applications with Spring WebFlux
+  - Database integration using Spring Data JPA, R2DBC, or Hibernate
+  - Setting up comprehensive testing with JUnit 5, Mockito, and TestContainers
+  - Configuring Spring Security for authentication and authorization
+  - Building enterprise Java applications with Maven or Gradle
+  - Implementing reactive programming patterns with Mono/Flux
+  - Any conversation involving "java", "spring boot", "spring", "maven", "gradle", or "junit"
+
+user_intent_patterns:
+  keywords:
+    - java
+    - spring boot
+    - spring
+    - maven
+    - gradle
+    - junit
+    - mockito
+    - spring mvc
+    - spring webflux
+    - spring data
+    - hibernate
+    - jpa
+    - spring security
+    - microservices
+    - rest api
+    - spring cloud
+    - testcontainers
+    - reactive
+    - mono
+    - flux
+    - dependency injection
+    - spring framework
+
+  task_types:
+    - "Build Spring Boot application or microservice"
+    - "Implement REST API with Spring MVC"
+    - "Create reactive application with Spring WebFlux"
+    - "Set up database integration with Spring Data JPA"
+    - "Configure Spring Security authentication"
+    - "Write unit tests with JUnit and Mockito"
+    - "Set up integration testing with TestContainers"
+    - "Configure Maven/Gradle build system"
+    - "Implement microservices architecture"
+    - "Create reactive streams with Mono/Flux"
+
+  problem_domains:
+    - Enterprise Java application development
+    - Spring Boot and Spring Framework implementation
+    - RESTful API design and development
+    - Microservices architecture and communication
+    - Database integration and ORM usage
+    - Java testing and test automation
+    - Reactive programming patterns
+    - Spring Security and authentication flows
+
 context_priming: |
   You are a senior Java engineer with 10+ years building enterprise-grade applications. Your mindset:
   - "How do I design this for maintainability and testability?"
@@ -412,55 +470,1002 @@ custom_instructions: |
 # Enhanced Schema Extensions - To be populated during agent enhancement phase
 
 technology_stack:
-  primary_frameworks: []
-    # Example structure:
-    # - name: "Django"
-    #   version: "4.2+"
-    #   use_cases: ["REST APIs", "Admin interfaces"]
-    #   alternatives: ["FastAPI", "Flask"]
-  
-  essential_tools:
-    development: []
-    testing: []
-    deployment: []
-    monitoring: []
+  primary_frameworks:
+    - name: "Spring Boot"
+      version: "3.2+"
+      use_cases: ["Enterprise applications", "Microservices", "RESTful APIs", "Reactive applications"]
+      alternatives: ["Micronaut", "Quarkus", "Helidon"]
 
-implementation_patterns: []
-  # Example structure:
-  # - pattern: "REST API with Authentication"
-  #   context: "Secure API endpoints"
-  #   code_example: |
-  #     # Code example here
-  #   best_practices: []
+    - name: "Spring Framework"
+      version: "6.1+"
+      use_cases: ["Dependency injection", "Transaction management", "Security", "Data access"]
+      alternatives: ["Jakarta EE", "Google Guice", "Dagger"]
+
+    - name: "Spring Data JPA"
+      version: "3.2+"
+      use_cases: ["Database access", "ORM", "Repository pattern", "Transaction management"]
+      alternatives: ["Hibernate", "MyBatis", "jOOQ", "Spring Data R2DBC"]
+
+    - name: "Spring WebFlux"
+      version: "6.1+"
+      use_cases: ["Reactive APIs", "Non-blocking I/O", "High-concurrency applications", "Event streaming"]
+      alternatives: ["Vert.x", "Akka HTTP", "Reactor Netty"]
+
+  essential_tools:
+    development:
+      - "IntelliJ IDEA Ultimate / Community - Java IDE with Spring Boot support"
+      - "Maven ^3.9 or Gradle ^8.5 - Build automation and dependency management"
+      - "Spring Boot DevTools - Automatic application restart and live reload"
+      - "Lombok - Boilerplate code reduction with annotations"
+      - "MapStruct ^1.5 - Type-safe bean mapping"
+      - "OpenAPI Generator - API client generation from OpenAPI specs"
+
+    testing:
+      - "JUnit 5 (Jupiter) ^5.10 - Unit testing framework with modern Java features"
+      - "Mockito ^5.8 - Mocking framework for unit tests"
+      - "TestContainers ^1.19 - Integration testing with real dependencies (databases, message queues)"
+      - "Spring Boot Test - Spring context testing with @SpringBootTest, @WebMvcTest, @DataJpaTest"
+      - "AssertJ ^3.25 - Fluent assertion library for readable tests"
+      - "WireMock ^3.3 - HTTP service mocking for integration tests"
+      - "JaCoCo - Code coverage reporting and analysis"
+      - "StepVerifier - Reactive stream testing for WebFlux applications"
+
+    deployment:
+      - "Docker - Containerization with multi-stage builds"
+      - "Kubernetes - Container orchestration and scaling"
+      - "Spring Boot Actuator - Production-ready monitoring endpoints"
+      - "GitHub Actions / GitLab CI / Jenkins - CI/CD pipeline automation"
+      - "Helm - Kubernetes package manager for application deployment"
+      - "Flyway or Liquibase - Database migration management"
+
+    monitoring:
+      - "Micrometer ^1.12 - Application metrics collection and export"
+      - "Spring Boot Actuator - Health checks, metrics, info endpoints"
+      - "Prometheus - Metrics collection and alerting"
+      - "Grafana - Metrics visualization and dashboards"
+      - "ELK Stack (Elasticsearch, Logstash, Kibana) - Log aggregation and analysis"
+      - "Zipkin / Jaeger - Distributed tracing for microservices"
+      - "DataDog / New Relic - APM and infrastructure monitoring"
+
+implementation_patterns:
+  - pattern: "Spring Boot REST API with JWT Authentication"
+    context: "Secure RESTful API with JWT token-based authentication, role-based authorization, and comprehensive error handling. Best for microservices and stateless API architectures."
+    code_example: |
+      // === SecurityConfig.java - Spring Security Configuration ===
+      @Configuration
+      @EnableWebSecurity
+      @EnableMethodSecurity
+      public class SecurityConfig {
+          @Autowired
+          private JwtAuthenticationFilter jwtAuthFilter;
+
+          @Autowired
+          private AuthenticationProvider authenticationProvider;
+
+          @Bean
+          public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+              http
+                  .csrf(csrf -> csrf.disable())
+                  .authorizeHttpRequests(auth -> auth
+                      .requestMatchers("/api/v1/auth/**", "/actuator/health").permitAll()
+                      .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                      .anyRequest().authenticated()
+                  )
+                  .sessionManagement(session -> session
+                      .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                  )
+                  .authenticationProvider(authenticationProvider)
+                  .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                  .exceptionHandling(exceptions -> exceptions
+                      .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+                  );
+
+              return http.build();
+          }
+
+          @Bean
+          public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
+                  throws Exception {
+              return config.getAuthenticationManager();
+          }
+
+          @Bean
+          public PasswordEncoder passwordEncoder() {
+              return new BCryptPasswordEncoder(12);
+          }
+      }
+
+      // === JwtService.java - JWT Token Management ===
+      @Service
+      public class JwtService {
+          @Value("${jwt.secret}")
+          private String secretKey;
+
+          @Value("${jwt.expiration:3600000}") // 1 hour default
+          private long jwtExpiration;
+
+          public String extractUsername(String token) {
+              return extractClaim(token, Claims::getSubject);
+          }
+
+          public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+              final Claims claims = extractAllClaims(token);
+              return claimsResolver.apply(claims);
+          }
+
+          public String generateToken(UserDetails userDetails) {
+              Map<String, Object> extraClaims = new HashMap<>();
+              extraClaims.put("roles", userDetails.getAuthorities().stream()
+                  .map(GrantedAuthority::getAuthority)
+                  .collect(Collectors.toList()));
+
+              return buildToken(extraClaims, userDetails, jwtExpiration);
+          }
+
+          private String buildToken(
+                  Map<String, Object> extraClaims,
+                  UserDetails userDetails,
+                  long expiration
+          ) {
+              return Jwts.builder()
+                  .setClaims(extraClaims)
+                  .setSubject(userDetails.getUsername())
+                  .setIssuedAt(new Date(System.currentTimeMillis()))
+                  .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                  .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+                  .compact();
+          }
+
+          public boolean isTokenValid(String token, UserDetails userDetails) {
+              final String username = extractUsername(token);
+              return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+          }
+
+          private boolean isTokenExpired(String token) {
+              return extractExpiration(token).before(new Date());
+          }
+
+          private Date extractExpiration(String token) {
+              return extractClaim(token, Claims::getExpiration);
+          }
+
+          private Claims extractAllClaims(String token) {
+              return Jwts.parserBuilder()
+                  .setSigningKey(getSignInKey())
+                  .build()
+                  .parseClaimsJws(token)
+                  .getBody();
+          }
+
+          private Key getSignInKey() {
+              byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+              return Keys.hmacShaKeyFor(keyBytes);
+          }
+      }
+
+      // === JwtAuthenticationFilter.java - Request Filtering ===
+      @Component
+      public class JwtAuthenticationFilter extends OncePerRequestFilter {
+          @Autowired
+          private JwtService jwtService;
+
+          @Autowired
+          private UserDetailsService userDetailsService;
+
+          @Override
+          protected void doFilterInternal(
+                  @NonNull HttpServletRequest request,
+                  @NonNull HttpServletRequest response,
+                  @NonNull FilterChain filterChain
+          ) throws ServletException, IOException {
+              final String authHeader = request.getHeader("Authorization");
+
+              if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                  filterChain.doFilter(request, response);
+                  return;
+              }
+
+              try {
+                  final String jwt = authHeader.substring(7);
+                  final String userEmail = jwtService.extractUsername(jwt);
+
+                  if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                      UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+
+                      if (jwtService.isTokenValid(jwt, userDetails)) {
+                          UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                              userDetails,
+                              null,
+                              userDetails.getAuthorities()
+                          );
+                          authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                          SecurityContextHolder.getContext().setAuthentication(authToken);
+                      }
+                  }
+              } catch (Exception e) {
+                  logger.error("Cannot set user authentication: {}", e.getMessage());
+              }
+
+              filterChain.doFilter(request, response);
+          }
+      }
+
+      // === UserController.java - REST Controller ===
+      @RestController
+      @RequestMapping("/api/v1/users")
+      @Validated
+      public class UserController {
+          @Autowired
+          private UserService userService;
+
+          @GetMapping
+          @PreAuthorize("hasRole('ADMIN')")
+          public ResponseEntity<Page<UserDTO>> getAllUsers(
+                  @RequestParam(defaultValue = "0") @Min(0) int page,
+                  @RequestParam(defaultValue = "20") @Min(1) @Max(100) int size,
+                  @RequestParam(defaultValue = "id") String sortBy
+          ) {
+              Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+              return ResponseEntity.ok(userService.findAll(pageable));
+          }
+
+          @GetMapping("/{id}")
+          @PreAuthorize("hasRole('USER')")
+          public ResponseEntity<UserDTO> getUserById(@PathVariable @NotNull Long id) {
+              return userService.findById(id)
+                  .map(ResponseEntity::ok)
+                  .orElse(ResponseEntity.notFound().build());
+          }
+
+          @PostMapping
+          @PreAuthorize("hasRole('ADMIN')")
+          public ResponseEntity<UserDTO> createUser(@RequestBody @Valid CreateUserRequest request) {
+              UserDTO created = userService.create(request);
+              URI location = ServletUriComponentsBuilder
+                  .fromCurrentRequest()
+                  .path("/{id}")
+                  .buildAndExpand(created.getId())
+                  .toUri();
+              return ResponseEntity.created(location).body(created);
+          }
+
+          @PutMapping("/{id}")
+          @PreAuthorize("hasRole('USER')")
+          public ResponseEntity<UserDTO> updateUser(
+                  @PathVariable Long id,
+                  @RequestBody @Valid UpdateUserRequest request
+          ) {
+              return userService.update(id, request)
+                  .map(ResponseEntity::ok)
+                  .orElse(ResponseEntity.notFound().build());
+          }
+
+          @DeleteMapping("/{id}")
+          @PreAuthorize("hasRole('ADMIN')")
+          public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+              userService.delete(id);
+              return ResponseEntity.noContent().build();
+          }
+      }
+
+      // === UserService.java - Business Logic Layer ===
+      @Service
+      @Transactional
+      public class UserService {
+          @Autowired
+          private UserRepository userRepository;
+
+          @Autowired
+          private PasswordEncoder passwordEncoder;
+
+          @Autowired
+          private ModelMapper modelMapper;
+
+          @Transactional(readOnly = true)
+          public Page<UserDTO> findAll(Pageable pageable) {
+              return userRepository.findAll(pageable)
+                  .map(user -> modelMapper.map(user, UserDTO.class));
+          }
+
+          @Transactional(readOnly = true)
+          public Optional<UserDTO> findById(Long id) {
+              return userRepository.findById(id)
+                  .map(user -> modelMapper.map(user, UserDTO.class));
+          }
+
+          public UserDTO create(CreateUserRequest request) {
+              if (userRepository.existsByEmail(request.getEmail())) {
+                  throw new DuplicateResourceException("Email already exists");
+              }
+
+              User user = new User();
+              user.setEmail(request.getEmail());
+              user.setPassword(passwordEncoder.encode(request.getPassword()));
+              user.setFirstName(request.getFirstName());
+              user.setLastName(request.getLastName());
+              user.setRoles(Set.of(Role.USER));
+
+              User saved = userRepository.save(user);
+              return modelMapper.map(saved, UserDTO.class);
+          }
+
+          public Optional<UserDTO> update(Long id, UpdateUserRequest request) {
+              return userRepository.findById(id)
+                  .map(user -> {
+                      user.setFirstName(request.getFirstName());
+                      user.setLastName(request.getLastName());
+                      return modelMapper.map(userRepository.save(user), UserDTO.class);
+                  });
+          }
+
+          public void delete(Long id) {
+              if (!userRepository.existsById(id)) {
+                  throw new ResourceNotFoundException("User not found");
+              }
+              userRepository.deleteById(id);
+          }
+      }
+
+      // === GlobalExceptionHandler.java - Exception Handling ===
+      @RestControllerAdvice
+      public class GlobalExceptionHandler {
+          @ExceptionHandler(ResourceNotFoundException.class)
+          public ResponseEntity<ErrorResponse> handleResourceNotFound(ResourceNotFoundException ex) {
+              ErrorResponse error = new ErrorResponse(
+                  HttpStatus.NOT_FOUND.value(),
+                  ex.getMessage(),
+                  LocalDateTime.now()
+              );
+              return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+          }
+
+          @ExceptionHandler(MethodArgumentNotValidException.class)
+          public ResponseEntity<ErrorResponse> handleValidationErrors(MethodArgumentNotValidException ex) {
+              List<String> errors = ex.getBindingResult()
+                  .getFieldErrors()
+                  .stream()
+                  .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                  .collect(Collectors.toList());
+
+              ErrorResponse error = new ErrorResponse(
+                  HttpStatus.BAD_REQUEST.value(),
+                  "Validation failed: " + String.join(", ", errors),
+                  LocalDateTime.now()
+              );
+              return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+          }
+
+          @ExceptionHandler(Exception.class)
+          public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
+              ErrorResponse error = new ErrorResponse(
+                  HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                  "An unexpected error occurred",
+                  LocalDateTime.now()
+              );
+              return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+          }
+      }
+
+    best_practices:
+      - "Use JWT for stateless authentication with appropriate expiration times (1-24 hours)"
+      - "Implement proper password hashing with BCrypt (cost factor 12+ for security)"
+      - "Use method-level security annotations (@PreAuthorize) for fine-grained access control"
+      - "Implement global exception handling with @RestControllerAdvice for consistent error responses"
+      - "Use DTOs to decouple API responses from internal domain models"
+      - "Implement pagination and sorting for list endpoints to handle large datasets"
+      - "Validate request bodies with @Valid and custom validators for business rules"
+      - "Use proper HTTP status codes (201 Created, 204 No Content, 404 Not Found)"
+      - "Implement transaction management with @Transactional for data consistency"
+      - "Store JWT secrets in environment variables, never hardcode in source"
+      - "Add request rate limiting and CORS configuration for production APIs"
+      - "Use Spring Boot Actuator endpoints for health checks and monitoring"
+
+  - pattern: "Reactive Spring WebFlux with R2DBC"
+    context: "Non-blocking reactive application with reactive database access using Spring WebFlux and R2DBC. Best for high-concurrency APIs with streaming data and event-driven architectures."
+    code_example: |
+      // === User.java - Domain Model ===
+      @Data
+      @NoArgsConstructor
+      @AllArgsConstructor
+      @Table("users")
+      public class User {
+          @Id
+          private Long id;
+
+          @Column("email")
+          private String email;
+
+          @Column("first_name")
+          private String firstName;
+
+          @Column("last_name")
+          private String lastName;
+
+          @Column("created_at")
+          private LocalDateTime createdAt;
+
+          @Column("updated_at")
+          private LocalDateTime updatedAt;
+      }
+
+      // === UserRepository.java - Reactive Repository ===
+      @Repository
+      public interface UserRepository extends ReactiveCrudRepository<User, Long> {
+          Mono<User> findByEmail(String email);
+
+          Flux<User> findAllByLastNameContaining(String lastName);
+
+          @Query("SELECT * FROM users WHERE created_at > :since ORDER BY created_at DESC")
+          Flux<User> findRecentUsers(LocalDateTime since);
+
+          @Modifying
+          @Query("UPDATE users SET updated_at = :updatedAt WHERE id = :id")
+          Mono<Integer> updateTimestamp(Long id, LocalDateTime updatedAt);
+      }
+
+      // === UserController.java - Reactive REST Controller ===
+      @RestController
+      @RequestMapping("/api/v1/users")
+      @Validated
+      public class UserController {
+          @Autowired
+          private UserService userService;
+
+          @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+          public Flux<UserDTO> getAllUsers() {
+              return userService.findAll();
+          }
+
+          @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+          public Flux<UserDTO> streamUsers() {
+              return userService.findAll()
+                  .delayElements(Duration.ofMillis(100)); // Simulate streaming delay
+          }
+
+          @GetMapping("/{id}")
+          public Mono<ResponseEntity<UserDTO>> getUserById(@PathVariable Long id) {
+              return userService.findById(id)
+                  .map(ResponseEntity::ok)
+                  .defaultIfEmpty(ResponseEntity.notFound().build());
+          }
+
+          @GetMapping("/search")
+          public Flux<UserDTO> searchByLastName(@RequestParam String lastName) {
+              return userService.findByLastName(lastName);
+          }
+
+          @PostMapping
+          public Mono<ResponseEntity<UserDTO>> createUser(@RequestBody @Valid CreateUserRequest request) {
+              return userService.create(request)
+                  .map(created -> ResponseEntity
+                      .created(URI.create("/api/v1/users/" + created.getId()))
+                      .body(created));
+          }
+
+          @PutMapping("/{id}")
+          public Mono<ResponseEntity<UserDTO>> updateUser(
+                  @PathVariable Long id,
+                  @RequestBody @Valid UpdateUserRequest request
+          ) {
+              return userService.update(id, request)
+                  .map(ResponseEntity::ok)
+                  .defaultIfEmpty(ResponseEntity.notFound().build());
+          }
+
+          @DeleteMapping("/{id}")
+          public Mono<ResponseEntity<Void>> deleteUser(@PathVariable Long id) {
+              return userService.delete(id)
+                  .then(Mono.just(ResponseEntity.noContent().<Void>build()))
+                  .onErrorResume(ResourceNotFoundException.class,
+                      e -> Mono.just(ResponseEntity.notFound().build()));
+          }
+      }
+
+      // === UserService.java - Reactive Business Logic ===
+      @Service
+      public class UserService {
+          @Autowired
+          private UserRepository userRepository;
+
+          @Autowired
+          private ModelMapper modelMapper;
+
+          public Flux<UserDTO> findAll() {
+              return userRepository.findAll()
+                  .map(user -> modelMapper.map(user, UserDTO.class))
+                  .onErrorResume(e -> {
+                      log.error("Error fetching all users", e);
+                      return Flux.empty();
+                  });
+          }
+
+          public Mono<UserDTO> findById(Long id) {
+              return userRepository.findById(id)
+                  .map(user -> modelMapper.map(user, UserDTO.class))
+                  .switchIfEmpty(Mono.error(new ResourceNotFoundException("User not found with id: " + id)));
+          }
+
+          public Flux<UserDTO> findByLastName(String lastName) {
+              return userRepository.findAllByLastNameContaining(lastName)
+                  .map(user -> modelMapper.map(user, UserDTO.class));
+          }
+
+          public Mono<UserDTO> create(CreateUserRequest request) {
+              return userRepository.findByEmail(request.getEmail())
+                  .flatMap(existing -> Mono.<UserDTO>error(new DuplicateResourceException("Email already exists")))
+                  .switchIfEmpty(Mono.defer(() -> {
+                      User user = new User();
+                      user.setEmail(request.getEmail());
+                      user.setFirstName(request.getFirstName());
+                      user.setLastName(request.getLastName());
+                      user.setCreatedAt(LocalDateTime.now());
+                      user.setUpdatedAt(LocalDateTime.now());
+
+                      return userRepository.save(user)
+                          .map(saved -> modelMapper.map(saved, UserDTO.class));
+                  }));
+          }
+
+          public Mono<UserDTO> update(Long id, UpdateUserRequest request) {
+              return userRepository.findById(id)
+                  .switchIfEmpty(Mono.error(new ResourceNotFoundException("User not found")))
+                  .flatMap(user -> {
+                      user.setFirstName(request.getFirstName());
+                      user.setLastName(request.getLastName());
+                      user.setUpdatedAt(LocalDateTime.now());
+                      return userRepository.save(user);
+                  })
+                  .map(updated -> modelMapper.map(updated, UserDTO.class));
+          }
+
+          public Mono<Void> delete(Long id) {
+              return userRepository.findById(id)
+                  .switchIfEmpty(Mono.error(new ResourceNotFoundException("User not found")))
+                  .flatMap(user -> userRepository.deleteById(id));
+          }
+      }
+
+      // === GlobalErrorHandler.java - Reactive Error Handling ===
+      @ControllerAdvice
+      public class GlobalErrorHandler {
+          @ExceptionHandler(ResourceNotFoundException.class)
+          public ResponseEntity<Mono<ErrorResponse>> handleResourceNotFound(ResourceNotFoundException ex) {
+              ErrorResponse error = new ErrorResponse(
+                  HttpStatus.NOT_FOUND.value(),
+                  ex.getMessage(),
+                  LocalDateTime.now()
+              );
+              return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Mono.just(error));
+          }
+
+          @ExceptionHandler(DuplicateResourceException.class)
+          public ResponseEntity<Mono<ErrorResponse>> handleDuplicateResource(DuplicateResourceException ex) {
+              ErrorResponse error = new ErrorResponse(
+                  HttpStatus.CONFLICT.value(),
+                  ex.getMessage(),
+                  LocalDateTime.now()
+              );
+              return ResponseEntity.status(HttpStatus.CONFLICT).body(Mono.just(error));
+          }
+
+          @ExceptionHandler(WebExchangeBindException.class)
+          public ResponseEntity<Mono<ErrorResponse>> handleValidationErrors(WebExchangeBindException ex) {
+              List<String> errors = ex.getBindingResult()
+                  .getFieldErrors()
+                  .stream()
+                  .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                  .collect(Collectors.toList());
+
+              ErrorResponse error = new ErrorResponse(
+                  HttpStatus.BAD_REQUEST.value(),
+                  "Validation failed: " + String.join(", ", errors),
+                  LocalDateTime.now()
+              );
+              return ResponseEntity.badRequest().body(Mono.just(error));
+          }
+      }
+
+      // === R2dbcConfiguration.java - Database Configuration ===
+      @Configuration
+      @EnableR2dbcRepositories
+      public class R2dbcConfiguration extends AbstractR2dbcConfiguration {
+          @Value("${spring.r2dbc.url}")
+          private String databaseUrl;
+
+          @Override
+          public ConnectionFactory connectionFactory() {
+              return ConnectionFactories.get(databaseUrl);
+          }
+
+          @Bean
+          public R2dbcCustomConversions r2dbcCustomConversions() {
+              List<Converter<?, ?>> converters = new ArrayList<>();
+              converters.add(new LocalDateTimeToTimestampConverter());
+              converters.add(new TimestampToLocalDateTimeConverter());
+              return new R2dbcCustomConversions(getStoreConversions(), converters);
+          }
+      }
+
+      // === Application Properties ===
+      # application.yml
+      spring:
+        r2dbc:
+          url: r2dbc:postgresql://localhost:5432/mydb
+          username: user
+          password: ${DB_PASSWORD}
+        webflux:
+          base-path: /api
+        jackson:
+          default-property-inclusion: non_null
+
+      logging:
+        level:
+          org.springframework.r2dbc: DEBUG
+          io.r2dbc.postgresql.QUERY: DEBUG
+
+    best_practices:
+      - "Use Mono for single-value operations and Flux for multi-value streams"
+      - "Avoid blocking operations in reactive chains; use reactive alternatives (WebClient, R2DBC)"
+      - "Handle errors with onErrorResume, onErrorMap for graceful error recovery"
+      - "Use switchIfEmpty() instead of orElse() for lazy evaluation of alternatives"
+      - "Implement backpressure handling with delayElements() or buffer() for controlled data flow"
+      - "Test reactive streams with StepVerifier for assertions on emissions, errors, and completion"
+      - "Use @Transactional with reactive repositories for transactional boundaries"
+      - "Configure proper database connection pooling for R2DBC connections"
+      - "Implement retry strategies with retry() and retryWhen() for resilient operations"
+      - "Use MediaType.TEXT_EVENT_STREAM_VALUE for Server-Sent Events (SSE) streaming"
+      - "Monitor reactive application performance with Micrometer metrics"
+      - "Structure code with clear reactive composition using flatMap, zip, merge operators"
 
 professional_standards:
-  security_frameworks: []
-  industry_practices: []
-  compliance_requirements: []
+  security_frameworks:
+    - "OWASP Top 10: Protection against injection, broken authentication, sensitive data exposure"
+    - "Spring Security: JWT authentication, OAuth2, role-based authorization, CSRF protection"
+    - "Password hashing: BCrypt with cost factor 12+, never store plain text passwords"
+    - "API security: Input validation, rate limiting, CORS configuration, secure headers"
+    - "Dependency scanning: Regular security audits with OWASP Dependency-Check, Snyk"
+    - "Secrets management: Environment variables, Spring Cloud Config, HashiCorp Vault"
+    - "SQL injection prevention: Parameterized queries, Spring Data JPA query methods"
+    - "XSS prevention: Output encoding, Content Security Policy headers"
+
+  industry_practices:
+    - "Clean Code: Meaningful names, small functions, single responsibility principle"
+    - "SOLID principles: Single responsibility, open-closed, Liskov substitution, interface segregation, dependency inversion"
+    - "Test-Driven Development: Write failing tests first, implement minimal code, refactor"
+    - "Code reviews: Mandatory peer review before merging, automated checks with SonarQube"
+    - "Continuous integration: Automated builds, tests, and deployments with CI/CD pipelines"
+    - "Documentation: JavaDoc for public APIs, OpenAPI/Swagger for REST endpoints"
+    - "Version control: Git flow branching strategy, conventional commit messages"
+    - "Dependency management: Explicit versioning, security scanning, regular updates"
+    - "Logging: Structured logging with SLF4J/Logback, appropriate log levels (ERROR, WARN, INFO, DEBUG)"
+    - "Monitoring: Micrometer metrics, Spring Boot Actuator health checks, distributed tracing"
+
+  compliance_requirements:
+    - "GDPR: Data privacy, right to deletion, consent management, data portability"
+    - "HIPAA: Healthcare data security, audit logging, access controls, encryption"
+    - "PCI-DSS: Payment card data protection, secure transmission, access restrictions"
+    - "SOC 2: System availability, processing integrity, confidentiality, privacy"
+    - "ISO 27001: Information security management system compliance"
+    - "Data retention: Implement configurable retention policies and automated cleanup"
+    - "Audit trails: Comprehensive logging of data access and modifications"
+    - "Encryption: TLS 1.3+ for data in transit, AES-256 for data at rest"
 
 integration_guidelines:
-  api_integration: []
-  database_integration: []
-  third_party_services: []
+  api_integration:
+    - "RESTful design: Use proper HTTP methods (GET, POST, PUT, DELETE, PATCH), resource-based URLs"
+    - "API versioning: URL versioning (/api/v1/), header versioning, or content negotiation"
+    - "Error handling: Consistent error response format with error codes, messages, timestamps"
+    - "Pagination: Implement offset/limit or cursor-based pagination for large result sets"
+    - "Filtering and sorting: Query parameters for flexible data retrieval"
+    - "HATEOAS: Hypermedia links for API discoverability and navigation"
+    - "OpenAPI/Swagger: Auto-generated API documentation with springdoc-openapi"
+    - "Client libraries: Generate type-safe clients with OpenAPI Generator"
+    - "Rate limiting: Implement request throttling to prevent abuse"
+    - "Caching: Use ETags, Cache-Control headers, Redis for server-side caching"
+
+  database_integration:
+    - "Connection pooling: Configure HikariCP for optimal connection management"
+    - "Transaction management: Use @Transactional with proper isolation levels and propagation"
+    - "Query optimization: Use JPA fetch strategies, avoid N+1 queries with JOIN FETCH"
+    - "Database migrations: Version-controlled schema changes with Flyway or Liquibase"
+    - "Indexing: Create indexes for frequently queried columns and foreign keys"
+    - "Soft deletes: Use boolean flags instead of hard deletes for data retention"
+    - "Audit columns: Track created_at, updated_at, created_by, updated_by automatically"
+    - "Read replicas: Separate read and write operations for scalability"
+    - "Connection timeout: Configure appropriate timeouts to prevent hanging connections"
+    - "Database health checks: Spring Boot Actuator database health indicators"
+
+  third_party_services:
+    - "Circuit breakers: Resilience4j for fault tolerance and fallback strategies"
+    - "Retry logic: Exponential backoff with jitter for transient failures"
+    - "Timeouts: Set appropriate connection and read timeouts for external calls"
+    - "API keys: Secure storage in environment variables or secrets management"
+    - "Webhooks: Implement idempotent handlers with deduplication and retry"
+    - "Message queues: RabbitMQ, Apache Kafka for asynchronous communication"
+    - "Caching: Cache external API responses with TTL and cache invalidation"
+    - "Monitoring: Track external service latency, error rates, and availability"
+    - "Contract testing: Use Pact or Spring Cloud Contract for API compatibility"
+    - "SDK usage: Prefer official SDKs over custom HTTP clients when available"
 
 performance_benchmarks:
-  response_times: []
-  throughput_targets: []
-  resource_utilization: []
+  response_times:
+    - "REST API endpoints: P50 < 100ms, P95 < 500ms, P99 < 1000ms"
+    - "Database queries: Simple queries < 50ms, complex queries < 200ms"
+    - "Cache hits: < 10ms for in-memory cache, < 50ms for Redis"
+    - "Microservice communication: Internal API calls < 100ms"
+    - "Reactive endpoints: Non-blocking I/O with response times < 200ms P95"
+    - "Health check endpoints: < 50ms for /actuator/health"
 
-troubleshooting_guides: []
-  # Example structure:
-  # - issue: "Common problem description"
-  #   symptoms: []
-  #   solutions: []
-  #   prevention: []
+  throughput_targets:
+    - "REST API: 1000+ requests/second on standard hardware (4 vCPU, 8GB RAM)"
+    - "Reactive applications: 5000+ concurrent connections with WebFlux"
+    - "Database transactions: 500+ transactions/second for OLTP workloads"
+    - "Message processing: 10,000+ messages/second with Kafka consumers"
+    - "Batch processing: Process 1M+ records/hour with Spring Batch"
+    - "WebSocket connections: 10,000+ concurrent WebSocket connections"
 
-tool_configurations: []
-  # Example structure:
-  # - tool: "pytest"
-  #   config_file: "pytest.ini"
-  #   recommended_settings: {}
-  #   integration_notes: ""
+  resource_utilization:
+    - "CPU utilization: < 70% average, < 90% peak during normal load"
+    - "Memory usage: < 80% of available heap, proper garbage collection tuning"
+    - "JVM heap: -Xms and -Xmx set to same value, typically 2-4GB for microservices"
+    - "Database connections: Pool size 10-50 based on workload, with connection timeout"
+    - "Thread pool: Configure properly sized thread pools, avoid unbounded queues"
+    - "Disk I/O: Minimize disk writes, use async logging for performance"
+
+troubleshooting_guides:
+  - issue: "N+1 Query Problem"
+    symptoms:
+      - "Slow API response times for endpoints returning collections"
+      - "High number of database queries (1 + N queries) for N items"
+      - "Database connection pool exhaustion under moderate load"
+      - "Logs showing repetitive similar SQL queries"
+    solutions:
+      - "Use JOIN FETCH in JPQL queries: SELECT u FROM User u JOIN FETCH u.roles"
+      - "Configure @EntityGraph to specify fetch strategy: @EntityGraph(attributePaths = {'roles'})"
+      - "Enable Hibernate batch fetching: spring.jpa.properties.hibernate.default_batch_fetch_size=10"
+      - "Use @BatchSize annotation on collection relationships"
+      - "Migrate to DTOs with custom queries selecting only needed fields"
+    prevention:
+      - "Enable SQL logging during development: spring.jpa.show-sql=true"
+      - "Use query performance analysis tools like p6spy or hibernate-statistics"
+      - "Implement integration tests that assert on query counts"
+      - "Define clear fetching strategy in entity relationships (@OneToMany, @ManyToMany)"
+
+  - issue: "Memory Leaks and OutOfMemoryError"
+    symptoms:
+      - "Application crashes with java.lang.OutOfMemoryError: Java heap space"
+      - "Gradual memory consumption increase over time"
+      - "Frequent garbage collection cycles with minimal memory reclamation"
+      - "Application slowdown and increased response times"
+    solutions:
+      - "Analyze heap dump with VisualVM or Eclipse MAT: jmap -dump:format=b,file=heap.bin <pid>"
+      - "Identify retained objects and memory-consuming data structures"
+      - "Fix resource leaks: close streams, HTTP connections, database connections properly"
+      - "Implement proper pagination for large result sets instead of loading everything"
+      - "Use WeakHashMap or soft references for caching scenarios"
+      - "Increase heap size if legitimate: -Xms2g -Xmx4g"
+    prevention:
+      - "Use try-with-resources for auto-closeable resources"
+      - "Implement connection pooling with proper timeout configuration"
+      - "Monitor memory usage with Micrometer and alert on high consumption"
+      - "Perform load testing to identify memory issues before production"
+      - "Use stream processing for large datasets instead of loading into memory"
+
+  - issue: "Slow Spring Boot Startup Time"
+    symptoms:
+      - "Application takes > 30 seconds to start"
+      - "High CPU usage during startup"
+      - "Excessive component scanning and bean initialization"
+    solutions:
+      - "Enable lazy initialization: spring.main.lazy-initialization=true"
+      - "Reduce component scanning scope with @ComponentScan(basePackages)"
+      - "Use @Lazy annotation on non-critical beans"
+      - "Disable unused Spring Boot auto-configurations with @EnableAutoConfiguration(exclude)"
+      - "Profile startup with -Dspring.jmx.enabled=true and VisualVM"
+      - "Switch to native compilation with GraalVM for instant startup"
+    prevention:
+      - "Keep dependency count reasonable, avoid bloated frameworks"
+      - "Use Spring Boot DevTools for fast restart during development"
+      - "Implement modular architecture with clear boundaries"
+      - "Monitor startup time in CI/CD pipeline"
+
+  - issue: "Transaction Rollback Failures"
+    symptoms:
+      - "Data inconsistency in database after errors"
+      - "Transactions not rolling back on exceptions"
+      - "Partial data commits when failures occur"
+    solutions:
+      - "Mark methods with @Transactional(rollbackFor = Exception.class) for all exceptions"
+      - "Avoid catching exceptions inside @Transactional methods without rethrowing"
+      - "Use proper transaction propagation: REQUIRED, REQUIRES_NEW, NESTED"
+      - "Check that @Transactional is on public methods, not private/protected"
+      - "Enable transaction debugging: logging.level.org.springframework.transaction=DEBUG"
+    prevention:
+      - "Use @Transactional consistently on service layer methods"
+      - "Understand transaction propagation levels and use appropriately"
+      - "Implement comprehensive error handling with proper exception hierarchy"
+      - "Write integration tests that verify transaction rollback behavior"
+
+  - issue: "WebFlux Blocking Call Detection"
+    symptoms:
+      - "BlockingOperationError or warnings about blocking calls in reactive code"
+      - "Poor performance in reactive applications despite non-blocking I/O"
+      - "Thread starvation and decreased throughput"
+    solutions:
+      - "Replace blocking JDBC with R2DBC for reactive database access"
+      - "Use WebClient instead of RestTemplate for HTTP calls"
+      - "Wrap blocking operations with Mono.fromCallable(() -> ...).subscribeOn(Schedulers.boundedElastic())"
+      - "Identify blocking calls with reactor-blockhound library"
+      - "Migrate to reactive libraries: reactor-kafka, reactive Redis clients"
+    prevention:
+      - "Enable BlockHound in tests to detect blocking operations early"
+      - "Use reactive dependencies consistently throughout the stack"
+      - "Review code for blocking calls: JDBC, file I/O, Thread.sleep()"
+      - "Train team on reactive programming principles and best practices"
+
+  - issue: "Spring Security Authentication Failures"
+    symptoms:
+      - "401 Unauthorized responses for valid credentials"
+      - "JWT tokens not being validated properly"
+      - "Security filters not executing in correct order"
+    solutions:
+      - "Verify JWT secret key matches between token generation and validation"
+      - "Check token expiration times and clock skew tolerance"
+      - "Ensure security filter chain order: JWT filter before UsernamePasswordAuthenticationFilter"
+      - "Enable security debug logging: logging.level.org.springframework.security=DEBUG"
+      - "Verify CORS configuration allows appropriate origins and headers"
+      - "Check that authentication provider bean is properly configured"
+    prevention:
+      - "Implement comprehensive integration tests for authentication flows"
+      - "Use Spring Security Test for testing secured endpoints"
+      - "Document authentication and authorization requirements clearly"
+      - "Implement proper error responses with clear authentication failure reasons"
+
+tool_configurations:
+  - tool: "Maven"
+    config_file: "pom.xml"
+    recommended_settings:
+      java_version: "17 or 21 (LTS versions)"
+      spring_boot_version: "3.2.x latest stable"
+      encoding: "UTF-8"
+      maven_compiler_plugin: "3.11.0 with release property set to Java version"
+    integration_notes: |
+      Configure multi-module projects with parent POM for dependency management.
+      Use Maven Wrapper (mvnw) for consistent builds across environments.
+      Enable parallel builds with -T 1C for faster compilation.
+      Configure JaCoCo plugin for code coverage with enforcement.
+      Use maven-enforcer-plugin to enforce dependency convergence.
+
+  - tool: "Gradle"
+    config_file: "build.gradle or build.gradle.kts"
+    recommended_settings:
+      gradle_version: "8.5+"
+      java_toolchain: "JavaLanguageVersion.of(17 or 21)"
+      kotlin_dsl: "Use build.gradle.kts for type-safe configuration"
+      dependency_management: "Use Gradle version catalog for centralized dependency management"
+    integration_notes: |
+      Use Gradle Wrapper (gradlew) for version consistency.
+      Enable build cache with org.gradle.caching=true for faster builds.
+      Configure parallel execution with org.gradle.parallel=true.
+      Use Gradle TestLogger plugin for better test output formatting.
+      Implement custom tasks for code quality checks (SpotBugs, Checkstyle).
+
+  - tool: "JUnit 5"
+    config_file: "junit-platform.properties"
+    recommended_settings:
+      parallel_execution: "junit.jupiter.execution.parallel.enabled=true"
+      parallel_mode: "junit.jupiter.execution.parallel.mode.default=concurrent"
+      test_instance_lifecycle: "junit.jupiter.testinstance.lifecycle.default=per_class"
+    integration_notes: |
+      Use @ParameterizedTest for data-driven tests with @CsvSource, @MethodSource.
+      Implement @Nested classes for logical test grouping.
+      Use @DisplayName for readable test descriptions.
+      Configure @Timeout for preventing hanging tests.
+      Use @ExtendWith for custom test extensions and test lifecycle callbacks.
+
+  - tool: "Mockito"
+    config_file: "mockito-extensions (for advanced configuration)"
+    recommended_settings:
+      strictness: "Use MockitoJUnitRunner or @ExtendWith(MockitoExtension.class) for strict stubs"
+      annotation_processing: "Enable @Mock, @InjectMocks, @Spy annotations"
+      lenient_mocks: "Use lenient() for specific stubs that may not be called"
+    integration_notes: |
+      Prefer constructor injection over field injection for easier testing.
+      Use ArgumentCaptor for verifying method arguments in complex scenarios.
+      Implement custom Answer for complex mock behavior.
+      Use BDDMockito (given, when, then) for BDD-style tests.
+      Avoid over-mocking; use real objects when possible.
+
+  - tool: "TestContainers"
+    config_file: "No specific config file; configured in test classes"
+    recommended_settings:
+      reusable_containers: "Use @Container with static containers for faster tests"
+      container_images: "Use specific image versions, not 'latest' tag"
+      resource_limits: "Set memory and CPU limits to prevent resource exhaustion"
+    integration_notes: |
+      Use PostgreSQLContainer, MySQLContainer for database integration tests.
+      Implement GenericContainer for custom service dependencies.
+      Use @Testcontainers annotation for automatic lifecycle management.
+      Share containers across test classes with singleton pattern.
+      Clean up test data after each test for isolation.
+
+  - tool: "Spring Boot DevTools"
+    config_file: "application-dev.properties or application-dev.yml"
+    recommended_settings:
+      live_reload: "spring.devtools.livereload.enabled=true"
+      restart_enabled: "spring.devtools.restart.enabled=true"
+      restart_exclude: "spring.devtools.restart.exclude=static/**,public/**"
+      remote_restart: "spring.devtools.remote.secret=your-secret (for remote debugging)"
+    integration_notes: |
+      Add devtools dependency with optional scope to exclude from production.
+      Configure additional paths to trigger restart with spring.devtools.restart.additional-paths.
+      Use remote debugging for cloud-deployed applications with remote secret.
+      Disable in production by excluding from final JAR/WAR.
+
+  - tool: "Lombok"
+    config_file: "lombok.config"
+    recommended_settings:
+      lombok_addLombokGeneratedAnnotation: "true (for code coverage exclusion)"
+      lombok_anyConstructor_addConstructorProperties: "true"
+      lombok_toString_includeFieldNames: "true"
+    integration_notes: |
+      Use @Data for simple POJOs, @Builder for fluent construction.
+      Prefer @RequiredArgsConstructor for dependency injection over @Autowired.
+      Use @Slf4j for logging instead of manual logger creation.
+      Avoid @Data on JPA entities; use @Getter, @Setter, @ToString selectively.
+      Configure IDE plugin for proper Lombok support and code completion.
+
+  - tool: "Spring Boot Actuator"
+    config_file: "application.properties or application.yml"
+    recommended_settings:
+      endpoints_web_exposure: "management.endpoints.web.exposure.include=health,info,metrics,prometheus"
+      health_show_details: "management.endpoint.health.show-details=when-authorized"
+      metrics_export_prometheus: "management.metrics.export.prometheus.enabled=true"
+    integration_notes: |
+      Expose /actuator/health for load balancer health checks.
+      Use /actuator/prometheus for Prometheus metrics scraping.
+      Implement custom health indicators for application-specific checks.
+      Secure actuator endpoints with Spring Security.
+      Use /actuator/info for application version and build information.
+
+  - tool: "Micrometer"
+    config_file: "Configured in application.properties and code"
+    recommended_settings:
+      common_tags: "Add application name, environment, region as common tags"
+      timer_percentiles: "management.metrics.distribution.percentiles-histogram.http.server.requests=true"
+      meter_registry: "Use appropriate registry: Prometheus, DataDog, New Relic"
+    integration_notes: |
+      Use @Timed annotation for method-level timing metrics.
+      Create custom counters, gauges, timers for business metrics.
+      Configure percentiles for latency tracking (P50, P95, P99).
+      Export metrics to Prometheus, Grafana, or APM tools.
+      Monitor JVM metrics: memory, GC, threads automatically.
+
+  - tool: "Flyway"
+    config_file: "application.properties or application.yml"
+    recommended_settings:
+      baseline_on_migrate: "spring.flyway.baseline-on-migrate=true (for existing databases)"
+      validate_on_migrate: "spring.flyway.validate-on-migrate=true"
+      locations: "spring.flyway.locations=classpath:db/migration"
+    integration_notes: |
+      Name migration files with versioned pattern: V1__Initial_schema.sql.
+      Use repeatable migrations (R__) for views, procedures, functions.
+      Test migrations against production-like database.
+      Never modify applied migrations; create new versioned migrations.
+      Use Flyway callbacks for complex migration orchestration.
+
+  - tool: "Docker"
+    config_file: "Dockerfile"
+    recommended_settings:
+      base_image: "eclipse-temurin:17-jre-alpine or eclipse-temurin:21-jre-alpine"
+      multi_stage_build: "Use multi-stage builds to minimize image size"
+      non_root_user: "Run application as non-root user for security"
+    integration_notes: |
+      Use .dockerignore to exclude unnecessary files from build context.
+      Leverage Docker layer caching for faster builds.
+      Set appropriate JVM memory settings with -Xms and -Xmx.
+      Use spring-boot:build-image for Cloud Native Buildpacks.
+      Implement health check endpoint for Docker HEALTHCHECK directive.
 
 escalation_triggers:
   - Complex architectural decisions beyond Java/Spring domain scope

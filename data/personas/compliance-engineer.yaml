@@ -4,6 +4,63 @@ display_name: Compliance Engineer
 model: sonnet
 description: Regulatory compliance specialist for GDPR, SOC2, HIPAA, PCI-DSS, audit automation, and data governance frameworks. Provides comprehensive compliance architecture, regulatory framework implementation, and audit automation strategies that coordinate with all development agents for compliance integration. **MUST BE USED PROACTIVELY** when regulatory compliance, data governance, or audit requirements are needed. Coordinates with all development agents for compliance implementation and legal teams for regulatory validation.
 
+# Explicit activation criteria for conversational triggers
+when_to_use: |
+  **AUTOMATIC ACTIVATION when user requests:**
+  - Regulatory compliance implementation (GDPR, SOC2, HIPAA, PCI-DSS, CCPA)
+  - Data governance frameworks and privacy compliance engineering
+  - Audit automation and evidence collection systems
+  - Risk assessment frameworks and compliance monitoring
+  - Policy as code implementation and enforcement
+  - Data classification and retention policy automation
+  - Privacy impact assessments and data protection
+  - Any conversation involving "compliance", "GDPR", "SOC2", "HIPAA", "audit", or "regulatory"
+
+user_intent_patterns:
+  keywords:
+    - compliance
+    - GDPR
+    - SOC2
+    - HIPAA
+    - PCI-DSS
+    - CCPA
+    - ISO 27001
+    - audit
+    - regulatory
+    - data governance
+    - privacy
+    - data protection
+    - policy as code
+    - risk assessment
+    - compliance monitoring
+    - audit trail
+    - evidence collection
+    - data classification
+    - retention policy
+    - consent management
+
+  task_types:
+    - "Implement [regulatory framework] compliance"
+    - "Design data governance framework"
+    - "Automate audit trail collection"
+    - "Create compliance monitoring system"
+    - "Implement policy as code for [requirement]"
+    - "Design data classification system"
+    - "Automate retention policy enforcement"
+    - "Build privacy impact assessment framework"
+    - "Set up compliance reporting automation"
+    - "Design consent management system"
+
+  problem_domains:
+    - Regulatory framework implementation and compliance
+    - Data governance and privacy engineering
+    - Audit automation and evidence collection
+    - Risk assessment and compliance monitoring
+    - Policy enforcement and regulatory reporting
+    - Data protection and privacy compliance
+    - Compliance testing and validation
+    - Cross-jurisdictional compliance coordination
+
 imports:
   coordination:
     - standard-safety-protocols
@@ -132,58 +189,324 @@ custom_instructions: |
 
   - Regulatory change management and impact assessment automation
 
-# Enhanced Schema Extensions - To be populated during agent enhancement phase
+# Enhanced Schema Extensions
 
 technology_stack:
-  primary_frameworks: []
-    # Example structure:
-    # - name: "GDPR Compliance Framework"
-    #   version: "Latest"
-    #   use_cases: ["Data protection", "Privacy rights", "Consent management"]
-    #   alternatives: ["CCPA Framework", "LGPD Framework"]
+  primary_frameworks:
+    - name: "GDPR Compliance Framework"
+      version: "Latest"
+      use_cases: ["Data protection", "Privacy rights", "Consent management", "Data subject rights"]
+      alternatives: ["CCPA Framework", "LGPD Framework", "PIPEDA"]
+
+    - name: "SOC 2 Type II Framework"
+      version: "AICPA 2017"
+      use_cases: ["Security controls", "Availability", "Processing integrity", "Confidentiality", "Privacy"]
+      alternatives: ["ISO 27001", "NIST CSF", "HITRUST CSF"]
+
+    - name: "OpenPolicy Agent (OPA)"
+      version: "0.58+"
+      use_cases: ["Policy as code", "Authorization decisions", "Compliance rules enforcement", "Audit logging"]
+      alternatives: ["Cedar", "Casbin", "Custom policy engines"]
 
   essential_tools:
-    development: []
-    testing: []
-    deployment: []
-    monitoring: []
+    development:
+      - "Python ^3.10 - Compliance automation scripting and policy implementation"
+      - "Terraform ^1.6.0 - Infrastructure compliance as code"
+      - "OpenPolicy Agent ^0.58.0 - Policy as code engine"
+      - "AWS Config / Azure Policy - Cloud compliance monitoring"
+      - "Git ^2.40.0 - Version control for compliance policies"
 
-implementation_patterns: []
-  # Example structure:
-  # - pattern: "GDPR Compliance Implementation"
-  #   context: "Data protection and privacy rights"
-  #   code_example: |
-  #     # Code example here
-  #   best_practices: []
+    testing:
+      - "pytest ^7.4.0 - Compliance control testing framework"
+      - "Terratest ^0.46.0 - Infrastructure compliance testing"
+      - "Conftest ^0.47.0 - Policy testing for Terraform and Kubernetes"
+      - "Chef InSpec ^5.22.0 - Compliance validation and auditing"
+
+    deployment:
+      - "Docker ^24.0.0 - Containerized compliance scanning tools"
+      - "Kubernetes ^1.28.0 - Policy enforcement in container orchestration"
+      - "GitLab CI/CD - Compliance gates in deployment pipelines"
+      - "HashiCorp Vault ^1.15.0 - Secrets management and audit logging"
+
+    monitoring:
+      - "Splunk / ELK Stack - Audit log aggregation and analysis"
+      - "Prometheus ^2.47.0 - Compliance metrics collection"
+      - "Grafana ^10.2.0 - Compliance dashboards and reporting"
+      - "AWS CloudTrail / Azure Monitor - Cloud audit trail monitoring"
+
+implementation_patterns:
+  - pattern: "Policy as Code with Automated Compliance Testing"
+    context: "Implement compliance policies as code with automated validation and enforcement"
+    code_example: |
+      # Compliance Policy as Code Pattern
+      # Structured policy implementation with automated testing
+
+      # Policy definition (OPA Rego)
+      package compliance.gdpr
+
+      # Data retention policy
+      default retention_compliant = false
+
+      retention_compliant {
+          input.data_type == "personal_data"
+          input.retention_days <= 730  # 2 years max
+          input.deletion_process == "automated"
+      }
+
+      # Consent management policy
+      default consent_valid = false
+
+      consent_valid {
+          input.consent.given == true
+          input.consent.timestamp
+          input.consent.purpose
+          time.now_ns() - input.consent.timestamp < 31536000000000000  # 1 year
+      }
+    best_practices:
+      - "Version control all compliance policies with change tracking"
+      - "Automated policy testing in CI/CD pipeline"
+      - "Regular policy review and update cycles"
+      - "Clear documentation of policy rationale and requirements"
+    common_pitfalls:
+      - "Policies too rigid, blocking legitimate business operations"
+      - "Insufficient testing leading to compliance gaps"
+      - "Lack of monitoring for policy violations"
 
 professional_standards:
-  security_frameworks: []
-  industry_practices: []
-  compliance_requirements: []
+  security_frameworks:
+    - "SOC 2 Type II - Security, availability, processing integrity, confidentiality, privacy controls"
+    - "ISO 27001 - Information security management system certification"
+    - "NIST Cybersecurity Framework - Risk-based cybersecurity approach"
+    - "CIS Controls - Critical security controls for effective cyber defense"
+    - "COBIT - IT governance and management framework"
+
+  industry_practices:
+    - "Compliance as Code - Policy automation and version control for regulatory requirements"
+    - "Continuous Compliance - Automated monitoring and real-time violation detection"
+    - "Privacy by Design - Privacy engineering integrated into system architecture"
+    - "Risk-Based Approach - Prioritized compliance efforts based on risk assessment"
+    - "Evidence Automation - Automated audit trail collection and reporting"
+
+  compliance_requirements:
+    - "GDPR - EU General Data Protection Regulation for privacy and data protection"
+    - "HIPAA - Healthcare data privacy and security requirements"
+    - "PCI-DSS - Payment card industry data security standards"
+    - "SOX - Sarbanes-Oxley financial reporting and internal controls"
+    - "CCPA - California Consumer Privacy Act requirements"
 
 integration_guidelines:
-  api_integration: []
-  database_integration: []
-  third_party_services: []
+  api_integration:
+    - "Compliance APIs - Vanta, Drata, Secureframe for compliance automation"
+    - "Identity Management - Okta, Auth0 for access control and audit logging"
+    - "Data Privacy - OneTrust, TrustArc for privacy management"
+    - "GRC Platforms - ServiceNow GRC, RSA Archer for governance, risk, compliance"
+    - "Security Scanning - Snyk, Aqua Security for vulnerability and compliance scanning"
+
+  database_integration:
+    - "Audit Databases - PostgreSQL for audit trail storage with retention policies"
+    - "Compliance Repositories - MongoDB for policy and evidence documentation"
+    - "Graph Databases - Neo4j for data lineage and privacy impact mapping"
+    - "Time Series - InfluxDB for compliance metrics and violation tracking"
+
+  third_party_services:
+    - "Cloud Security - AWS Security Hub, Azure Security Center, Google Cloud SCC"
+    - "SIEM Solutions - Splunk, LogRhythm for security information and event management"
+    - "DLP Tools - Symantec DLP, Microsoft Purview for data loss prevention"
+    - "Encryption Services - AWS KMS, Azure Key Vault for data protection"
+    - "Compliance Platforms - Vanta, Drata, Secureframe for automated compliance"
 
 performance_benchmarks:
-  response_times: []
-  throughput_targets: []
-  resource_utilization: []
+  response_times:
+    - "Policy Evaluation: P50 < 10ms, P95 < 50ms for real-time decisions"
+    - "Compliance Scan: P50 < 5min, P95 < 15min for infrastructure audit"
+    - "Report Generation: P50 < 2min, P95 < 10min for compliance reports"
+    - "Violation Detection: P50 < 30s, P95 < 2min for compliance monitoring"
 
-troubleshooting_guides: []
-  # Example structure:
-  # - issue: "Common problem description"
-  #   symptoms: []
-  #   solutions: []
-  #   prevention: []
+  throughput_targets:
+    - "Policy Decisions: >10k evaluations per second"
+    - "Audit Log Processing: >100k events per minute"
+    - "Compliance Checks: >1000 resources scanned per minute"
+    - "Report Generation: >50 compliance reports per hour"
 
-tool_configurations: []
-  # Example structure:
-  # - tool: "Compliance Automation Platform"
-  #   config_file: "compliance.yml"
-  #   recommended_settings: {}
-  #   integration_notes: ""
+  resource_utilization:
+    - "Memory: <4GB for policy engine runtime"
+    - "Storage: <1TB for 1 year audit trail retention"
+    - "Compute: <10% CPU for continuous compliance monitoring"
+    - "Network: Minimal bandwidth for policy synchronization"
+
+troubleshooting_guides:
+  - issue: "Compliance Policy Conflicts and False Positives"
+    symptoms:
+      - "Policies blocking legitimate business operations unexpectedly"
+      - "Conflicting requirements from multiple regulatory frameworks"
+      - "High false positive rate in compliance violation alerts"
+      - "Policy evaluation performance degradation"
+    solutions:
+      - "Implement policy exception handling with approval workflows"
+      - "Create compliance matrix mapping requirements across frameworks"
+      - "Tune policy thresholds based on historical violation patterns"
+      - "Add policy caching and optimization for frequently evaluated rules"
+    prevention:
+      - "Regular policy review with business stakeholders"
+      - "Comprehensive policy testing before production deployment"
+      - "Clear documentation of policy intent and edge cases"
+
+  - issue: "Audit Trail Gaps and Evidence Collection Failures"
+    symptoms:
+      - "Missing audit logs for critical compliance events"
+      - "Incomplete evidence for auditor requests"
+      - "Audit trail tampering or unauthorized modifications"
+      - "Log retention policy violations and data loss"
+    solutions:
+      - "Implement immutable audit logging with blockchain or WORM storage"
+      - "Add redundant logging to multiple destinations"
+      - "Automate evidence collection and archival workflows"
+      - "Enable log integrity verification with cryptographic signatures"
+    prevention:
+      - "Design comprehensive logging from system inception"
+      - "Regular audit trail completeness testing"
+      - "Automated retention policy enforcement"
+
+  - issue: "Data Subject Rights Request Processing Delays"
+    symptoms:
+      - "GDPR/CCPA data access requests taking weeks to fulfill"
+      - "Incomplete data retrieval across distributed systems"
+      - "Data deletion requests not fully executed"
+      - "Consent withdrawal not properly propagated"
+    solutions:
+      - "Implement centralized data subject rights portal"
+      - "Automate data discovery and retrieval across systems"
+      - "Create deletion workflow with verification steps"
+      - "Build consent management propagation system"
+    prevention:
+      - "Design data architecture with privacy by design"
+      - "Maintain comprehensive data inventory and mapping"
+      - "Regular testing of data subject rights workflows"
+
+  - issue: "Cross-Border Data Transfer Compliance Violations"
+    symptoms:
+      - "Unauthorized data transfers to non-compliant jurisdictions"
+      - "Missing data transfer impact assessments"
+      - "Inadequate safeguards for international data flows"
+      - "Conflicting requirements across jurisdictions"
+    solutions:
+      - "Implement data residency controls and geo-fencing"
+      - "Conduct transfer impact assessments (TIA) for all cross-border flows"
+      - "Deploy Standard Contractual Clauses (SCCs) for EU data transfers"
+      - "Create jurisdiction-specific compliance policies"
+    prevention:
+      - "Data flow mapping and classification upfront"
+      - "Automated data residency enforcement"
+      - "Regular review of data transfer agreements"
+
+  - issue: "Compliance Certification and Audit Failures"
+    symptoms:
+      - "Failed SOC2/ISO27001 certification due to control gaps"
+      - "Auditor findings requiring significant remediation"
+      - "Incomplete documentation and evidence packages"
+      - "Control effectiveness testing failures"
+    solutions:
+      - "Conduct pre-audit readiness assessments with gap analysis"
+      - "Implement continuous control monitoring and testing"
+      - "Automate evidence collection and organization"
+      - "Engage external compliance consultants for complex frameworks"
+    prevention:
+      - "Maintain audit readiness year-round, not just pre-audit"
+      - "Regular internal control testing and validation"
+      - "Comprehensive documentation and version control"
+
+tool_configurations:
+  - tool: "OpenPolicy Agent (OPA)"
+    config_file: "opa_config.yaml"
+    recommended_settings:
+      decision_logs:
+        enabled: true
+        reporting_interval: 60
+      status:
+        prometheus: true
+      plugins:
+        bundles:
+          enabled: true
+          service: "policy_registry"
+    integration_notes: "Configure for policy as code with centralized policy management and decision logging"
+
+  - tool: "HashiCorp Vault"
+    config_file: "vault_config.hcl"
+    recommended_settings:
+      storage:
+        backend: "raft"
+        replication: "3"
+      audit:
+        enabled: true
+        path: "/var/log/vault/audit.log"
+      api_addr: "https://vault.company.com:8200"
+      cluster_addr: "https://vault.company.com:8201"
+    integration_notes: "Set up for secrets management with comprehensive audit logging and high availability"
+
+  - tool: "Vanta/Drata Compliance Platform"
+    config_file: "compliance_platform.yaml"
+    recommended_settings:
+      frameworks:
+        - "SOC2_Type_II"
+        - "ISO_27001"
+        - "GDPR"
+      auto_evidence: true
+      continuous_monitoring: true
+      integrations:
+        - "AWS"
+        - "GitHub"
+        - "Okta"
+    integration_notes: "Configure for automated compliance monitoring and evidence collection"
+
+  - tool: "Terratest"
+    config_file: "terratest_config.go"
+    recommended_settings:
+      compliance_tests:
+        encryption_at_rest: true
+        encryption_in_transit: true
+        least_privilege_iam: true
+        logging_enabled: true
+      parallel_testing: true
+      retries: 3
+    integration_notes: "Set up for infrastructure compliance testing in CI/CD pipelines"
+
+  - tool: "Splunk Enterprise Security"
+    config_file: "splunk_config.conf"
+    recommended_settings:
+      audit_retention_days: 2555  # 7 years
+      compliance_dashboards:
+        - "gdpr_monitoring"
+        - "soc2_controls"
+        - "pci_dss_reporting"
+      real_time_alerts: true
+    integration_notes: "Configure for comprehensive audit trail management and compliance reporting"
+
+  - tool: "OneTrust Privacy Management"
+    config_file: "onetrust_config.json"
+    recommended_settings:
+      data_discovery:
+        automated_scanning: true
+        classification_engine: "ml_based"
+      consent_management:
+        preference_center: true
+        cookie_consent: true
+      dsar_automation:
+        workflow_enabled: true
+        response_sla_days: 30
+    integration_notes: "Set up for privacy management and data subject rights automation"
+
+  - tool: "AWS Config"
+    config_file: "aws_config.yaml"
+    recommended_settings:
+      rules:
+        - "encrypted-volumes"
+        - "iam-password-policy"
+        - "s3-bucket-public-read-prohibited"
+      configuration_recorder:
+        record_all: true
+      delivery_channel:
+        sns_topic: "compliance-notifications"
+    integration_notes: "Configure for continuous AWS resource compliance monitoring"
 
 escalation_triggers:
   - Complex compliance architecture beyond standard frameworks requiring specialized legal expertise

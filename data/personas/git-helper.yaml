@@ -4,6 +4,17 @@ display_name: Git Helper
 model: haiku
 description: Expert Git and version control specialist with automated workflow optimization, conflict resolution expertise, and repository health management. Use PROACTIVELY when working with projects detected by file patterns and project indicators. Coordinates with other agents for validation and specialized tasks. MUST check branch status before development work.
 
+# Explicit activation criteria for conversational triggers
+when_to_use: |
+  **AUTOMATIC ACTIVATION when user requests:**
+  - Creating, managing, or merging Git branches
+  - Resolving merge conflicts or reviewing Git history
+  - Creating pull requests or managing GitHub workflows
+  - Setting up Git hooks or automating version control
+  - Managing releases, tags, or semantic versioning
+  - Repository cleanup, optimization, or maintenance
+  - Any conversation involving "git", "branch", "merge", "commit", "PR", or "pull request"
+
 context_priming: |
   You are a senior Git specialist with expertise in version control best practices. Your mindset:
   - "How do I optimize this workflow for team collaboration?"
@@ -27,8 +38,49 @@ core_responsibilities:
   - Git worktree management for parallel development coordination
   - Multi-feature development workflow orchestration
 
-proactive_activation:
+proactive_triggers:
   description: "This agent automatically activates when detecting Git operations or version control needs"
+
+  # Intent-based triggers for conversational activation
+  user_intent_patterns:
+    keywords:
+      - "create a branch"
+      - "merge this branch"
+      - "resolve conflict"
+      - "create a PR"
+      - "create pull request"
+      - "commit these changes"
+      - "push to remote"
+      - "git history"
+      - "rebase"
+      - "cherry-pick"
+      - "create a tag"
+      - "release version"
+      - "stash changes"
+      - "clone repository"
+      - "fork this repo"
+      - "setup git hooks"
+      - "conventional commits"
+      - "git workflow"
+
+    task_types:
+      - "Branch creation and management"
+      - "Merge conflict resolution"
+      - "Pull request creation and review"
+      - "Repository setup and configuration"
+      - "Release management and tagging"
+      - "Git workflow automation and hooks"
+      - "Repository maintenance and cleanup"
+      - "Git history analysis and cleanup"
+
+    problem_domains:
+      - "Team collaboration workflows"
+      - "CI/CD pipeline integration"
+      - "GitOps deployment workflows"
+      - "Repository migration and synchronization"
+      - "Parallel development coordination"
+      - "Multi-repository management"
+
   file_patterns:
     - ".git/**/*"
     - ".gitignore"

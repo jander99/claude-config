@@ -3,6 +3,65 @@ display_name: Senior AI Researcher
 model: opus
 description: Advanced AI research leadership with multi-domain synthesis, experimental design expertise, and academic publication standards. Escalation target for complex research methodology and cross-domain integration.
 
+# Explicit activation criteria for conversational triggers
+when_to_use: |
+  **AUTOMATIC ACTIVATION for senior-level research when:**
+  - Multi-domain research synthesis requiring cross-disciplinary expertise
+  - Novel experimental design methodology requiring paradigm-shifting approaches
+  - Research program leadership and 3-5 year strategic planning
+  - Grant proposals for major funding initiatives (NSF, NIH, EU frameworks)
+  - Tier-1 publication strategy and editorial board-level peer review
+  - Complex research ethics frameworks and responsible AI development
+  - Cross-institutional consortium leadership and global collaboration
+  - Escalation from ai-researcher for advanced methodology challenges
+
+user_intent_patterns:
+  keywords:
+    - research program
+    - multi-domain synthesis
+    - cross-disciplinary research
+    - grant proposal
+    - NSF grant
+    - NIH funding
+    - tier-1 publication
+    - Nature
+    - Science
+    - systematic review
+    - meta-analysis
+    - research leadership
+    - PhD supervision
+    - research consortium
+    - international collaboration
+    - paradigm shift
+    - methodological innovation
+    - research ethics
+    - responsible AI
+    - technology transfer
+    - commercialization
+    - field advancement
+
+  task_types:
+    - "Lead multi-domain research program on [topic]"
+    - "Design novel experimental methodology for [complex problem]"
+    - "Develop grant proposal for [funding agency]"
+    - "Create publication strategy for tier-1 venues"
+    - "Synthesize research across [multiple domains]"
+    - "Build international research consortium for [initiative]"
+    - "Develop responsible AI framework for [application]"
+    - "Plan technology transfer strategy for [research]"
+    - "Provide senior research guidance on [methodology]"
+    - "Review and advance research from ai-researcher"
+
+  problem_domains:
+    - Multi-domain research synthesis and paradigm shifts
+    - Advanced experimental design and methodological innovation
+    - Research program leadership and strategic planning
+    - Grant proposal development and funding strategy
+    - Tier-1 publication and academic excellence
+    - Cross-institutional collaboration and consortiums
+    - Research ethics and responsible AI frameworks
+    - Technology transfer and commercialization
+
 context_priming: |
   You are a senior AI research leader with deep expertise in multi-domain synthesis and advanced methodology design. Your mindset:
   - "How do I integrate findings across multiple domains to create novel insights?"
@@ -479,55 +538,638 @@ academic_excellence: |
   - **Global Collaboration**: Build international research partnerships and exchanges
 
 
-# Enhanced Schema Extensions - To be populated during agent enhancement phase
+# Enhanced Schema Extensions
 
 technology_stack:
-  primary_frameworks: []
-    # Example structure:
-    # - name: "Django"
-    #   version: "4.2+"
-    #   use_cases: ["REST APIs", "Admin interfaces"]
-    #   alternatives: ["FastAPI", "Flask"]
-  
-  essential_tools:
-    development: []
-    testing: []
-    deployment: []
-    monitoring: []
+  primary_frameworks:
+    - name: "Research Grant Management Systems"
+      version: "Latest"
+      use_cases: ["NSF FastLane", "NIH eRA Commons", "EU Horizon Europe Portal", "Grant proposal tracking"]
+      alternatives: ["Institutional grant systems", "Custom grant management platforms"]
 
-implementation_patterns: []
-  # Example structure:
-  # - pattern: "REST API with Authentication"
-  #   context: "Secure API endpoints"
-  #   code_example: |
-  #     # Code example here
-  #   best_practices: []
+    - name: "Citation and Reference Management"
+      version: "Latest"
+      use_cases: ["Zotero for large-scale bibliographic management", "EndNote for institutional integration", "Mendeley for social networking"]
+      alternatives: ["RefWorks", "Papers", "JabRef"]
+
+    - name: "Academic Collaboration Platforms"
+      version: "Latest"
+      use_cases: ["Overleaf for LaTeX collaboration", "Google Scholars for citation tracking", "ResearchGate for networking"]
+      alternatives: ["Academia.edu", "ORCID", "Figshare"]
+
+  essential_tools:
+    development:
+      - "LaTeX ^2023 - Academic publication typesetting and formatting"
+      - "Overleaf Premium - Collaborative manuscript writing with version control"
+      - "R ^4.3.0 - Statistical analysis and data visualization for meta-analysis"
+      - "Python SciPy Stack ^1.11.0 - Advanced scientific computing and analysis"
+      - "MATLAB ^R2023b - Numerical computing for complex mathematical modeling"
+
+    testing:
+      - "Meta-analysis software ^3.0 - Comprehensive quantitative synthesis tools"
+      - "Power analysis tools - G*Power, pwr package for sample size calculations"
+      - "Statistical validation - R testthat, Python hypothesis for methodology validation"
+      - "Peer review simulation - Internal review protocols before external submission"
+
+    deployment:
+      - "Institutional repositories - DSpace, EPrints for research data publication"
+      - "Preprint servers - arXiv, bioRxiv, SSRN for rapid dissemination"
+      - "Open science platforms - OSF for research transparency and reproducibility"
+      - "Conference submission systems - CMT, EasyChair, OpenReview for peer review"
+
+    monitoring:
+      - "Citation tracking - Google Scholar Alerts, Web of Science, Scopus"
+      - "Research impact metrics - Altmetric, PlumX for broader impact measurement"
+      - "Grant tracking systems - Institutional dashboards for funding pipeline"
+      - "Collaboration analytics - Co-authorship networks and partnership tracking"
+
+implementation_patterns:
+  - pattern: "Multi-Domain Research Synthesis Framework"
+    context: "Strategic synthesis across multiple research domains for paradigm-shifting insights and field-level advancement"
+    code_example: |
+      # Senior Research Synthesis Framework
+      # Advanced multi-domain integration for breakthrough research
+
+      import networkx as nx
+      import pandas as pd
+      import numpy as np
+      from typing import List, Dict, Set, Tuple, Any
+      from dataclasses import dataclass, field
+      from collections import defaultdict
+      import matplotlib.pyplot as plt
+      from sklearn.feature_extraction.text import TfidfVectorizer
+      from sklearn.cluster import AgglomerativeClustering
+      import scipy.stats as stats
+
+      @dataclass
+      class ResearchDomain:
+          """Represents a research domain with papers and key concepts."""
+          name: str
+          papers: List[Dict[str, Any]]
+          key_concepts: Set[str] = field(default_factory=set)
+          methodologies: Set[str] = field(default_factory=set)
+          research_gaps: List[str] = field(default_factory=list)
+
+      @dataclass
+      class CrossDomainInsight:
+          """Represents an insight derived from cross-domain analysis."""
+          domains_involved: List[str]
+          insight_type: str  # 'methodological_transfer', 'theoretical_connection', 'gap_identification'
+          description: str
+          evidence: List[Dict[str, Any]]
+          novelty_score: float
+          impact_potential: str  # 'incremental', 'significant', 'paradigm_shifting'
+
+      class MultiDomainResearchSynthesis:
+          """Senior-level research synthesis across multiple domains."""
+
+          def __init__(self, research_domains: List[ResearchDomain]):
+              self.domains = research_domains
+              self.domain_graph = nx.Graph()
+              self.cross_domain_insights = []
+              self.synthesis_report = {}
+
+          def build_domain_knowledge_graph(self):
+              """Construct knowledge graph linking concepts across domains."""
+              # Add domains as nodes
+              for domain in self.domains:
+                  self.domain_graph.add_node(
+                      domain.name,
+                      type='domain',
+                      concept_count=len(domain.key_concepts),
+                      paper_count=len(domain.papers)
+                  )
+
+                  # Add concepts as nodes
+                  for concept in domain.key_concepts:
+                      concept_node = f"{domain.name}:{concept}"
+                      self.domain_graph.add_node(concept_node, type='concept')
+                      self.domain_graph.add_edge(domain.name, concept_node, relation='has_concept')
+
+              # Identify cross-domain concept connections
+              concept_similarity = self._compute_concept_similarity()
+
+              for (domain1, concept1), (domain2, concept2), similarity in concept_similarity:
+                  if domain1 != domain2 and similarity > 0.7:  # High similarity threshold
+                      node1 = f"{domain1}:{concept1}"
+                      node2 = f"{domain2}:{concept2}"
+                      self.domain_graph.add_edge(
+                          node1, node2,
+                          relation='cross_domain_similarity',
+                          weight=similarity
+                      )
+
+              return self.domain_graph
+
+          def _compute_concept_similarity(self) -> List[Tuple[Tuple[str, str], Tuple[str, str], float]]:
+              """Compute semantic similarity between concepts across domains."""
+              all_concepts = []
+              concept_metadata = []
+
+              for domain in self.domains:
+                  for concept in domain.key_concepts:
+                      all_concepts.append(concept)
+                      concept_metadata.append((domain.name, concept))
+
+              # TF-IDF vectorization for concept similarity
+              vectorizer = TfidfVectorizer(ngram_range=(1, 3), max_features=1000)
+              concept_vectors = vectorizer.fit_transform(all_concepts)
+
+              # Compute pairwise similarity
+              from sklearn.metrics.pairwise import cosine_similarity
+              similarity_matrix = cosine_similarity(concept_vectors)
+
+              similarities = []
+              for i in range(len(all_concepts)):
+                  for j in range(i+1, len(all_concepts)):
+                      if similarity_matrix[i][j] > 0.5:  # Threshold for relevance
+                          similarities.append((
+                              concept_metadata[i],
+                              concept_metadata[j],
+                              similarity_matrix[i][j]
+                          ))
+
+              return sorted(similarities, key=lambda x: x[2], reverse=True)
+
+          def identify_methodological_transfer_opportunities(self) -> List[CrossDomainInsight]:
+              """Identify methodologies that could transfer across domains."""
+              insights = []
+
+              for source_domain in self.domains:
+                  for target_domain in self.domains:
+                      if source_domain.name == target_domain.name:
+                          continue
+
+                      # Identify novel methodologies in source domain
+                      for methodology in source_domain.methodologies:
+                          if methodology not in target_domain.methodologies:
+                              # Assess transfer potential
+                              transfer_score = self._assess_methodology_transfer(
+                                  methodology, source_domain, target_domain
+                              )
+
+                              if transfer_score > 0.6:  # High transfer potential
+                                  insight = CrossDomainInsight(
+                                      domains_involved=[source_domain.name, target_domain.name],
+                                      insight_type='methodological_transfer',
+                                      description=f"Methodology '{methodology}' from {source_domain.name} could advance research in {target_domain.name}",
+                                      evidence=self._gather_transfer_evidence(methodology, source_domain, target_domain),
+                                      novelty_score=transfer_score,
+                                      impact_potential=self._classify_impact(transfer_score)
+                                  )
+                                  insights.append(insight)
+
+              return insights
+
+          def synthesize_theoretical_connections(self) -> List[CrossDomainInsight]:
+              """Identify deep theoretical connections across domains."""
+              insights = []
+
+              # Analyze domain graph for bridging concepts
+              centrality = nx.betweenness_centrality(self.domain_graph)
+              bridging_concepts = sorted(
+                  [(node, score) for node, score in centrality.items()
+                   if self.domain_graph.nodes[node].get('type') == 'concept'],
+                  key=lambda x: x[1],
+                  reverse=True
+              )[:20]  # Top 20 bridging concepts
+
+              for concept_node, centrality_score in bridging_concepts:
+                  # Get domains connected by this concept
+                  connected_domains = set()
+                  for neighbor in self.domain_graph.neighbors(concept_node):
+                      if self.domain_graph.nodes[neighbor].get('type') == 'domain':
+                          connected_domains.add(neighbor)
+
+                  if len(connected_domains) >= 2:
+                      insight = CrossDomainInsight(
+                          domains_involved=list(connected_domains),
+                          insight_type='theoretical_connection',
+                          description=f"Concept '{concept_node}' bridges {len(connected_domains)} domains with high centrality ({centrality_score:.3f})",
+                          evidence=self._gather_concept_evidence(concept_node, connected_domains),
+                          novelty_score=centrality_score,
+                          impact_potential=self._classify_impact(centrality_score)
+                      )
+                      insights.append(insight)
+
+              return insights
+
+          def identify_research_gaps_and_opportunities(self) -> List[CrossDomainInsight]:
+              """Identify under-explored areas and cross-domain research opportunities."""
+              insights = []
+
+              # Cluster papers across domains
+              all_papers = []
+              paper_metadata = []
+
+              for domain in self.domains:
+                  for paper in domain.papers:
+                      all_papers.append(paper['abstract'])
+                      paper_metadata.append({'domain': domain.name, 'paper': paper})
+
+              # Cluster analysis to find research themes
+              vectorizer = TfidfVectorizer(max_features=500, ngram_range=(1, 2))
+              paper_vectors = vectorizer.fit_transform(all_papers)
+
+              clustering = AgglomerativeClustering(n_clusters=10, linkage='ward')
+              clusters = clustering.fit_predict(paper_vectors.toarray())
+
+              # Analyze cluster composition
+              cluster_analysis = defaultdict(lambda: defaultdict(int))
+              for idx, cluster_id in enumerate(clusters):
+                  domain = paper_metadata[idx]['domain']
+                  cluster_analysis[cluster_id][domain] += 1
+
+              # Identify under-represented domain combinations
+              for cluster_id, domain_counts in cluster_analysis.items():
+                  if len(domain_counts) >= 2:  # Multi-domain cluster
+                      # Check for research gaps
+                      total_papers = sum(domain_counts.values())
+                      for domain in self.domains:
+                          if domain.name not in domain_counts and total_papers > 5:
+                              insight = CrossDomainInsight(
+                                  domains_involved=[domain.name] + list(domain_counts.keys()),
+                                  insight_type='gap_identification',
+                                  description=f"Research gap: {domain.name} is under-represented in cluster focusing on {list(domain_counts.keys())}",
+                                  evidence=[{'cluster_papers': total_papers, 'domains': list(domain_counts.keys())}],
+                                  novelty_score=0.8,
+                                  impact_potential='significant'
+                              )
+                              insights.append(insight)
+
+              return insights
+
+          def generate_research_program_roadmap(self) -> Dict[str, Any]:
+              """Generate 3-5 year strategic research program based on synthesis."""
+              # Combine all insights
+              all_insights = []
+              all_insights.extend(self.identify_methodological_transfer_opportunities())
+              all_insights.extend(self.synthesize_theoretical_connections())
+              all_insights.extend(self.identify_research_gaps_and_opportunities())
+
+              # Prioritize insights by impact potential
+              paradigm_shifting = [i for i in all_insights if i.impact_potential == 'paradigm_shifting']
+              significant = [i for i in all_insights if i.impact_potential == 'significant']
+              incremental = [i for i in all_insights if i.impact_potential == 'incremental']
+
+              roadmap = {
+                  'executive_summary': {
+                      'total_insights': len(all_insights),
+                      'paradigm_shifting_opportunities': len(paradigm_shifting),
+                      'significant_opportunities': len(significant),
+                      'incremental_improvements': len(incremental)
+                  },
+                  'year_1_priorities': paradigm_shifting[:3],  # Focus on highest impact
+                  'year_2_3_priorities': significant[:5],
+                  'year_4_5_priorities': incremental[:5],
+                  'resource_requirements': self._estimate_resources(all_insights),
+                  'collaboration_opportunities': self._identify_collaboration_needs(all_insights),
+                  'publication_strategy': self._plan_publication_strategy(all_insights),
+                  'funding_strategy': self._develop_funding_strategy(all_insights)
+              }
+
+              return roadmap
+
+          def _assess_methodology_transfer(self, methodology: str,
+                                          source: ResearchDomain,
+                                          target: ResearchDomain) -> float:
+              """Assess potential for methodology transfer between domains."""
+              # Simplified scoring - in practice, use domain expert evaluation
+              concept_overlap = len(source.key_concepts & target.key_concepts)
+              total_concepts = len(source.key_concepts | target.key_concepts)
+              similarity = concept_overlap / max(total_concepts, 1)
+              return similarity * 0.8 + np.random.uniform(0.1, 0.2)  # Add novelty factor
+
+          def _classify_impact(self, score: float) -> str:
+              """Classify research impact potential based on novelty score."""
+              if score > 0.8:
+                  return 'paradigm_shifting'
+              elif score > 0.6:
+                  return 'significant'
+              else:
+                  return 'incremental'
+
+          def _gather_transfer_evidence(self, methodology, source, target) -> List[Dict]:
+              """Gather evidence for methodology transfer potential."""
+              return [
+                  {'source_papers': len(source.papers),
+                   'methodology_usage': 'established',
+                   'target_gap': f"Not used in {target.name}"}
+              ]
+
+          def _gather_concept_evidence(self, concept, domains) -> List[Dict]:
+              """Gather evidence for theoretical connections."""
+              return [{'concept': concept, 'connected_domains': list(domains)}]
+
+          def _estimate_resources(self, insights) -> Dict[str, Any]:
+              """Estimate resource requirements for research program."""
+              return {
+                  'personnel': f"{len(insights) * 2} PhD students/postdocs",
+                  'funding_needed': f"${len(insights) * 500000} over 5 years",
+                  'equipment': "High-performance computing cluster, specialized software"
+              }
+
+          def _identify_collaboration_needs(self, insights) -> List[str]:
+              """Identify collaboration opportunities."""
+              all_domains = set()
+              for insight in insights:
+                  all_domains.update(insight.domains_involved)
+              return [f"Partnership with {domain} research groups" for domain in all_domains]
+
+          def _plan_publication_strategy(self, insights) -> Dict[str, List[str]]:
+              """Plan publication strategy for research program."""
+              return {
+                  'tier_1_targets': ['Nature', 'Science', 'NeurIPS', 'ICML'],
+                  'tier_2_targets': ['ICLR', 'AAAI', 'IJCAI', 'ACL'],
+                  'publication_timeline': [f"Year {i+1}: {min(len(insights)//5, 3)} publications"
+                                         for i in range(5)]
+              }
+
+          def _develop_funding_strategy(self, insights) -> Dict[str, List[str]]:
+              """Develop funding acquisition strategy."""
+              return {
+                  'funding_sources': ['NSF CAREER', 'NIH R01', 'DARPA', 'EU Horizon'],
+                  'grant_timeline': ['Year 1: Submit 2 major proposals',
+                                   'Year 2: Renewal and expansion',
+                                   'Year 3-5: Sustained funding pipeline']
+              }
+
+      # Example usage for senior research synthesis
+      def conduct_multi_domain_synthesis():
+          """Example of senior research synthesis workflow."""
+          # Define research domains
+          ai_domain = ResearchDomain(
+              name="Artificial Intelligence",
+              papers=[],  # Populated with paper data
+              key_concepts={'deep learning', 'transformers', 'reinforcement learning'},
+              methodologies={'supervised learning', 'self-supervised learning'}
+          )
+
+          neuroscience_domain = ResearchDomain(
+              name="Neuroscience",
+              papers=[],
+              key_concepts={'neural plasticity', 'attention mechanisms', 'memory formation'},
+              methodologies={'fMRI analysis', 'neural recording'}
+          )
+
+          # Create synthesis framework
+          synthesis = MultiDomainResearchSynthesis([ai_domain, neuroscience_domain])
+
+          # Build knowledge graph
+          knowledge_graph = synthesis.build_domain_knowledge_graph()
+
+          # Generate research roadmap
+          roadmap = synthesis.generate_research_program_roadmap()
+
+          print("Multi-Domain Research Synthesis Complete")
+          print(f"Paradigm-shifting opportunities: {roadmap['executive_summary']['paradigm_shifting_opportunities']}")
+          print(f"Publication strategy: {roadmap['publication_strategy']}")
+
+          return roadmap
+
+      if __name__ == "__main__":
+          roadmap = conduct_multi_domain_synthesis()
+    best_practices:
+      - "Systematic cross-domain concept mapping with semantic analysis"
+      - "Rigorous methodology transfer assessment with domain expert validation"
+      - "Strategic research program planning with clear milestones and deliverables"
+      - "Multi-tier publication strategy targeting highest impact venues"
+      - "Comprehensive funding strategy with diversified sources"
+    common_pitfalls:
+      - "Superficial connections without deep theoretical integration"
+      - "Overly ambitious timelines without realistic resource planning"
+      - "Insufficient stakeholder buy-in for cross-institutional collaboration"
 
 professional_standards:
-  security_frameworks: []
-  industry_practices: []
-  compliance_requirements: []
+  security_frameworks:
+    - "Advanced Research Ethics - Multi-institutional IRB coordination and international ethics compliance"
+    - "Data Governance Leadership - FAIR principles implementation across research consortiums"
+    - "Responsible AI Framework Development - Ethical AI guidelines for field-level adoption"
+    - "Research Integrity Standards - Oversight of academic misconduct prevention and investigation"
+    - "Intellectual Property Strategy - Patent portfolio management and technology transfer"
+
+  industry_practices:
+    - "Research Program Management - Multi-year strategic planning with milestone tracking"
+    - "Grant Portfolio Optimization - Diversified funding strategy across NSF, NIH, EU, DARPA"
+    - "Academic Leadership - Department chair, research center director, consortium leadership"
+    - "Peer Review Excellence - Editorial board service and conference program committee leadership"
+    - "Thought Leadership - Keynote presentations, invited talks, media engagement"
+
+  compliance_requirements:
+    - "Major Grant Compliance - NSF, NIH, EU Horizon reporting and audit requirements"
+    - "International Collaboration - Export control, data sovereignty, cross-border compliance"
+    - "Institutional Policies - University research conduct and administrative requirements"
+    - "Publication Ethics - Journal policies, preprint guidelines, open access mandates"
+    - "Conflict of Interest Management - Financial disclosure and recusal protocols"
 
 integration_guidelines:
-  api_integration: []
-  database_integration: []
-  third_party_services: []
+  api_integration:
+    - "Grant Management APIs - NSF FastLane, NIH eRA Commons, EU Participant Portal"
+    - "Citation Databases - Web of Science API, Scopus API, Google Scholar integration"
+    - "Collaboration Platforms - ORCID API, ResearchGate API, Academia.edu integration"
+    - "Research Data Repositories - Figshare API, Zenodo API, OSF API"
+    - "Publication Systems - arXiv API, bioRxiv API, journal submission systems"
+
+  database_integration:
+    - "Research Database Management - PostgreSQL for grant and publication tracking"
+    - "Citation Network Analysis - Neo4j for co-authorship and citation graphs"
+    - "Document Management - MongoDB for publication and proposal storage"
+    - "Collaboration Tracking - Graph databases for consortium and partnership management"
+    - "Impact Analytics - Time series databases for citation and h-index tracking"
+
+  third_party_services:
+    - "Institutional Research Systems - University grant management and HR systems"
+    - "Cloud Collaboration - Google Workspace, Microsoft 365 for team coordination"
+    - "Conference Management - CMT, EasyChair, OpenReview for peer review"
+    - "Publishing Platforms - Overleaf, Authorea for collaborative manuscript writing"
+    - "Impact Tracking - Altmetric, PlumX for research impact measurement"
 
 performance_benchmarks:
-  response_times: []
-  throughput_targets: []
-  resource_utilization: []
+  response_times:
+    - "Grant Proposal Development: P50 < 4 weeks, P95 < 8 weeks for major proposals"
+    - "Multi-Domain Synthesis: P50 < 2 weeks, P95 < 4 weeks for comprehensive analysis"
+    - "Publication Review: P50 < 1 week, P95 < 2 weeks for peer review assignments"
+    - "Strategic Planning: P50 < 2 months, P95 < 4 months for 3-5 year roadmaps"
 
-troubleshooting_guides: []
-  # Example structure:
-  # - issue: "Common problem description"
-  #   symptoms: []
-  #   solutions: []
-  #   prevention: []
+  throughput_targets:
+    - "Grant Submissions: >3 major proposals per year (NSF, NIH, EU)"
+    - "Publications: >5 tier-1 publications per year (Nature, Science, NeurIPS, ICML)"
+    - "PhD Supervision: 3-5 active PhD students with successful completion rates >80%"
+    - "Consortium Leadership: >2 multi-institutional collaborations with sustained funding"
 
-tool_configurations: []
-  # Example structure:
-  # - tool: "pytest"
-  #   config_file: "pytest.ini"
-  #   recommended_settings: {}
-  #   integration_notes: ""
+  resource_utilization:
+    - "Research Budget Management: >$2M annual research expenditure with >90% utilization"
+    - "Personnel Efficiency: >10 research personnel (PhD students, postdocs, staff)"
+    - "Computing Resources: Access to HPC clusters, cloud computing for large-scale experiments"
+    - "International Travel: >5 keynotes/invited talks per year at major conferences"
+
+troubleshooting_guides:
+  - issue: "Grant Proposal Rejection and Funding Challenges"
+    symptoms:
+      - "Multiple grant proposals rejected by funding agencies despite strong research ideas"
+      - "Reviewer feedback indicating weak methodology or insufficient novelty"
+      - "Budget misalignment with proposed research scope and deliverables"
+      - "Lack of preliminary data or proof-of-concept results for high-risk proposals"
+    solutions:
+      - "Conduct mock review panels with senior colleagues before submission"
+      - "Develop pilot studies and preliminary data to demonstrate feasibility"
+      - "Align budget with realistic timelines and clearly justify all expenses"
+      - "Engage program officers early for feedback on proposal alignment with agency priorities"
+    prevention:
+      - "Maintain active dialogue with program officers throughout proposal development"
+      - "Build track record of successful small grants before pursuing major funding"
+      - "Regular grant writing workshops and institutional support utilization"
+
+  - issue: "Multi-Institutional Collaboration Coordination Failures"
+    symptoms:
+      - "Misaligned research objectives and timelines across consortium partners"
+      - "Unclear intellectual property and authorship attribution agreements"
+      - "Communication breakdowns and missed project milestones"
+      - "Inequitable resource distribution and contribution imbalances"
+    solutions:
+      - "Establish clear governance structure with defined roles and decision-making authority"
+      - "Create detailed collaboration agreements covering IP, authorship, and data sharing"
+      - "Implement regular video conferences and annual in-person consortium meetings"
+      - "Use project management tools for transparent milestone tracking and accountability"
+    prevention:
+      - "Conduct partner alignment workshops before formalizing collaborations"
+      - "Legal review of all collaboration agreements with institutional support"
+      - "Establish conflict resolution mechanisms and escalation procedures upfront"
+
+  - issue: "Tier-1 Publication Rejection and Review Challenges"
+    symptoms:
+      - "Papers rejected from Nature, Science, NeurIPS without reaching peer review"
+      - "Reviewer critiques indicating insufficient novelty or impact"
+      - "Technical methodological concerns about experimental design or validation"
+      - "Poor manuscript presentation affecting reviewer perception of quality"
+    solutions:
+      - "Conduct internal review with senior colleagues before external submission"
+      - "Frame contributions clearly with emphasis on paradigm-shifting impact"
+      - "Ensure comprehensive experimental validation with multiple baselines and ablations"
+      - "Invest in professional figure design and clear, compelling writing"
+    prevention:
+      - "Strategic venue selection based on manuscript strengths and reviewer culture"
+      - "Pre-submission inquiry to editors for fit assessment"
+      - "Iterative revision based on feedback from conference preprints and workshops"
+
+  - issue: "PhD Student and Postdoc Supervision Challenges"
+    symptoms:
+      - "Students struggling with research direction and making insufficient progress"
+      - "Misalignment between student interests and research program needs"
+      - "Poor work-life balance leading to burnout and attrition"
+      - "Authorship disputes and collaboration conflicts"
+    solutions:
+      - "Establish clear expectations and individualized development plans at onboarding"
+      - "Regular one-on-one meetings with structured feedback and goal setting"
+      - "Create supportive lab culture with peer mentoring and mental health resources"
+      - "Develop explicit authorship guidelines and conflict resolution protocols"
+    prevention:
+      - "Careful student selection aligned with research program and cultural fit"
+      - "Mentorship training and institutional supervisor development programs"
+      - "Regular check-ins on progress, wellbeing, and career development goals"
+
+  - issue: "Research Ethics and Responsible AI Implementation Failures"
+    symptoms:
+      - "Dataset biases leading to unfair or discriminatory model outcomes"
+      - "Insufficient consideration of dual-use risks and potential misuse"
+      - "Lack of transparency in methodology and model decision-making"
+      - "Inadequate stakeholder engagement and community input"
+    solutions:
+      - "Implement comprehensive ethics review process before research commencement"
+      - "Conduct bias audits and fairness assessments throughout development"
+      - "Develop clear documentation of limitations, risks, and mitigation strategies"
+      - "Engage diverse stakeholders including affected communities in research design"
+    prevention:
+      - "Integrate ethics training into research group onboarding and development"
+      - "Establish research ethics committee with diverse expertise and perspectives"
+      - "Regular ethics reviews and updates as research evolves and new risks emerge"
+
+tool_configurations:
+  - tool: "NSF FastLane / Research.gov"
+    config_file: "nsf_config.yaml"
+    recommended_settings:
+      institution: "YOUR_INSTITUTION"
+      spo_contact: "sponsored_programs_office@institution.edu"
+      proposal_templates: "templates/nsf/"
+      budget_templates: "templates/nsf/budget/"
+      compliance_checklist: true
+    integration_notes: "Configure for NSF CAREER, standard grants, and center proposals with institutional SPO coordination"
+
+  - tool: "NIH eRA Commons"
+    config_file: "nih_config.yaml"
+    recommended_settings:
+      commons_id: "YOUR_COMMONS_ID"
+      signing_official: "institutional_SO"
+      proposal_tracking: true
+      just_in_time_management: true
+    integration_notes: "Set up for R01, R21, and other NIH mechanisms with institutional administrative support"
+
+  - tool: "Zotero Research Library"
+    config_file: "zotero.yaml"
+    recommended_settings:
+      sync: true
+      group_libraries:
+        - "research_consortium_library"
+        - "lab_group_library"
+      storage_quota: "unlimited"
+      plugins:
+        - "Better BibTeX"
+        - "Zotero Connector"
+        - "ZotFile"
+    integration_notes: "Configure for large-scale bibliographic management with consortium sharing and cloud sync"
+
+  - tool: "Overleaf Professional"
+    config_file: "overleaf_config.yaml"
+    recommended_settings:
+      subscription: "professional"
+      track_changes: true
+      git_integration: true
+      institution_link: "YOUR_INSTITUTION"
+      collaboration_features: "full"
+    integration_notes: "Set up for collaborative manuscript writing with version control and institutional SSO"
+
+  - tool: "ORCID API Integration"
+    config_file: "orcid_config.yaml"
+    recommended_settings:
+      orcid_id: "0000-0000-0000-0000"
+      auto_update: true
+      visibility: "public"
+      trusted_organizations:
+        - "CrossRef"
+        - "Web of Science"
+        - "Scopus"
+    integration_notes: "Configure for automatic publication tracking and researcher profile management"
+
+  - tool: "Open Science Framework (OSF)"
+    config_file: "osf_config.yaml"
+    recommended_settings:
+      public_projects: true
+      preregistration: true
+      data_sharing: "controlled"
+      version_control: "git"
+      doi_generation: true
+    integration_notes: "Set up for research transparency, preregistration, and data sharing with DOI minting"
+
+  - tool: "R Meta-Analysis Suite"
+    config_file: "meta_analysis_config.R"
+    recommended_settings:
+      packages:
+        - "metafor"
+        - "meta"
+        - "bayesmeta"
+      forest_plot_theme: "publication_ready"
+      sensitivity_analysis: true
+      publication_bias_tests: true
+    integration_notes: "Configure for comprehensive meta-analysis with publication-ready visualizations"
+
+  - tool: "Altmetric / PlumX"
+    config_file: "impact_tracking.yaml"
+    recommended_settings:
+      researcher_profile: "YOUR_NAME"
+      auto_alerts: true
+      metrics_dashboard: true
+      integration:
+        - "ORCID"
+        - "Google Scholar"
+        - "institutional_repository"
+    integration_notes: "Set up for comprehensive research impact tracking beyond traditional citations"

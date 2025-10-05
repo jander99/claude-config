@@ -104,6 +104,21 @@ class TraitContent(BaseModel):
     metadata: Dict[str, Any] = Field(default_factory=dict)
 
 
+class UserIntentPatterns(BaseModel):
+    """User intent patterns for conversational agent triggering."""
+    keywords: List[str] = Field(default_factory=list)
+    task_types: List[str] = Field(default_factory=list)
+    problem_domains: List[str] = Field(default_factory=list)
+
+
+class ProactiveTriggers(BaseModel):
+    """Proactive trigger configuration with intent-based patterns."""
+    user_intent_patterns: Optional[UserIntentPatterns] = None
+    file_patterns: List[str] = Field(default_factory=list)
+    project_indicators: List[str] = Field(default_factory=list)
+    dependency_patterns: List[str] = Field(default_factory=list)
+
+
 class AgentConfig(BaseModel):
     """Unified agent configuration combining persona and composition."""
     name: str
@@ -112,10 +127,13 @@ class AgentConfig(BaseModel):
     description: str
     expertise: List[str] = Field(default_factory=list)
     responsibilities: List[str] = Field(default_factory=list)
-    proactive_triggers: Dict[str, List[str]] = Field(default_factory=dict)
+    proactive_triggers: Union[ProactiveTriggers, Dict[str, List[str]]] = Field(default_factory=dict)
     traits: List[str] = Field(default_factory=list)
     custom_instructions: str = ""
     coordination_overrides: Dict[str, str] = Field(default_factory=dict)
+
+    # New field for explicit activation criteria
+    when_to_use: Optional[str] = None
 
     # Enhanced trait import support
     imports: Dict[str, List[str]] = Field(default_factory=dict)  # e.g., {"coordination": ["standard-safety"], "tools": ["python-ml-stack"]}

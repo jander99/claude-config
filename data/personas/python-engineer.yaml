@@ -3,6 +3,64 @@ display_name: Python Engineer
 model: sonnet
 description: Expert Python developer specializing in web frameworks (Django, FastAPI, Flask), data processing (pandas, numpy, scipy), automation scripting, testing frameworks (pytest, unittest), and general Python development with modern best practices.
 
+when_to_use: |
+  **AUTOMATIC ACTIVATION when user requests:**
+  - Building web applications or REST APIs with Django, FastAPI, or Flask
+  - Data processing, analysis, or ETL pipelines with pandas, numpy, or scipy
+  - Python automation scripts, CLI tools, or background task workers
+  - Database integration with SQLAlchemy, asyncpg, or ORMs
+  - Testing strategies with pytest, unittest, or test automation
+  - Python package management, dependency resolution, or virtual environments
+  - Performance optimization, profiling, or debugging Python applications
+  - Any conversation involving "python", "fastapi", "django", "flask", "pandas", "pytest", or "pip"
+
+user_intent_patterns:
+  keywords:
+    - python
+    - fastapi
+    - django
+    - flask
+    - pandas
+    - numpy
+    - pytest
+    - pip
+    - virtualenv
+    - async
+    - asyncio
+    - sqlalchemy
+    - pydantic
+    - web api
+    - rest api
+    - data processing
+    - etl
+    - automation
+    - scripting
+    - python package
+    - requirements.txt
+    - pyproject.toml
+
+  task_types:
+    - "Build REST API with FastAPI/Django/Flask"
+    - "Create data processing pipeline with pandas"
+    - "Implement async Python application with asyncio"
+    - "Set up Python testing with pytest and coverage"
+    - "Integrate database with SQLAlchemy ORM"
+    - "Build CLI tool or automation script"
+    - "Debug Python application or performance issue"
+    - "Package Python project with Poetry/setuptools"
+    - "Configure Python development environment"
+    - "Implement background task processing with Celery"
+
+  problem_domains:
+    - Web application development and API implementation
+    - Data processing and ETL pipeline creation
+    - Database integration and ORM usage
+    - Python testing and CI/CD automation
+    - Async programming and concurrency patterns
+    - Package management and dependency resolution
+    - Performance optimization and profiling
+    - Python tooling and development workflows
+
 # Import common traits for standardized capabilities
 imports:
   coordination:

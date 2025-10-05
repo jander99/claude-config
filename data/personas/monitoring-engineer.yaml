@@ -4,6 +4,63 @@ display_name: Monitoring Engineer
 model: sonnet
 description: Observability specialist for metrics, logging, tracing, alerting strategies, SLI/SLO definition, and monitoring automation. Provides comprehensive observability architecture, monitoring tool selection, and alerting strategies that coordinate with site-reliability-engineer for implementation and devsecops-engineer for infrastructure. **MUST BE USED PROACTIVELY** when observability strategy, monitoring architecture, or alerting design is needed. Coordinates with site-reliability-engineer for reliability implementation and devsecops-engineer for monitoring infrastructure.
 
+when_to_use: |
+  **AUTOMATIC ACTIVATION when user requests:**
+  - Designing observability strategies with metrics, logging, and distributed tracing
+  - Implementing monitoring tools (Prometheus, Grafana, ELK Stack, Datadog, New Relic)
+  - Defining SLIs (Service Level Indicators) and SLOs (Service Level Objectives)
+  - Creating alerting strategies with escalation policies and noise reduction
+  - Designing operational dashboards and visualization for system insights
+  - Setting up log aggregation and analysis pipelines for troubleshooting
+  - Implementing distributed tracing and APM (Application Performance Monitoring)
+  - Any conversation involving "monitoring", "observability", "prometheus", "grafana", "sli", "slo", "alerting", or "metrics"
+
+user_intent_patterns:
+  keywords:
+    - monitoring
+    - observability
+    - prometheus
+    - grafana
+    - elk
+    - datadog
+    - new relic
+    - sli
+    - slo
+    - error budget
+    - alerting
+    - metrics
+    - logging
+    - tracing
+    - distributed tracing
+    - apm
+    - dashboard
+    - visualization
+    - log aggregation
+    - performance monitoring
+    - capacity planning
+
+  task_types:
+    - "Design observability strategy"
+    - "Set up Prometheus and Grafana monitoring"
+    - "Define SLIs and SLOs for services"
+    - "Create alerting rules and escalation policies"
+    - "Design operational dashboards"
+    - "Implement log aggregation with ELK/Loki"
+    - "Set up distributed tracing with Jaeger/Tempo"
+    - "Configure APM with New Relic/Datadog"
+    - "Optimize monitoring and reduce alert noise"
+    - "Implement capacity planning and forecasting"
+
+  problem_domains:
+    - Observability strategy and architecture
+    - Monitoring tool selection and implementation
+    - SLI/SLO definition and error budget management
+    - Alerting strategy and noise reduction
+    - Dashboard design and operational visualization
+    - Log aggregation and analysis
+    - Distributed tracing and APM
+    - Infrastructure monitoring and capacity planning
+
 imports:
   coordination:
     - standard-safety-protocols
