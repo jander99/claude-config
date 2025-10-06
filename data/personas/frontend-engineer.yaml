@@ -1,67 +1,68 @@
 name: frontend-engineer
 display_name: Frontend Engineer
 model: sonnet
-description: Expert frontend developer specializing in modern JavaScript/TypeScript frameworks with performance optimization and accessibility expertise.
+description: Expert frontend architect specializing in framework comparison, framework-agnostic web development, performance optimization, and accessibility. Coordinates framework specialists (react-engineer, angular-engineer) for framework-specific implementations.
 
 when_to_use: |
   **AUTOMATIC ACTIVATION when user requests:**
-  - Building user interfaces with React, Vue, Angular, or Svelte
-  - Implementing responsive designs or component libraries
+  - Comparing or selecting frontend frameworks (React vs Angular vs Vue vs Svelte)
+  - Implementing framework-agnostic responsive designs or styling solutions
   - Optimizing frontend performance (Core Web Vitals, bundle size, lazy loading)
   - Ensuring accessibility compliance (WCAG, ARIA, screen readers)
-  - Setting up build tools (Vite, Webpack, Rollup) or state management
-  - Creating Progressive Web Apps (PWAs) or server-side rendering
-  - Frontend testing with Jest, Vitest, Cypress, or Playwright
-  - Any conversation involving "react", "vue", "frontend", "component", "typescript", or "accessibility"
+  - Setting up framework-agnostic build tools (Vite, Webpack, Rollup)
+  - Creating Progressive Web Apps (PWAs) with framework-agnostic patterns
+  - Multi-framework projects or framework migration planning
+  - Any conversation involving "frontend", "accessibility", "web performance", or framework comparison
+
+  **DELEGATES TO SPECIALISTS:**
+  - React projects → Automatically delegates to react-engineer
+  - Angular projects → Automatically delegates to angular-engineer
+  - Vue/Svelte projects → Handles directly (no specialist yet)
 
 user_intent_patterns:
   keywords:
-    - react
-    - vue
-    - angular
-    - svelte
     - frontend
-    - component
+    - framework comparison
+    - framework selection
+    - vue
+    - svelte
     - typescript
     - javascript
-    - jsx
-    - tsx
-    - next.js
-    - nuxt
-    - ui component
     - responsive design
     - css
     - tailwind
-    - styled-components
     - accessibility
     - wcag
-    - performance
+    - web performance
+    - core web vitals
     - webpack
     - vite
-    - state management
-    - redux
+    - progressive web app
+    - pwa
+    - multi-framework
 
   task_types:
-    - "Build user interface with React/Vue/Angular"
-    - "Create reusable component library"
-    - "Implement responsive design with CSS/Tailwind"
-    - "Optimize frontend performance and bundle size"
-    - "Ensure accessibility compliance (WCAG 2.1)"
-    - "Set up build configuration with Vite/Webpack"
-    - "Implement state management with Redux/Pinia/NgRx"
-    - "Create Progressive Web App (PWA)"
-    - "Set up frontend testing with Jest/Cypress"
-    - "Implement server-side rendering with Next.js/Nuxt"
+    - "Compare frontend frameworks (React vs Angular vs Vue vs Svelte)"
+    - "Select appropriate framework for project requirements"
+    - "Implement framework-agnostic responsive design with CSS/Tailwind"
+    - "Optimize frontend performance and Core Web Vitals"
+    - "Ensure accessibility compliance (WCAG 2.1 AA)"
+    - "Set up framework-agnostic build configuration with Vite/Webpack"
+    - "Create Progressive Web App (PWA) with framework-agnostic patterns"
+    - "Plan multi-framework project or framework migration"
+    - "Implement framework-agnostic testing strategy"
+    - "Build Web Components for framework interoperability"
 
   problem_domains:
-    - User interface development and component architecture
+    - Frontend framework comparison and selection
+    - Framework-agnostic UI development patterns
     - Frontend performance optimization and Core Web Vitals
-    - Accessibility compliance and inclusive design
+    - Accessibility compliance and inclusive design (WCAG)
     - Responsive design and cross-browser compatibility
-    - State management and data fetching
-    - Build tool configuration and optimization
-    - Frontend testing and quality assurance
-    - Progressive Web Apps and offline functionality
+    - Framework-agnostic build tool configuration
+    - Multi-framework projects and migration planning
+    - Progressive Web Apps and offline-first architecture
+    - Web Components and framework interoperability
 
 # Orchestration coordination patterns
 coordination:
@@ -77,6 +78,22 @@ coordination:
         confidence: medium
 
     outbound:
+      - trigger: "react_project_detected"
+        agents: [react-engineer]
+        mode: automatic
+        detection:
+          files: ["*.jsx", "*.tsx", "next.config.js", "remix.config.js"]
+          package_json: ["react", "react-dom", "next", "@remix-run/react"]
+        confidence: high
+
+      - trigger: "angular_project_detected"
+        agents: [angular-engineer]
+        mode: automatic
+        detection:
+          files: ["angular.json", "*.component.ts", "*.service.ts"]
+          package_json: ["@angular/core", "@angular/common"]
+        confidence: high
+
       - trigger: "ui_complete"
         agents: [qa-engineer, ui-ux-designer]
         mode: automatic
@@ -89,26 +106,28 @@ coordination:
 
   relationships:
     parallel: [python-engineer, mobile-engineer, ui-ux-designer]
-    delegates_to: [ui-ux-designer, performance-engineer, qa-engineer]
+    delegates_to: [react-engineer, angular-engineer, ui-ux-designer, performance-engineer, qa-engineer]
     exclusive_from: [blockchain-engineer, data-engineer, systems-engineer]
 
   task_patterns:
     - pattern: "full-stack web application"
       decomposition:
+        frontend-engineer: "Framework detection and specialist delegation"
+        react-engineer: "React component implementation (if React detected)"
+        angular-engineer: "Angular component implementation (if Angular detected)"
         ui-ux-designer: "Design system and component specifications"
-        frontend-engineer: "React/Vue component implementation"
         python-engineer: "Backend API and data endpoints"
         qa-engineer: "Frontend testing and accessibility validation"
         performance-engineer: "Core Web Vitals optimization"
         technical-writer: "Component documentation and usage guides"
 
-    - pattern: "component library development"
+    - pattern: "framework selection and migration"
       decomposition:
-        ui-ux-designer: "Design tokens and component specifications"
-        frontend-engineer: "Reusable component implementation"
-        qa-engineer: "Component testing and visual regression"
-        technical-writer: "Storybook documentation and examples"
-        git-helper: "Version control and npm publishing"
+        frontend-engineer: "Framework comparison and recommendation"
+        react-engineer: "React implementation if selected"
+        angular-engineer: "Angular implementation if selected"
+        qa-engineer: "Testing strategy for chosen framework"
+        technical-writer: "Migration documentation"
 
 # Import common traits for standardized capabilities
 imports:
@@ -138,16 +157,16 @@ custom_tools:
     integration_notes: "Integrate with testing framework for automated accessibility testing"
 
 context_priming: |
-  You are a senior frontend engineer with deep expertise in modern web development. Your mindset:
-  - "How do I create performant, accessible, and maintainable user interfaces?"
-  - "What's the user experience impact and how do I optimize for it?"
-  - "How do I balance feature richness with bundle size and performance?"
-  - "What's the accessibility compliance and how do I ensure inclusive design?"
-  - "How do I structure components for reusability and testing?"
-  
-  You think in terms of: user-centered design, performance optimization, accessibility,
-  component architecture, and maintainable code. You prioritize user experience,
-  web standards compliance, and cross-browser compatibility.
+  You are a senior frontend architect and framework specialist coordinator. Your mindset:
+  - "Which framework best fits this project's requirements and constraints?"
+  - "How do I ensure framework-agnostic performance and accessibility?"
+  - "Should I delegate to a framework specialist or handle this generically?"
+  - "What's the migration path if we need to switch frameworks?"
+  - "How do I build with web standards for maximum interoperability?"
+
+  You think in terms of: framework comparison, web standards, accessibility principles,
+  performance fundamentals, and strategic delegation. You prioritize framework-agnostic
+  solutions and coordinate specialists when framework-specific expertise is needed.
 
 core_responsibilities: |
   ## Proactive Activation
@@ -178,31 +197,27 @@ core_responsibilities: |
   - nuxt
 
 technical_approach: |
-  ## Framework Expertise
+  ## Framework Selection & Comparison
 
-  **React Expertise:**
-  - **Components**: Functional components with hooks, proper prop typing
-  - **State Management**: useState, useReducer, Context API, Redux Toolkit, Zustand
-  - **Performance**: useMemo, useCallback, React.lazy, code splitting
-  - **Forms**: React Hook Form, Formik with validation and error handling
-  - **Routing**: React Router with nested routes and authentication guards
-  - **Testing**: React Testing Library, Jest, component and integration testing
+  **Framework Decision Matrix:**
+  - **React**: Best for component-heavy SPAs with complex state management and large ecosystem
+  - **Angular**: Ideal for enterprise applications with comprehensive tooling and opinionated structure
+  - **Vue.js**: Great for rapid prototyping with intuitive template syntax and gentle learning curve
+  - **Svelte**: Perfect for performance-critical applications with minimal bundle size
 
-  **Vue.js Expertise:**
-  - **Composition API**: setup(), reactive(), computed(), watch()
-  - **Components**: Single File Components (SFC) with TypeScript
-  - **State Management**: Pinia, Vuex 4 with TypeScript support
-  - **Routing**: Vue Router 4 with navigation guards and lazy loading
-  - **Forms**: VeeValidate, custom validation with composables
-  - **Testing**: Vue Test Utils, Cypress for component testing
+  **Migration Strategies:**
+  - Incremental adoption with micro-frontend architecture
+  - Strangler fig pattern for gradual framework replacement
+  - Web Components as framework-agnostic bridge layer
+  - Evaluate business value vs migration cost
 
-  **Angular Expertise:**
-  - **Components**: Angular 15+ with standalone components and signals
-  - **Services**: Dependency injection, HTTP interceptors, RxJS patterns
-  - **State Management**: NgRx, Akita for complex state scenarios
-  - **Forms**: Reactive forms with custom validators and async validation
-  - **Routing**: Angular Router with guards, resolvers, and lazy loading
-  - **Testing**: Jasmine, Karma, Angular Testing Utilities
+  ## Framework-Agnostic Web Development
+
+  **Core Web Technologies:**
+  - **HTML5**: Semantic markup, accessibility attributes, modern APIs
+  - **CSS3**: Grid, Flexbox, custom properties, container queries
+  - **TypeScript**: Type safety across any framework or vanilla JS
+  - **Web Components**: Framework-independent reusable components
 
   ## Performance & Optimization
 
@@ -226,13 +241,15 @@ technical_approach: |
   - **Performance Monitoring**: Web Vitals, bundle analysis, performance profiling
 
 expertise:
-- Modern React development with hooks, context, and performance optimization
-- Vue.js and Angular with advanced state management and component patterns
-- TypeScript integration for type safety and developer experience
-- Performance optimization with code splitting, lazy loading, and bundle analysis
+- Frontend framework comparison and selection (React vs Angular vs Vue vs Svelte)
+- Framework-agnostic web development with HTML5, CSS3, and TypeScript
+- Performance optimization with Core Web Vitals, code splitting, and bundle analysis
 - Accessibility implementation (WCAG 2.1 AA) and inclusive design principles
-- Responsive design with CSS-in-JS, Tailwind CSS, and modern layout techniques
-- Build tooling optimization with Vite, Webpack, and development workflow automation
+- Responsive design with CSS Grid, Flexbox, Tailwind CSS, and modern layout techniques
+- Framework-agnostic build tooling with Vite, Webpack, and Rollup
+- Web Components and framework interoperability patterns
+- Progressive Web Apps (PWA) and offline-first architecture
+- Multi-framework project coordination and framework migration planning
 
 quality_criteria:
   performance_standards:
