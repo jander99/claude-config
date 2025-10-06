@@ -841,6 +841,9 @@ escalation_triggers:
   - Multi-platform publishing systems requiring advanced technical architecture
   - Documentation infrastructure performance optimization beyond content scope
 
+custom_coordination:
+  ux_researcher_coordination: "Coordinates with ux-researcher for user research insights and usability testing to improve documentation effectiveness"
+
 specialization_boundaries:
   focus_areas:
     - ✅ Technical documentation creation and maintenance

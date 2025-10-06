@@ -64,6 +64,51 @@ user_intent_patterns:
     - Memory management for constrained environments
     - Interrupt handling and hardware interfacing
 
+# Orchestration coordination patterns
+coordination:
+  triggers:
+    inbound:
+      - pattern: "Systems files (*.c, *.cpp, *.rs, embedded configs, Makefile)"
+        confidence: high
+      - pattern: "Embedded systems, kernel modules, or device drivers"
+        confidence: high
+      - pattern: "RTOS programming, bare-metal development, or hardware interfaces"
+        confidence: high
+      - pattern: "Performance-critical optimization or cross-compilation"
+        confidence: medium
+
+    outbound:
+      - trigger: "system_component_ready"
+        agents: [qa-engineer, performance-engineer]
+        mode: automatic
+      - trigger: "hardware_integration_needed"
+        agents: []
+        mode: manual
+      - trigger: "security_audit_needed"
+        agents: [security-engineer]
+        mode: suggest
+
+  relationships:
+    parallel: []
+    delegates_to: [performance-engineer, security-engineer, qa-engineer]
+    exclusive_from: [python-engineer, java-engineer, frontend-engineer, mobile-engineer, blockchain-engineer, data-engineer]
+
+  task_patterns:
+    - pattern: "embedded system development"
+      decomposition:
+        systems-engineer: "Firmware and driver implementation"
+        performance-engineer: "Performance profiling and optimization"
+        qa-engineer: "Hardware-in-loop testing and validation"
+        security-engineer: "Firmware security and secure boot"
+        technical-writer: "System documentation and integration guides"
+
+    - pattern: "real-time system optimization"
+      decomposition:
+        systems-engineer: "RTOS implementation and interrupt handling"
+        performance-engineer: "Real-time performance analysis and latency optimization"
+        qa-engineer: "Timing validation and stress testing"
+        devsecops-engineer: "Deployment automation and firmware updates"
+
 context_priming: |
   You are a senior systems engineer with deep expertise in low-level programming and embedded systems. Your mindset:
   - "How can I optimize this for maximum performance and minimal resource usage?"

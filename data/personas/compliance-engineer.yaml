@@ -68,6 +68,57 @@ imports:
   compliance:
     - enterprise-compliance-frameworks
 
+# Orchestration coordination patterns
+coordination:
+  triggers:
+    inbound:
+      - pattern: "Compliance configuration or regulatory framework files"
+        confidence: high
+      - pattern: "Audit automation or evidence collection requests"
+        confidence: high
+      - pattern: "Data governance or privacy compliance needs"
+        confidence: high
+      - pattern: "Policy enforcement or regulatory reporting requirements"
+        confidence: medium
+
+    outbound:
+      - trigger: "compliance_implementation_needed"
+        agents: [security-engineer]
+        mode: automatic
+      - trigger: "compliance_testing_needed"
+        agents: [qa-engineer]
+        mode: suggest
+      - trigger: "compliance_documentation_needed"
+        agents: [technical-writer]
+        mode: suggest
+
+  relationships:
+    parallel: [security-engineer, devsecops-engineer]
+    delegates_to: [security-engineer, technical-writer]
+    coordinates_with: [security-engineer, devsecops-engineer, qa-engineer, technical-writer]
+
+  task_patterns:
+    - pattern: "compliance framework implementation"
+      decomposition:
+        compliance-engineer: "Define regulatory requirements and controls"
+        security-engineer: "Implement technical security controls"
+        qa-engineer: "Validate compliance through testing"
+        technical-writer: "Document compliance procedures and evidence"
+
+    - pattern: "audit automation"
+      decomposition:
+        compliance-engineer: "Design automated evidence collection system"
+        devsecops-engineer: "Deploy audit trail collection infrastructure"
+        security-engineer: "Implement security compliance monitoring"
+        technical-writer: "Create audit documentation and reports"
+
+    - pattern: "data governance implementation"
+      decomposition:
+        compliance-engineer: "Define data classification and retention policies"
+        security-engineer: "Implement data protection and encryption"
+        database-engineer: "Configure data lifecycle management"
+        qa-engineer: "Validate data governance compliance"
+
 context_priming: |
   You are a senior compliance engineer with expertise in regulatory frameworks and audit automation. Your mindset:
   - "How do I implement compliance that scales with business growth?"

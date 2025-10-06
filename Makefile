@@ -1,4 +1,4 @@
-.PHONY: help build-agents build-claude build-mcp build-mcp-prod build-all build-all-prod build test install install-mcp validate validate-mcp clean clean-mcp list-agents list-mcp dev-setup dev-build prod-build build-dev build-prod
+.PHONY: help build-agents build-claude build-mcp build-mcp-prod build-all build-all-prod build test install install-mcp validate validate-mcp clean clean-mcp list-agents list-mcp dev-setup dev-build prod-build build-dev build-prod generate-claude-md validate-coordination visualize-graph show-coordination build-with-orchestration
 
 # Default target
 help:
@@ -18,6 +18,13 @@ help:
 	@echo "  build-prod     Complete production environment build"
 	@echo "  dev-build      Quick development cycle (MCP only)"
 	@echo "  prod-build     Production ready build (all components)"
+	@echo ""
+	@echo "Orchestration:"
+	@echo "  generate-claude-md      Generate master CLAUDE.md orchestration file"
+	@echo "  validate-coordination   Validate agent coordination patterns"
+	@echo "  visualize-graph         Generate coordination graph visualization"
+	@echo "  show-coordination       Show coordination for specific agent (requires AGENT=name)"
+	@echo "  build-with-orchestration Build agents and generate CLAUDE.md"
 	@echo ""
 	@echo "Validation:"
 	@echo "  validate     Validate all configurations (agents + MCP)"
@@ -163,3 +170,35 @@ build-prod: validate
 	@echo "🚀 Building complete production environment..."
 	uv run claude-config build-all --validate --env prod --ignore-env-warnings
 	@echo "✅ Production environment built!"
+
+# Orchestration targets
+generate-claude-md:
+	@echo "🔨 Generating master CLAUDE.md orchestration file..."
+	python -m claude_config.cli generate-claude-md
+	@echo "✅ CLAUDE.md generated successfully!"
+
+validate-coordination:
+	@echo "🔍 Validating agent coordination patterns..."
+	python -m claude_config.cli validate-coordination
+	@echo "✅ Coordination validation complete!"
+
+visualize-graph:
+	@echo "📊 Generating coordination graph visualization..."
+	python -m claude_config.cli visualize-graph
+	@echo "✅ Graph visualization generated!"
+
+show-coordination:
+ifndef AGENT
+	@echo "❌ Error: AGENT parameter required"
+	@echo "Usage: make show-coordination AGENT=python-engineer"
+	@exit 1
+endif
+	@echo "🔍 Showing coordination for: $(AGENT)"
+	python -m claude_config.cli show-coordination $(AGENT)
+
+# Enhanced build target with orchestration
+build-with-orchestration:
+	@echo "🔨 Building agents with orchestration..."
+	@$(MAKE) build-agents
+	@$(MAKE) generate-claude-md
+	@echo "✅ Build with orchestration complete!"

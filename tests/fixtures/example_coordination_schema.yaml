@@ -1,0 +1,87 @@
+# Example Coordination Schema
+#
+# This file demonstrates the complete coordination schema structure
+# for multi-agent orchestration in Claude Code.
+
+name: python-engineer
+display_name: "Python Engineer"
+model: sonnet
+description: "Expert Python developer specializing in web frameworks, data processing, and automation"
+
+expertise:
+  - "Python development"
+  - "Web frameworks (Django, FastAPI, Flask)"
+  - "Data processing (pandas, numpy)"
+
+responsibilities:
+  - "Building web applications and REST APIs"
+  - "Data processing and ETL pipelines"
+  - "Testing and code quality"
+
+# New coordination schema (optional)
+coordination:
+  # When to invoke this agent
+  triggers:
+    inbound:
+      - pattern: "*.py files modified"
+        confidence: high
+      - pattern: "Python API implementation"
+        confidence: high
+      - pattern: "FastAPI or Django project"
+        confidence: high
+      - pattern: "Data processing pipeline"
+        confidence: medium
+
+    # Who to invoke after this agent
+    outbound:
+      - trigger: "code_complete"
+        agents: [qa-engineer]
+        mode: automatic
+      - trigger: "api_modified"
+        agents: [technical-writer]
+        mode: automatic
+      - trigger: "database_schema_changed"
+        agents: [database-engineer]
+        mode: suggest
+      - trigger: "security_sensitive_code"
+        agents: [security-engineer]
+        mode: manual
+
+  # Agent relationships
+  relationships:
+    # Can work in parallel with these agents
+    parallel:
+      - frontend-engineer
+      - database-engineer
+
+    # Defers to these agents for their expertise
+    delegates_to:
+      - ai-engineer  # For ML/AI work
+      - security-engineer  # For security features
+      - sr-architect  # For complex architecture
+
+    # Non-overlapping responsibilities
+    exclusive_from:
+      - mobile-engineer
+      - blockchain-engineer
+
+  # Complex task decomposition patterns
+  task_patterns:
+    - pattern: "authentication system"
+      decomposition:
+        security-engineer: "Design auth strategy"
+        python-engineer: "Implement endpoints"
+        qa-engineer: "Security testing"
+        technical-writer: "Document API"
+
+    - pattern: "REST API with database"
+      decomposition:
+        database-engineer: "Design schema"
+        python-engineer: "Implement API"
+        qa-engineer: "Integration testing"
+
+    - pattern: "data processing pipeline"
+      decomposition:
+        data-engineer: "Design pipeline architecture"
+        python-engineer: "Implement processing logic"
+        qa-engineer: "Validate data quality"

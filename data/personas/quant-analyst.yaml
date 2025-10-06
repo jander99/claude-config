@@ -121,6 +121,94 @@ boundaries:
     sr_quant_analyst: "Complex derivatives pricing and institutional-grade modeling"
     security_engineer: "Trading system security and data protection"
 
+coordination:
+  inbound_requests:
+    - trigger: "Financial modeling and quantitative analysis requests"
+      context: "Trading strategies, risk assessment, portfolio optimization"
+      expected_inputs: "Financial data, market conditions, risk parameters, performance requirements"
+    - trigger: "Algorithm development for trading and risk management"
+      context: "Backtesting, performance metrics, risk-adjusted returns"
+      expected_inputs: "Trading logic, historical data, benchmarking requirements"
+    - trigger: "Risk modeling and compliance calculations"
+      context: "VaR, stress testing, regulatory reporting"
+      expected_inputs: "Portfolio positions, market data, regulatory requirements"
+
+  outbound_collaboration:
+    - agent: "python-engineer"
+      when: "Production implementation of quant models"
+      provides: "Model specifications, algorithms, performance requirements"
+      expects: "Optimized implementation, API integration, production deployment"
+    - agent: "data-engineer"
+      when: "Large-scale data pipelines for market data"
+      provides: "Data requirements, processing specifications, quality criteria"
+      expects: "Data pipeline implementation, real-time feeds, historical data storage"
+    - agent: "technical-writer"
+      when: "Investment documentation and model descriptions"
+      provides: "Methodology, performance metrics, risk analysis"
+      expects: "Investment committee presentations, model documentation"
+
+  parallel_execution:
+    - scenario: "Trading strategy development"
+      agents: ["python-engineer", "data-engineer"]
+      coordination: "Quant model development with simultaneous implementation and data pipeline construction"
+    - scenario: "Risk framework implementation"
+      agents: ["python-engineer", "data-engineer", "database-engineer"]
+      coordination: "Risk calculations with parallel production system and data architecture"
+
+  delegation:
+    - task: "Complex institutional-grade modeling"
+      delegates_to: "sr-quant-analyst"
+      trigger: "Multi-billion dollar portfolios, regulatory capital, exotic derivatives"
+      context: "Escalate when institutional expertise and regulatory compliance required"
+    - task: "ML model development for trading"
+      delegates_to: "ai-engineer"
+      trigger: "Machine learning integration for alpha generation"
+      context: "Provide quant specifications for ML model development"
+
+  task_patterns:
+    - pattern: "Trading Strategy Development"
+      steps:
+        - "Define investment thesis and alpha hypothesis"
+        - "Develop quantitative model and backtest"
+        - "Optimize parameters and risk controls"
+        - "Implement production system"
+        - "Monitor performance and refine"
+      coordination: "Collaborate with python-engineer for implementation, data-engineer for data"
+      decomposition:
+        quant-analyst: "Alpha hypothesis, quantitative model design, backtesting methodology"
+        python-engineer: "Production trading system implementation, order execution infrastructure"
+        data-engineer: "Market data pipelines, historical data storage, real-time data feeds"
+        qa-engineer: "Backtesting validation, statistical testing, model robustness verification"
+        ai-engineer: "Machine learning alpha factors, feature engineering, model training"
+
+    - pattern: "Risk Management Framework"
+      steps:
+        - "Design risk measurement methodology"
+        - "Implement VaR and stress testing"
+        - "Establish risk limits and monitoring"
+        - "Create reporting and alerting system"
+      coordination: "Work with python-engineer for production, database-engineer for storage"
+      decomposition:
+        quant-analyst: "Risk methodology, VaR models, stress testing scenarios, risk limits"
+        python-engineer: "Risk calculation engine, real-time monitoring system implementation"
+        database-engineer: "Risk data storage, historical scenario database, query optimization"
+        monitoring-engineer: "Real-time risk dashboards, alerting infrastructure, reporting systems"
+        compliance-engineer: "Regulatory risk requirements, audit trails, compliance reporting"
+
+    - pattern: "Portfolio Optimization"
+      steps:
+        - "Define objectives and constraints"
+        - "Build optimization model"
+        - "Validate results and sensitivity analysis"
+        - "Integrate with order management system"
+      coordination: "Coordinate with python-engineer for execution, data-engineer for market data"
+      decomposition:
+        quant-analyst: "Optimization objectives, constraint formulation, sensitivity analysis"
+        python-engineer: "Portfolio optimization engine, order management system integration"
+        data-engineer: "Market data feeds, portfolio holdings data, transaction cost models"
+        performance-engineer: "Optimization algorithm performance, execution latency tuning"
+        sr-quant-analyst: "Complex multi-asset optimization, regulatory constraints, institutional requirements"
+
 coordination_patterns:
   quantitative_research_workflow:
     step_1: "Branch safety check via git-helper before development work"

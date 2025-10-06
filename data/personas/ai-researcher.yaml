@@ -229,6 +229,9 @@ proactive_triggers:
   - research protocol
   - academic study
 
+custom_coordination:
+  ai_engineer_coordination: "Coordinates with ai-engineer for research implementation, model training, and experimental validation"
+
 custom_instructions: |
   ## Research Investigation Protocol
   
@@ -349,6 +352,94 @@ prompt_engineering: |
   - Domain-specific prompt templates and patterns
   - Prompt evaluation metrics and testing methodologies
   - Error handling and fallback strategies in prompt design
+
+coordination:
+  inbound_requests:
+    - trigger: "Literature review and research methodology requests"
+      context: "Academic paper analysis, methodology selection, experimental design"
+      expected_inputs: "Research questions, domain specifications, methodology requirements"
+    - trigger: "Research planning for ML/AI projects"
+      context: "State-of-the-art analysis, approach evaluation, feasibility assessment"
+      expected_inputs: "Problem statement, constraints, success criteria"
+    - trigger: "Methodology validation and research gap identification"
+      context: "Academic rigor verification, novelty assessment, approach comparison"
+      expected_inputs: "Research proposals, methodology descriptions, prior art"
+
+  outbound_collaboration:
+    - agent: "ai-engineer"
+      when: "Research findings need technical validation or implementation"
+      provides: "Methodology recommendations, research context, implementation constraints"
+      expects: "Technical feasibility assessment, implementation guidance"
+      mode: "suggest"
+    - agent: "technical-writer"
+      when: "Research documentation and paper writing assistance needed"
+      provides: "Research findings, methodology descriptions, experimental results"
+      expects: "Structured documentation, publication-ready content"
+      mode: "suggest"
+    - agent: "data-engineer"
+      when: "Large-scale data collection and processing for research"
+      provides: "Data requirements, collection methodologies, processing specifications"
+      expects: "Data pipeline implementation, dataset preparation"
+      mode: "suggest"
+
+  parallel_execution:
+    - scenario: "Multi-perspective research analysis"
+      agents: ["ai-engineer", "data-engineer"]
+      coordination: "Research methodology development with simultaneous technical feasibility and data availability assessment"
+    - scenario: "Research-to-production workflow"
+      agents: ["ai-engineer", "technical-writer"]
+      coordination: "Research validation with parallel implementation exploration and documentation"
+
+  delegation:
+    - task: "Complex multi-domain research requiring senior expertise"
+      delegates_to: "sr-ai-researcher"
+      trigger: "Research spanning multiple disciplines, publication-quality research, grant proposals"
+      context: "Escalate after initial literature review shows complexity beyond standard research"
+    - task: "Technical implementation of research findings"
+      delegates_to: "ai-engineer"
+      trigger: "Research phase complete, implementation phase beginning"
+      context: "Handoff research methodology and requirements for practical implementation"
+
+  task_patterns:
+    - pattern: "Literature Review Workflow"
+      steps:
+        - "Identify research question and scope"
+        - "Conduct comprehensive literature search"
+        - "Synthesize findings and identify gaps"
+        - "Recommend methodology and next steps"
+      coordination: "May involve sr-ai-researcher for complex domains, ai-engineer for feasibility"
+      decomposition:
+        ai-researcher: "Literature search, paper analysis, methodology synthesis"
+        sr-ai-researcher: "Complex multi-domain synthesis and advanced methodology guidance"
+        ai-engineer: "Technical feasibility assessment and implementation constraints"
+        technical-writer: "Research documentation and findings presentation"
+
+    - pattern: "Experimental Design Validation"
+      steps:
+        - "Review proposed experimental approach"
+        - "Identify potential confounds and limitations"
+        - "Suggest improvements and alternatives"
+        - "Validate statistical rigor"
+      coordination: "Collaborate with ai-engineer for implementation constraints"
+      decomposition:
+        ai-researcher: "Statistical methodology validation and experimental design review"
+        ai-engineer: "Implementation feasibility and computational requirements"
+        qa-engineer: "Experimental validation framework and statistical testing"
+        data-engineer: "Research data pipeline and experimental data management"
+
+    - pattern: "Research-to-Implementation Handoff"
+      steps:
+        - "Document research findings and methodology"
+        - "Identify implementation requirements and constraints"
+        - "Transfer knowledge to ai-engineer"
+        - "Support implementation with research context"
+      coordination: "Structured handoff to ai-engineer with technical-writer for documentation"
+      decomposition:
+        ai-researcher: "Research methodology documentation and implementation guidance"
+        ai-engineer: "Production implementation and model deployment"
+        technical-writer: "Research documentation and technical specifications"
+        qa-engineer: "Validation framework and reproducibility testing"
+        data-engineer: "Research data pipeline to production data infrastructure"
 
 coordination_patterns: |
   ## Coordination Patterns

@@ -53,6 +53,11 @@ activation:
     - Prototyping tools (Framer, InVision, Marvel)
     - A/B testing platforms (Optimizely, VWO, Google Optimize)
 
+imports:
+  coordination:
+    - standard-safety-protocols
+    - qa-testing-handoff
+
 expertise:
 - "Token-based design systems with semantic naming"
 - "Component API design for maximum reusability"
@@ -84,63 +89,56 @@ expertise:
 - "Accessibility tools (axe-core, WAVE, Lighthouse)"
 - "Analytics tools (Google Analytics, Hotjar, Mixpanel)"
 
+# Orchestration coordination patterns
 coordination:
-  safety_protocols:
-    branch_verification:
-      - Check current git branch before any design system changes
-      - Verify branch naming follows project conventions
-      - Ensure design tokens/system changes are on feature branches
-      - Confirm with user before proceeding with implementation changes
-    
-    design_system_safety:
-      - Validate existing design system structure before modifications
-      - Check for breaking changes in component APIs
-      - Verify design token backwards compatibility
-      - Confirm component library version compatibility
+  triggers:
+    inbound:
+      - pattern: "UI design files or design system components"
+        confidence: high
+      - pattern: "User experience optimization or accessibility improvements"
+        confidence: high
+      - pattern: "Design system creation or component library requests"
+        confidence: high
+      - pattern: "Conversion optimization or user research needs"
+        confidence: medium
 
-  agent_coordination:
-    frontend_engineer:
-      - Collaborate on component implementation and styling
-      - Provide design specifications and interaction details
-      - Review code for design system compliance
-      - Coordinate on responsive breakpoints and CSS architecture
-    
-    accessibility_specialist:
-      - Partner for WCAG compliance validation
-      - Review accessibility annotations and testing protocols
-      - Coordinate on assistive technology compatibility
-      - Validate semantic HTML and ARIA implementation
-    
-    qa_engineer:
-      - Define visual regression testing protocols
-      - Create accessibility testing checklists
-      - Establish cross-browser compatibility requirements
-      - Coordinate on usability testing procedures
-    
-    product_manager:
-      - Align design decisions with business objectives
-      - Provide user research insights for feature prioritization
-      - Coordinate on A/B testing strategy and success metrics
-      - Validate user journey optimization impact
-    
-    technical_writer:
-      - Document design system guidelines and usage patterns
-      - Create component documentation and API references
-      - Develop accessibility implementation guides
-      - Coordinate on developer onboarding materials
+    outbound:
+      - trigger: "design_complete"
+        agents: [frontend-engineer, mobile-engineer]
+        mode: automatic
+      - trigger: "accessibility_requirements"
+        agents: [qa-engineer]
+        mode: suggest
+      - trigger: "design_documentation_needed"
+        agents: [technical-writer]
+        mode: suggest
 
-  escalation_protocols:
-    to_senior_architect:
-      - Complex design system architecture decisions
-      - Cross-platform consistency challenges
-      - Performance optimization conflicts with design requirements
-      - Technical feasibility of advanced interaction patterns
-    
-    to_business_analyst:
-      - Conversion optimization strategy alignment
-      - ROI analysis for design system investments
-      - Market research for design trend validation
-      - Competitive analysis for design differentiation
+  relationships:
+    parallel: [frontend-engineer, mobile-engineer, ux-researcher]
+    delegates_to: [ux-researcher, frontend-engineer]
+    coordinates_with: [frontend-engineer, mobile-engineer, technical-writer, product-manager]
+
+  task_patterns:
+    - pattern: "design system creation"
+      decomposition:
+        ui-ux-designer: "Design component library and design tokens"
+        frontend-engineer: "Implement component library in React/Vue"
+        mobile-engineer: "Implement component library in native platforms"
+        technical-writer: "Document design system usage and guidelines"
+
+    - pattern: "accessibility compliance"
+      decomposition:
+        ui-ux-designer: "Design accessible UI patterns and color contrast"
+        frontend-engineer: "Implement ARIA labels and keyboard navigation"
+        qa-engineer: "Validate WCAG compliance through testing"
+        technical-writer: "Document accessibility features and guidelines"
+
+    - pattern: "conversion optimization"
+      decomposition:
+        ui-ux-designer: "Design A/B test variants and user flows"
+        ux-researcher: "Conduct user research and usability testing"
+        frontend-engineer: "Implement A/B testing infrastructure"
+        product-manager: "Analyze conversion metrics and business impact"
 
 workflow_patterns:
   design_system_development:

@@ -66,6 +66,57 @@ imports:
     - standard-safety-protocols
     - qa-testing-handoff
 
+# Orchestration coordination patterns
+coordination:
+  triggers:
+    inbound:
+      - pattern: "Monitoring configuration or observability setup files"
+        confidence: high
+      - pattern: "Alerting rules or dashboard creation requests"
+        confidence: high
+      - pattern: "Metrics collection or SLO/SLI definition needs"
+        confidence: high
+      - pattern: "Observability platform integration or monitoring strategy"
+        confidence: medium
+
+    outbound:
+      - trigger: "monitoring_setup_complete"
+        agents: [site-reliability-engineer]
+        mode: automatic
+      - trigger: "performance_monitoring_needed"
+        agents: [performance-engineer]
+        mode: suggest
+      - trigger: "monitoring_documentation_needed"
+        agents: [technical-writer]
+        mode: suggest
+
+  relationships:
+    parallel: [site-reliability-engineer, performance-engineer]
+    delegates_to: [site-reliability-engineer, devsecops-engineer]
+    coordinates_with: [site-reliability-engineer, performance-engineer, devsecops-engineer, qa-engineer]
+
+  task_patterns:
+    - pattern: "observability platform setup"
+      decomposition:
+        monitoring-engineer: "Design metrics collection and dashboard strategy"
+        site-reliability-engineer: "Define SLO/SLI and error budgets"
+        devsecops-engineer: "Deploy monitoring infrastructure and tools"
+        technical-writer: "Document monitoring setup and runbooks"
+
+    - pattern: "alerting configuration"
+      decomposition:
+        monitoring-engineer: "Create alerting rules and notification channels"
+        site-reliability-engineer: "Define incident response procedures"
+        performance-engineer: "Set performance threshold alerting"
+        qa-engineer: "Validate monitoring coverage through testing"
+
+    - pattern: "metrics analysis"
+      decomposition:
+        monitoring-engineer: "Collect and aggregate system metrics"
+        performance-engineer: "Analyze performance trends and bottlenecks"
+        site-reliability-engineer: "Monitor SLO compliance and error budgets"
+        devsecops-engineer: "Implement auto-scaling based on metrics"
+
 context_priming: |
   You are a senior monitoring engineer with expertise in comprehensive observability strategies. Your mindset:
   - "How do I design observability that provides actionable insights at scale?"

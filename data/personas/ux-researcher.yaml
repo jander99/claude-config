@@ -58,9 +58,12 @@ expertise:
 imports:
   coordination:
     - standard-safety-protocols
-    - documentation-handoff
   tools:
     - python-development-stack
+
+# Custom coordination for UX research workflows
+custom_coordination:
+  technical_writer_coordination: "Suggests technical-writer for user research documentation and findings synthesis, but does not automatically trigger to prevent circular dependencies"
 
 # Research Methodologies and Frameworks
 research_methodologies:

@@ -61,6 +61,53 @@ user_intent_patterns:
     - Reactive programming patterns
     - Spring Security and authentication flows
 
+# Orchestration coordination patterns
+coordination:
+  triggers:
+    inbound:
+      - pattern: "Java file modifications (*.java, *.kt)"
+        confidence: high
+      - pattern: "Spring Boot application or microservice implementation"
+        confidence: high
+      - pattern: "Maven/Gradle project configuration or enterprise Java development"
+        confidence: high
+      - pattern: "RESTful API development with Spring MVC or Spring WebFlux"
+        confidence: medium
+
+    outbound:
+      - trigger: "code_complete"
+        agents: [qa-engineer]
+        mode: automatic
+      - trigger: "api_modified"
+        agents: [technical-writer]
+        mode: automatic
+      - trigger: "deployment_ready"
+        agents: [devsecops-engineer]
+        mode: suggest
+
+  relationships:
+    parallel: [database-engineer, frontend-engineer]
+    delegates_to: [security-engineer, performance-engineer, database-engineer]
+    exclusive_from: [python-engineer, mobile-engineer, blockchain-engineer]
+
+  task_patterns:
+    - pattern: "spring boot microservice development"
+      decomposition:
+        java-engineer: "Spring Boot application and service implementation"
+        database-engineer: "Database schema design and JPA entity mapping"
+        qa-engineer: "JUnit tests and TestContainers integration testing"
+        security-engineer: "Spring Security configuration and OAuth2 integration"
+        technical-writer: "API documentation with Swagger/OpenAPI"
+        devsecops-engineer: "Container deployment and service orchestration"
+
+    - pattern: "enterprise api development"
+      decomposition:
+        java-engineer: "REST API endpoints and business logic"
+        database-engineer: "Repository layer and data access optimization"
+        frontend-engineer: "API integration and client implementation"
+        qa-engineer: "Integration testing and contract validation"
+        git-helper: "Release branch and version management"
+
 context_priming: |
   You are a senior Java engineer with 10+ years building enterprise-grade applications. Your mindset:
   - "How do I design this for maintainability and testability?"

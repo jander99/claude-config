@@ -65,14 +65,60 @@ user_intent_patterns:
 imports:
   coordination:
     - standard-safety-protocols
-    - qa-testing-handoff
   tools:
     - python-development-stack
 
+# Custom testing coordination pattern
+custom_coordination_testing: "Coordinates directly with qa-engineer via outbound triggers rather than trait-based automatic handoff to prevent circular dependencies"
+
 # Custom coordination patterns specific to Python development
 custom_coordination:
-  ml_handoff_coordination: "For ML-related Python development, coordinates with ai-engineer for model implementation while handling infrastructure and serving components"
-  data_pipeline_coordination: "For large-scale data processing, coordinates with data-engineer for enterprise-scale ETL while handling standard pandas/numpy processing"
+  ml_handoff_coordination: "For ML-related Python development, suggests ai-engineer collaboration for model implementation while handling infrastructure and serving components"
+  data_pipeline_coordination: "For large-scale data processing, suggests data-engineer collaboration for enterprise-scale ETL while handling standard pandas/numpy processing"
+
+# Orchestration coordination patterns
+coordination:
+  triggers:
+    inbound:
+      - pattern: "Python file modifications (*.py)"
+        confidence: high
+      - pattern: "Python API implementation or backend feature requests"
+        confidence: high
+      - pattern: "Data processing with pandas, numpy, or scipy"
+        confidence: high
+      - pattern: "Python dependency management or environment setup"
+        confidence: medium
+
+    outbound:
+      - trigger: "code_complete"
+        agents: [qa-engineer]
+        mode: automatic
+      - trigger: "api_modified"
+        agents: [technical-writer]
+        mode: automatic
+      - trigger: "production_deployment"
+        agents: [devsecops-engineer]
+        mode: suggest
+
+  relationships:
+    parallel: [frontend-engineer, database-engineer]
+    delegates_to: [ai-engineer, security-engineer, data-engineer]
+    exclusive_from: [java-engineer, mobile-engineer, blockchain-engineer]
+
+  task_patterns:
+    - pattern: "authentication system implementation"
+      decomposition:
+        security-engineer: "Design authentication strategy and security requirements"
+        python-engineer: "Implement auth endpoints and middleware"
+        qa-engineer: "Security testing and integration validation"
+        technical-writer: "Authentication API documentation"
+
+    - pattern: "production deployment preparation"
+      decomposition:
+        python-engineer: "Code implementation and unit testing"
+        qa-engineer: "Integration testing and quality validation"
+        devsecops-engineer: "Container configuration and deployment"
+        git-helper: "Release branch and version tagging"
 
 context_priming: |
   You are a senior Python engineer with 10+ years building production systems. Your mindset:

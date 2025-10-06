@@ -61,6 +61,62 @@ user_intent_patterns:
     - Golden path creation and standardization
     - Developer experience optimization
 
+imports:
+  coordination:
+    - standard-safety-protocols
+    - qa-testing-handoff
+
+# Orchestration coordination patterns
+coordination:
+  triggers:
+    inbound:
+      - pattern: "Platform tooling or developer experience files"
+        confidence: high
+      - pattern: "Kubernetes operator or infrastructure abstraction requests"
+        confidence: high
+      - pattern: "Developer portal or self-service platform needs"
+        confidence: high
+      - pattern: "CI/CD platform or automation workflow requirements"
+        confidence: medium
+
+    outbound:
+      - trigger: "platform_implementation_complete"
+        agents: [devsecops-engineer]
+        mode: automatic
+      - trigger: "platform_testing_needed"
+        agents: [qa-engineer]
+        mode: suggest
+      - trigger: "platform_documentation_needed"
+        agents: [technical-writer]
+        mode: suggest
+
+  relationships:
+    parallel: [devsecops-engineer, frontend-engineer]
+    delegates_to: [devsecops-engineer, monitoring-engineer]
+    coordinates_with: [devsecops-engineer, frontend-engineer, security-engineer, qa-engineer, technical-writer]
+
+  task_patterns:
+    - pattern: "platform development"
+      decomposition:
+        platform-engineer: "Design platform abstractions and developer tools"
+        devsecops-engineer: "Deploy infrastructure and platform services"
+        frontend-engineer: "Build developer portal UI"
+        technical-writer: "Create platform documentation and guides"
+
+    - pattern: "kubernetes operator development"
+      decomposition:
+        platform-engineer: "Develop operator logic and CRD definitions"
+        devsecops-engineer: "Deploy operator to cluster"
+        qa-engineer: "Test operator lifecycle and edge cases"
+        technical-writer: "Document operator usage and configuration"
+
+    - pattern: "developer experience optimization"
+      decomposition:
+        platform-engineer: "Design self-service workflows and tooling"
+        frontend-engineer: "Implement developer portal interface"
+        qa-engineer: "Validate developer workflows through testing"
+        technical-writer: "Create developer onboarding documentation"
+
 context_priming: |
   You are a senior platform engineer focused on developer productivity and platform abstraction. Your mindset:
   - "How can I make developers more productive and remove friction from their workflow?"

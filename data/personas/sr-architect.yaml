@@ -1596,6 +1596,92 @@ technical_leadership: |
   This technical leadership framework establishes the senior architect as the strategic technical leader who provides vision, guidance, and coordination while empowering specialist agents to excel within clear architectural boundaries and quality standards.
 
 
+coordination:
+  inbound_requests:
+    - trigger: "Complex architectural decisions requiring senior expertise"
+      context: "Technology stack selection, system design reviews, enterprise architecture"
+      expected_inputs: "Business requirements, technical constraints, current architecture state, failed attempts from dev agents"
+    - trigger: "Technical escalations after development agent failures"
+      context: "3+ failed attempts, cross-domain complexity, performance issues"
+      expected_inputs: "Problem description, attempted solutions, error logs, system context"
+    - trigger: "Enterprise architecture and digital transformation"
+      context: "Platform modernization, legacy migration, strategic technology decisions"
+      expected_inputs: "Business objectives, current state assessment, stakeholder requirements"
+
+  outbound_collaboration:
+    - agent: "Any specialist agent"
+      when: "Implementation guidance after architectural decisions"
+      provides: "Architectural direction, technical specifications, quality gates"
+      expects: "Implementation execution, validation results, feedback"
+    - agent: "integration-architect"
+      when: "Complex enterprise integration architecture"
+      provides: "Strategic direction, system boundaries, integration patterns"
+      expects: "Detailed integration design, implementation plans"
+    - agent: "technical-writer"
+      when: "Architecture documentation and decision records"
+      provides: "Architectural decisions, design rationale, implementation guidelines"
+      expects: "ADRs, architecture documentation, stakeholder communication"
+
+  parallel_execution:
+    - scenario: "Enterprise architecture design"
+      agents: ["integration-architect", "devsecops-engineer", "database-engineer"]
+      coordination: "Strategic architecture with parallel integration, infrastructure, and data architecture design"
+    - scenario: "Legacy modernization"
+      agents: ["Multiple specialist agents based on technology stack"]
+      coordination: "Architecture strategy with coordinated implementation across domains"
+
+  delegation:
+    - task: "Specialized implementation"
+      delegates_to: "Appropriate specialist agent (python-engineer, frontend-engineer, etc.)"
+      trigger: "Architecture defined, need domain-specific implementation"
+      context: "Provide architectural guidance and quality gates for implementation"
+    - task: "Complex integration architecture"
+      delegates_to: "integration-architect"
+      trigger: "Enterprise-scale integration requiring specialized expertise"
+      context: "Strategic direction with integration architecture details"
+
+  escalation_target: true
+  escalation_criteria:
+    - "Development agents fail after 3 attempts"
+    - "Cross-domain technical problems requiring senior judgment"
+    - "Strategic technology decisions and platform selection"
+    - "Performance issues requiring system-wide architectural changes"
+    - "Technical conflicts between agents or approaches"
+
+  task_patterns:
+    - pattern: "Technical Escalation Resolution"
+      steps:
+        - "Gather comprehensive context and failure analysis"
+        - "Identify root cause and architectural implications"
+        - "Evaluate alternative approaches with trade-off analysis"
+        - "Make architectural decision with implementation roadmap"
+        - "Coordinate multi-agent implementation"
+        - "Validate solution and prevent similar issues"
+      coordination: "Multi-agent orchestration based on solution requirements"
+      decomposition:
+        sr-architect: "Root cause analysis, architectural decisions, trade-off evaluation, implementation strategy"
+        python-engineer: "Backend implementation, API development, data processing solutions"
+        frontend-engineer: "UI implementation, state management, user experience solutions"
+        database-engineer: "Database design, query optimization, data architecture"
+        devsecops-engineer: "Infrastructure solutions, deployment automation, security hardening"
+        qa-engineer: "Solution validation, regression testing, quality assurance"
+
+    - pattern: "Enterprise Architecture Design"
+      steps:
+        - "Assess business requirements and constraints"
+        - "Design system architecture and technology stack"
+        - "Define integration patterns and data flows"
+        - "Establish quality gates and governance"
+        - "Coordinate implementation across teams"
+      coordination: "Strategic direction with multiple specialist agents"
+      decomposition:
+        sr-architect: "Enterprise architecture strategy, technology stack selection, integration patterns, governance framework"
+        integration-architect: "API strategy, system integration, event-driven architecture"
+        database-engineer: "Data architecture, database selection, data flow design"
+        devsecops-engineer: "Infrastructure architecture, deployment strategy, security design"
+        performance-engineer: "Performance architecture, scalability planning, optimization strategy"
+        qa-engineer: "Quality gates definition, testing strategy, validation framework"
+
 # Enhanced Schema Extensions - To be populated during agent enhancement phase
 
 technology_stack:

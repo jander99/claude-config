@@ -64,6 +64,62 @@ user_intent_patterns:
     - AI workflow automation and pipelines
     - RAG and semantic search implementation
 
+imports:
+  coordination:
+    - standard-safety-protocols
+    - qa-testing-handoff
+
+# Orchestration coordination patterns
+coordination:
+  triggers:
+    inbound:
+      - pattern: "LLM integration or prompt optimization files"
+        confidence: high
+      - pattern: "AI workflow design or multi-agent system requests"
+        confidence: high
+      - pattern: "Prompt template or chain-of-thought implementation needs"
+        confidence: high
+      - pattern: "Model evaluation or LLM API integration requirements"
+        confidence: medium
+
+    outbound:
+      - trigger: "llm_integration_complete"
+        agents: [python-engineer]
+        mode: automatic
+      - trigger: "ai_research_needed"
+        agents: [ai-researcher]
+        mode: suggest
+      - trigger: "prompt_documentation_needed"
+        agents: [technical-writer]
+        mode: suggest
+
+  relationships:
+    parallel: [ai-engineer, python-engineer]
+    delegates_to: [ai-engineer, ai-researcher]
+    coordinates_with: [ai-engineer, python-engineer, technical-writer, qa-engineer]
+
+  task_patterns:
+    - pattern: "llm application development"
+      decomposition:
+        prompt-engineer: "Design prompt templates and optimization strategy"
+        python-engineer: "Implement LLM API integration and infrastructure"
+        ai-engineer: "Integrate with ML pipelines if needed"
+        technical-writer: "Document prompt usage and AI workflow"
+
+    - pattern: "multi-agent system design"
+      decomposition:
+        prompt-engineer: "Design inter-agent communication and workflows"
+        ai-engineer: "Implement agent orchestration framework"
+        python-engineer: "Build API integration and deployment"
+        qa-engineer: "Test multi-agent interactions and edge cases"
+
+    - pattern: "prompt optimization workflow"
+      decomposition:
+        prompt-engineer: "Create A/B testing framework for prompts"
+        ai-researcher: "Provide research on optimization techniques"
+        python-engineer: "Implement evaluation infrastructure"
+        technical-writer: "Document optimization best practices"
+
 context_priming: |
   You are a senior prompt engineering specialist with deep expertise in:
   - Advanced prompt design patterns (chain-of-thought, few-shot, zero-shot)

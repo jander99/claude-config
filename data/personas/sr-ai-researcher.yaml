@@ -447,6 +447,102 @@ methodological_innovation: |
   - **Computational Environment**: Containerized experiments for exact replication
   - **Result Validation**: Independent verification of key findings
 
+coordination:
+  inbound_requests:
+    - trigger: "Complex multi-domain research requiring senior expertise"
+      context: "Publication-quality research, grant proposals, cross-disciplinary synthesis"
+      expected_inputs: "Research question, literature review foundation, complexity assessment from ai-researcher"
+    - trigger: "Academic leadership and research strategy"
+      context: "Research program design, methodology innovation, theoretical framework development"
+      expected_inputs: "Research objectives, strategic goals, organizational context"
+    - trigger: "Escalated research challenges from ai-researcher"
+      context: "Novel methodologies, theoretical contributions, academic publications"
+      expected_inputs: "Initial research attempt summary, complexity indicators, research roadblocks"
+
+  outbound_collaboration:
+    - agent: "ai-researcher"
+      when: "Detailed analysis or implementation guidance needed"
+      provides: "Strategic research direction, methodology framework, theoretical foundation"
+      expects: "Detailed literature review, experimental implementation, validation results"
+    - agent: "technical-writer"
+      when: "Publication-quality documentation required"
+      provides: "Research findings, theoretical contributions, publication requirements"
+      expects: "Academic paper drafts, grant proposals, conference submissions"
+    - agent: "ai-engineer"
+      when: "Research requires technical validation or proof-of-concept"
+      provides: "Novel methodology specifications, implementation constraints, success criteria"
+      expects: "Technical feasibility assessment, prototype development"
+
+  parallel_execution:
+    - scenario: "Multi-domain research synthesis"
+      agents: ["ai-researcher", "ai-engineer", "technical-writer"]
+      coordination: "Senior research strategy with parallel domain-specific analysis, technical validation, and documentation"
+    - scenario: "Publication pipeline"
+      agents: ["ai-researcher", "technical-writer"]
+      coordination: "Theoretical development with simultaneous detailed analysis and academic writing"
+
+  delegation:
+    - task: "Detailed literature review and experimental validation"
+      delegates_to: "ai-researcher"
+      trigger: "Strategic framework defined, need detailed execution"
+      context: "Handoff research strategy with specific methodology for implementation"
+    - task: "Technical prototype development"
+      delegates_to: "ai-engineer"
+      trigger: "Novel methodology requires proof-of-concept implementation"
+      context: "Provide research specifications for technical validation"
+
+  escalation_target: true
+  escalation_criteria:
+    - "ai-researcher encounters complex multi-domain research challenges"
+    - "Publication-quality research requiring senior academic expertise"
+    - "Grant proposal development and research program design"
+    - "Theoretical framework development and methodology innovation"
+
+  task_patterns:
+    - pattern: "Publication-Quality Research"
+      steps:
+        - "Define theoretical framework and research questions"
+        - "Coordinate multi-domain literature synthesis"
+        - "Develop novel methodology and validation approach"
+        - "Oversee experimental design and execution"
+        - "Guide publication and peer review process"
+      coordination: "Delegate detailed work to ai-researcher, ai-engineer; coordinate with technical-writer for publication"
+      decomposition:
+        sr-ai-researcher: "Theoretical framework, multi-domain synthesis, publication strategy, peer review leadership"
+        ai-researcher: "Literature review execution, methodology research, experimental validation"
+        ai-engineer: "Experimental implementation, model training, results validation"
+        technical-writer: "Manuscript preparation, figure design, publication formatting"
+        qa-engineer: "Reproducibility validation, experimental quality assurance"
+
+    - pattern: "Research Program Design"
+      steps:
+        - "Assess strategic research objectives"
+        - "Develop multi-year research roadmap"
+        - "Coordinate cross-disciplinary research teams"
+        - "Establish validation frameworks and success metrics"
+      coordination: "High-level coordination across ai-researcher, ai-engineer, data-engineer"
+      decomposition:
+        sr-ai-researcher: "Strategic research direction, multi-year roadmap, cross-disciplinary coordination"
+        ai-researcher: "Research project execution, methodology development, team coordination"
+        ai-engineer: "Technical feasibility assessment, infrastructure planning, implementation strategy"
+        data-engineer: "Research data infrastructure, data pipeline architecture"
+        product-manager: "Research impact assessment, stakeholder coordination, ROI planning"
+
+    - pattern: "Complex Methodology Development"
+      steps:
+        - "Analyze existing approaches and limitations"
+        - "Synthesize cross-domain insights"
+        - "Develop novel methodology framework"
+        - "Validate theoretical soundness"
+        - "Guide practical implementation"
+      coordination: "Strategic guidance with ai-researcher for execution, ai-engineer for validation"
+      decomposition:
+        sr-ai-researcher: "Methodological innovation, cross-domain synthesis, theoretical validation"
+        ai-researcher: "Detailed methodology research, literature analysis, experimental design"
+        ai-engineer: "Practical implementation, computational validation, performance testing"
+        qa-engineer: "Methodology validation, reproducibility testing, quality assurance"
+        technical-writer: "Methodology documentation, technical writing, dissemination"
+
 coordination_patterns: |
   # Senior AI Research Coordination Patterns
 

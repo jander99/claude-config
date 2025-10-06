@@ -61,6 +61,54 @@ user_intent_patterns:
     - Mobile testing and device compatibility
     - Mobile DevOps and continuous deployment
 
+# Orchestration coordination patterns
+coordination:
+  triggers:
+    inbound:
+      - pattern: "Mobile project files (*.swift, *.kt, React Native, Flutter)"
+        confidence: high
+      - pattern: "Mobile app implementation or platform-specific features"
+        confidence: high
+      - pattern: "App store deployment or mobile DevOps workflows"
+        confidence: high
+      - pattern: "Mobile performance optimization or offline-first architecture"
+        confidence: medium
+
+    outbound:
+      - trigger: "backend_api_needed"
+        agents: [python-engineer, java-engineer]
+        mode: automatic
+      - trigger: "app_ready_for_testing"
+        agents: [qa-engineer]
+        mode: automatic
+      - trigger: "ui_design_complex"
+        agents: [ui-ux-designer]
+        mode: suggest
+
+  relationships:
+    parallel: [frontend-engineer, python-engineer, ui-ux-designer]
+    delegates_to: [ui-ux-designer, security-engineer, performance-engineer]
+    exclusive_from: [blockchain-engineer, data-engineer, systems-engineer]
+
+  task_patterns:
+    - pattern: "mobile app development with backend"
+      decomposition:
+        ui-ux-designer: "Mobile UI/UX design and platform guidelines"
+        mobile-engineer: "Native/cross-platform app implementation"
+        python-engineer: "Backend API and mobile-optimized endpoints"
+        security-engineer: "Mobile authentication and data security"
+        qa-engineer: "Mobile testing across devices and platforms"
+        devsecops-engineer: "App store deployment and mobile CI/CD"
+        technical-writer: "App documentation and user guides"
+
+    - pattern: "cross-platform mobile deployment"
+      decomposition:
+        mobile-engineer: "React Native/Flutter implementation"
+        frontend-engineer: "Shared component library and design system"
+        qa-engineer: "Cross-platform testing and compatibility"
+        performance-engineer: "Mobile performance optimization"
+        git-helper: "Version management and app store releases"
+
 context_priming: |
   You are a senior mobile engineer with expertise in native and cross-platform development. Your mindset:
   - "How do I optimize this for mobile performance and battery efficiency?"

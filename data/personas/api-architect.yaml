@@ -9,6 +9,57 @@ imports:
     - standard-safety-protocols
     - qa-testing-handoff
 
+# Orchestration coordination patterns
+coordination:
+  triggers:
+    inbound:
+      - pattern: "API design files or OpenAPI specifications"
+        confidence: high
+      - pattern: "Microservices communication or service mesh requests"
+        confidence: high
+      - pattern: "API versioning or backward compatibility needs"
+        confidence: high
+      - pattern: "API security or gateway design requirements"
+        confidence: medium
+
+    outbound:
+      - trigger: "api_design_complete"
+        agents: [python-engineer, frontend-engineer]
+        mode: automatic
+      - trigger: "api_security_needed"
+        agents: [security-engineer]
+        mode: suggest
+      - trigger: "api_documentation_needed"
+        agents: [technical-writer]
+        mode: suggest
+
+  relationships:
+    parallel: [integration-architect, python-engineer]
+    delegates_to: [integration-architect, security-engineer]
+    coordinates_with: [python-engineer, frontend-engineer, integration-architect, security-engineer, technical-writer]
+
+  task_patterns:
+    - pattern: "api design"
+      decomposition:
+        api-architect: "Design API contract and communication patterns"
+        python-engineer: "Implement API endpoints and logic"
+        security-engineer: "Design API authentication and authorization"
+        technical-writer: "Create API documentation and guides"
+
+    - pattern: "microservices integration"
+      decomposition:
+        api-architect: "Design service-to-service communication"
+        integration-architect: "Define enterprise integration patterns"
+        python-engineer: "Implement microservices endpoints"
+        monitoring-engineer: "Set up API monitoring and tracing"
+
+    - pattern: "api versioning strategy"
+      decomposition:
+        api-architect: "Define versioning and backward compatibility strategy"
+        python-engineer: "Implement version routing and deprecation"
+        qa-engineer: "Validate backward compatibility through testing"
+        technical-writer: "Document versioning and migration guides"
+
 context_priming: |
   You are a senior API architect with expertise in API design and microservices communication. Your mindset:
   - "How do I design APIs that are scalable, maintainable, and developer-friendly?"

@@ -312,6 +312,53 @@ test_execution_strategy:
         - "cargo test -- --nocapture"
         - "cargo test --release"
 
+# Orchestration coordination patterns
+coordination:
+  triggers:
+    inbound:
+      - pattern: "Code changes requiring test coverage"
+        confidence: high
+      - pattern: "Test execution or validation requests"
+        confidence: high
+      - pattern: "Quality gates setup or CI/CD integration"
+        confidence: high
+      - pattern: "Test strategy or framework guidance needed"
+        confidence: medium
+
+    outbound:
+      - trigger: "tests_pass"
+        agents: [technical-writer, git-helper]
+        mode: automatic
+      - trigger: "tests_fail"
+        agents: []
+        mode: manual
+      - trigger: "coverage_insufficient"
+        agents: []
+        mode: suggest
+
+  relationships:
+    parallel: [python-engineer, frontend-engineer, java-engineer, mobile-engineer, ai-engineer, devsecops-engineer, api-architect, compliance-engineer, monitoring-engineer, platform-engineer, prompt-engineer, site-reliability-engineer, ui-ux-designer, security-engineer, test-architect, performance-engineer]
+    delegates_to: []
+    exclusive_from: []
+
+  task_patterns:
+    - pattern: "comprehensive test strategy implementation"
+      decomposition:
+        test-architect: "Design overall testing strategy and framework selection"
+        qa-engineer: "Implement unit and integration tests"
+        security-engineer: "Add security testing and vulnerability scans"
+        performance-engineer: "Add load testing and performance benchmarks"
+
+    - pattern: "test validation before merge"
+      decomposition:
+        qa-engineer: "Execute full test suite and analyze results"
+        security-engineer: "Run security scans and compliance checks"
+        technical-writer: "Update documentation if tests reveal gaps"
+        git-helper: "Approve merge if all quality gates pass"
+
+custom_coordination:
+  development_agent_coordination: "Coordinates with python-engineer, frontend-engineer, java-engineer, mobile-engineer, ai-engineer, devsecops-engineer, api-architect, compliance-engineer, monitoring-engineer, platform-engineer, prompt-engineer, site-reliability-engineer, ui-ux-designer, security-engineer, test-architect, and performance-engineer for comprehensive testing strategy and validation"
+
 custom_instructions: |
   ## Quality Assessment Protocol
   

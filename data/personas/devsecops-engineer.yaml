@@ -63,6 +63,52 @@ user_intent_patterns:
     - Incident response automation
     - Compliance automation and enforcement
 
+# Orchestration coordination patterns
+coordination:
+  triggers:
+    inbound:
+      - pattern: "Infrastructure files (Dockerfile, K8s manifests, Terraform, CI/CD)"
+        confidence: high
+      - pattern: "Container security, Kubernetes deployments, or cloud infrastructure"
+        confidence: high
+      - pattern: "Security automation, compliance requirements, or zero-trust architecture"
+        confidence: high
+      - pattern: "Secure CI/CD pipeline or vulnerability management"
+        confidence: medium
+
+    outbound:
+      - trigger: "infrastructure_deployed"
+        agents: [monitoring-engineer, security-engineer]
+        mode: automatic
+      - trigger: "security_scan_complete"
+        agents: [qa-engineer]
+        mode: automatic
+      - trigger: "compliance_validation_needed"
+        agents: [compliance-engineer]
+        mode: suggest
+
+  relationships:
+    parallel: [devsecops-engineer, security-engineer, monitoring-engineer]
+    delegates_to: [security-engineer, compliance-engineer, monitoring-engineer]
+    exclusive_from: []
+
+  task_patterns:
+    - pattern: "secure kubernetes deployment"
+      decomposition:
+        devsecops-engineer: "Kubernetes security hardening and policy enforcement"
+        security-engineer: "Security audit and vulnerability assessment"
+        monitoring-engineer: "Security observability and threat detection"
+        qa-engineer: "Security testing and compliance validation"
+        compliance-engineer: "Regulatory compliance verification"
+
+    - pattern: "secure cicd pipeline"
+      decomposition:
+        devsecops-engineer: "CI/CD security controls and scanning integration"
+        security-engineer: "Security gate definitions and approval workflows"
+        qa-engineer: "Automated security testing integration"
+        git-helper: "Secure version control and branch protection"
+        monitoring-engineer: "Pipeline security monitoring and alerting"
+
 imports:
   coordination:
     - standard-safety-protocols

@@ -18,14 +18,66 @@ when_to_use: |
 imports:
   coordination:
     - standard-safety-protocols
-    - qa-testing-handoff
   tools:
     - python-development-stack
 
+# Custom QA coordination
+custom_coordination_qa: "Coordinates with qa-engineer via explicit outbound triggers rather than trait-based automatic handoff to prevent circular dependencies in the coordination graph"
+
 # Custom coordination patterns specific to AI/ML development
 custom_coordination:
-  ai_researcher_coordination: "Coordinates with ai-researcher for complex methodology guidance, research implementation, and statistical validation"
+  ai_researcher_coordination: "Suggests ai-researcher collaboration for complex methodology guidance when needed, but does not automatically trigger to prevent circular dependencies"
   model_validation_coordination: "Self-managed model testing with comprehensive benchmarks, performance metrics, and bias analysis"
+
+# Orchestration coordination patterns
+coordination:
+  triggers:
+    inbound:
+      - pattern: "ML/AI file modifications (*.py, *.ipynb, model training scripts)"
+        confidence: high
+      - pattern: "Model training, deployment, or inference implementation requests"
+        confidence: high
+      - pattern: "PyTorch, TensorFlow, transformers, or data science library usage"
+        confidence: high
+      - pattern: "ML pipeline development or model serving infrastructure"
+        confidence: medium
+
+    outbound:
+      - trigger: "model_trained"
+        agents: [performance-engineer]
+        mode: automatic
+      - trigger: "model_testing_needed"
+        agents: [qa-engineer]
+        mode: suggest
+      - trigger: "model_deployed"
+        agents: [technical-writer, devsecops-engineer]
+        mode: automatic
+      - trigger: "research_methodology_needed"
+        agents: [ai-researcher]
+        mode: suggest
+
+  relationships:
+    parallel: [python-engineer, data-engineer]
+    delegates_to: [ai-researcher, performance-engineer, data-engineer]
+    exclusive_from: [java-engineer, blockchain-engineer, mobile-engineer, frontend-engineer]
+
+  task_patterns:
+    - pattern: "ml model development and deployment"
+      decomposition:
+        ai-researcher: "Research methodology and experimental design"
+        data-engineer: "Data pipeline and feature engineering"
+        ai-engineer: "Model training, validation, and deployment"
+        qa-engineer: "ML testing strategy and model validation"
+        performance-engineer: "Inference optimization and monitoring"
+        technical-writer: "Model documentation and API guides"
+
+    - pattern: "production ml pipeline"
+      decomposition:
+        ai-engineer: "Model training and serialization"
+        python-engineer: "Serving infrastructure and API endpoints"
+        data-engineer: "Feature store and data versioning"
+        devsecops-engineer: "Container deployment and scaling"
+        qa-engineer: "Model monitoring and quality validation"
 
 context_priming: |
   You are a senior AI/ML engineer with deep expertise in modern deep learning. Your mindset:

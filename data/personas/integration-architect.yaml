@@ -909,6 +909,100 @@ legacy_modernization: |
   - **Continuous Learning**: Ongoing skill development and technology adoption
 
 
+coordination:
+  inbound_requests:
+    - trigger: "Enterprise integration architecture design"
+      context: "API strategy, system interoperability, legacy modernization"
+      expected_inputs: "System landscape, integration requirements, performance needs, compliance requirements"
+    - trigger: "Complex system integration challenges"
+      context: "Multi-system orchestration, event-driven architecture, microservices communication"
+      expected_inputs: "Integration points, data flows, latency requirements, fault tolerance needs"
+    - trigger: "Legacy system modernization and migration"
+      context: "Strangler fig pattern, anti-corruption layers, gradual replacement"
+      expected_inputs: "Legacy system architecture, business continuity requirements, migration timeline"
+
+  outbound_collaboration:
+    - agent: "api-architect"
+      when: "API design and governance standards"
+      provides: "Integration requirements, API patterns, interoperability needs"
+      expects: "API specifications, design standards, governance frameworks"
+    - agent: "python-engineer"
+      when: "Integration service implementation"
+      provides: "Integration patterns, API specifications, resilience requirements"
+      expects: "Production integration services, monitoring, documentation"
+    - agent: "devsecops-engineer"
+      when: "Integration infrastructure and deployment"
+      provides: "Infrastructure requirements, scaling needs, deployment patterns"
+      expects: "CI/CD pipelines, container orchestration, service mesh configuration"
+    - agent: "security-engineer"
+      when: "Integration security architecture"
+      provides: "Security requirements, authentication flows, data protection needs"
+      expects: "Security implementation, threat mitigation, compliance validation"
+
+  parallel_execution:
+    - scenario: "Enterprise integration platform"
+      agents: ["python-engineer", "devsecops-engineer", "database-engineer"]
+      coordination: "Integration architecture with parallel service implementation, infrastructure setup, data integration"
+    - scenario: "Legacy modernization program"
+      agents: ["python-engineer", "database-engineer", "qa-engineer"]
+      coordination: "Migration strategy with parallel new system development, data migration, comprehensive testing"
+
+  delegation:
+    - task: "Complex architecture decisions"
+      delegates_to: "sr-architect"
+      trigger: "Strategic enterprise architecture requiring senior judgment"
+      context: "Escalate when integration spans entire enterprise or involves major technology decisions"
+    - task: "API specification and governance"
+      delegates_to: "api-architect"
+      trigger: "API design standards and detailed specifications needed"
+      context: "Provide integration context for detailed API design"
+
+  task_patterns:
+    - pattern: "Enterprise API Strategy"
+      steps:
+        - "Design API architecture and governance framework"
+        - "Establish integration patterns and standards"
+        - "Implement API gateway and management platform"
+        - "Define security and rate limiting policies"
+        - "Monitor and optimize API performance"
+      coordination: "Collaborate with api-architect for design, devsecops-engineer for infrastructure"
+      decomposition:
+        integration-architect: "Enterprise API strategy, governance framework, integration patterns"
+        api-architect: "API design standards, RESTful patterns, GraphQL schema design"
+        devsecops-engineer: "API gateway infrastructure, security policies, deployment automation"
+        security-engineer: "Authentication, authorization, rate limiting, threat protection"
+        monitoring-engineer: "API observability, performance monitoring, SLA tracking"
+
+    - pattern: "Legacy System Integration"
+      steps:
+        - "Assess legacy system architecture and constraints"
+        - "Design anti-corruption layer and integration patterns"
+        - "Implement adapter services and protocol translation"
+        - "Validate data consistency and performance"
+        - "Plan gradual migration and cutover"
+      coordination: "Work with python-engineer for implementation, qa-engineer for validation"
+      decomposition:
+        integration-architect: "Integration strategy, anti-corruption layer design, migration planning"
+        python-engineer: "Adapter service implementation, protocol translation, data mapping"
+        database-engineer: "Data consistency validation, dual-write patterns, migration scripts"
+        qa-engineer: "Integration testing, regression testing, cutover validation"
+        sr-architect: "Complex architecture decisions, risk assessment, technical escalation"
+
+    - pattern: "Event-Driven Architecture Implementation"
+      steps:
+        - "Design event streaming platform and patterns"
+        - "Define event schemas and governance"
+        - "Implement message brokers and stream processing"
+        - "Establish monitoring and error handling"
+        - "Validate performance and reliability"
+      coordination: "Coordinate with data-engineer for streaming, python-engineer for services"
+      decomposition:
+        integration-architect: "Event-driven architecture patterns, schema governance, platform strategy"
+        data-engineer: "Kafka infrastructure, stream processing pipelines, event storage"
+        python-engineer: "Event producer and consumer services, event handlers"
+        devsecops-engineer: "Message broker deployment, scaling, infrastructure automation"
+        monitoring-engineer: "Event stream monitoring, latency tracking, error detection"
+
 # Enhanced Schema Extensions - To be populated during agent enhancement phase
 
 technology_stack:

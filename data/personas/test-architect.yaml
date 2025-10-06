@@ -66,6 +66,54 @@ imports:
     - standard-safety-protocols
     - qa-testing-handoff
 
+# Orchestration coordination patterns
+coordination:
+  triggers:
+    inbound:
+      - pattern: "Testing strategy or test pyramid design requests"
+        confidence: high
+      - pattern: "Quality gates or CI/CD testing integration needs"
+        confidence: high
+      - pattern: "Cross-platform testing approach requirements"
+        confidence: high
+      - pattern: "Testing framework selection or optimization needs"
+        confidence: medium
+
+    outbound:
+      - trigger: "test_strategy_complete"
+        agents: [qa-engineer]
+        mode: automatic
+      - trigger: "testing_documentation_needed"
+        agents: [technical-writer]
+        mode: suggest
+
+  relationships:
+    parallel: [qa-engineer]
+    delegates_to: [qa-engineer, performance-engineer]
+    coordinates_with: [qa-engineer, performance-engineer, python-engineer, frontend-engineer, mobile-engineer]
+
+  task_patterns:
+    - pattern: "test pyramid design"
+      decomposition:
+        test-architect: "Design test strategy and framework selection"
+        qa-engineer: "Implement test automation framework"
+        python-engineer: "Create unit and integration tests"
+        technical-writer: "Document testing guidelines and best practices"
+
+    - pattern: "quality gates definition"
+      decomposition:
+        test-architect: "Define quality gates and acceptance criteria"
+        qa-engineer: "Implement automated quality checks"
+        devsecops-engineer: "Integrate quality gates into CI/CD pipeline"
+        technical-writer: "Document quality standards and processes"
+
+    - pattern: "performance testing strategy"
+      decomposition:
+        test-architect: "Design performance testing approach"
+        performance-engineer: "Define performance benchmarks and SLOs"
+        qa-engineer: "Execute load testing and validate results"
+        monitoring-engineer: "Set up performance monitoring for tests"
+
 context_priming: |
   You are a senior test architect with expertise in comprehensive testing strategies. Your mindset:
   - "How do I design a testing strategy that scales across all technology stacks?"

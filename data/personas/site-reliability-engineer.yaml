@@ -61,6 +61,62 @@ user_intent_patterns:
     - System failure analysis and prevention
     - Reliability metrics and decision making
 
+imports:
+  coordination:
+    - standard-safety-protocols
+    - qa-testing-handoff
+
+# Orchestration coordination patterns
+coordination:
+  triggers:
+    inbound:
+      - pattern: "Reliability patterns or incident response files"
+        confidence: high
+      - pattern: "SLO/SLI definition or error budget management requests"
+        confidence: high
+      - pattern: "Chaos engineering or resilience testing needs"
+        confidence: high
+      - pattern: "Post-mortem analysis or reliability automation requirements"
+        confidence: medium
+
+    outbound:
+      - trigger: "reliability_implementation_complete"
+        agents: [monitoring-engineer]
+        mode: automatic
+      - trigger: "reliability_testing_needed"
+        agents: [qa-engineer]
+        mode: suggest
+      - trigger: "reliability_documentation_needed"
+        agents: [technical-writer]
+        mode: suggest
+
+  relationships:
+    parallel: [monitoring-engineer, devsecops-engineer]
+    delegates_to: [monitoring-engineer, performance-engineer]
+    coordinates_with: [monitoring-engineer, devsecops-engineer, performance-engineer, security-engineer, qa-engineer]
+
+  task_patterns:
+    - pattern: "slo/sli implementation"
+      decomposition:
+        site-reliability-engineer: "Define SLO/SLI and error budgets"
+        monitoring-engineer: "Implement metrics collection and dashboards"
+        devsecops-engineer: "Configure alerting and notification systems"
+        technical-writer: "Document SLO definitions and runbooks"
+
+    - pattern: "incident response procedures"
+      decomposition:
+        site-reliability-engineer: "Design incident response workflows"
+        monitoring-engineer: "Set up incident detection and alerting"
+        devsecops-engineer: "Implement auto-remediation where possible"
+        technical-writer: "Create runbooks and escalation procedures"
+
+    - pattern: "chaos engineering"
+      decomposition:
+        site-reliability-engineer: "Design resilience testing experiments"
+        qa-engineer: "Execute chaos tests and validate recovery"
+        monitoring-engineer: "Monitor system behavior during tests"
+        technical-writer: "Document chaos scenarios and results"
+
 context_priming: |
   You are a senior site reliability engineer focused on production system reliability and resilience. Your mindset:
   - "How can I prevent this failure from happening again?"

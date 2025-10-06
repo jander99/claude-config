@@ -61,6 +61,53 @@ user_intent_patterns:
     - NFT and marketplace development
     - DAO governance and voting mechanisms
 
+# Orchestration coordination patterns
+coordination:
+  triggers:
+    inbound:
+      - pattern: "Smart contract files (*.sol, *.vy, blockchain config)"
+        confidence: high
+      - pattern: "DeFi protocol development or Web3 application implementation"
+        confidence: high
+      - pattern: "Security auditing, gas optimization, or tokenomics design"
+        confidence: high
+      - pattern: "NFT marketplace or DAO governance development"
+        confidence: medium
+
+    outbound:
+      - trigger: "contract_deployed"
+        agents: [security-engineer, qa-engineer]
+        mode: automatic
+      - trigger: "web3_frontend_needed"
+        agents: [frontend-engineer]
+        mode: automatic
+      - trigger: "tokenomics_complex"
+        agents: [quant-analyst]
+        mode: suggest
+
+  relationships:
+    parallel: [frontend-engineer]
+    delegates_to: [security-engineer, quant-analyst, performance-engineer]
+    exclusive_from: [python-engineer, java-engineer, mobile-engineer, data-engineer]
+
+  task_patterns:
+    - pattern: "defi protocol development"
+      decomposition:
+        blockchain-engineer: "Smart contract development and gas optimization"
+        security-engineer: "Security audit and vulnerability assessment"
+        frontend-engineer: "Web3 dApp interface and wallet integration"
+        qa-engineer: "Contract testing with Hardhat/Foundry"
+        quant-analyst: "Tokenomics modeling and economic analysis"
+        technical-writer: "Protocol documentation and integration guides"
+
+    - pattern: "secure smart contract deployment"
+      decomposition:
+        blockchain-engineer: "Contract implementation and testing"
+        security-engineer: "Comprehensive security audit"
+        qa-engineer: "Automated testing and formal verification"
+        devsecops-engineer: "Deployment infrastructure and monitoring"
+        git-helper: "Version control and release management"
+
 context_priming: |
   You are a senior blockchain engineer with deep expertise in Web3 development. Your mindset:
   - "How do I ensure this smart contract is secure and gas-efficient?"

@@ -21,6 +21,57 @@ imports:
   performance:
     - performance-benchmarking-standards
 
+# Orchestration coordination patterns
+coordination:
+  triggers:
+    inbound:
+      - pattern: "Performance testing files or load testing configurations"
+        confidence: high
+      - pattern: "Application optimization or performance improvement requests"
+        confidence: high
+      - pattern: "Scalability analysis or capacity planning needs"
+        confidence: high
+      - pattern: "Performance monitoring setup or metrics collection"
+        confidence: medium
+
+    outbound:
+      - trigger: "performance_optimization_complete"
+        agents: [qa-engineer]
+        mode: automatic
+      - trigger: "monitoring_setup_needed"
+        agents: [monitoring-engineer]
+        mode: suggest
+      - trigger: "performance_documentation_needed"
+        agents: [technical-writer]
+        mode: suggest
+
+  relationships:
+    parallel: [database-engineer, systems-engineer]
+    delegates_to: [sr-architect, database-engineer]
+    coordinates_with: [monitoring-engineer, qa-engineer, database-engineer, python-engineer, frontend-engineer]
+
+  task_patterns:
+    - pattern: "application optimization"
+      decomposition:
+        performance-engineer: "Profile application and identify bottlenecks"
+        database-engineer: "Optimize database queries and indexing"
+        python-engineer: "Implement code-level optimizations"
+        qa-engineer: "Validate performance improvements through testing"
+
+    - pattern: "load testing setup"
+      decomposition:
+        performance-engineer: "Design load testing strategy and scenarios"
+        qa-engineer: "Execute load tests and validate results"
+        monitoring-engineer: "Set up performance monitoring and alerting"
+        technical-writer: "Document performance baselines and SLOs"
+
+    - pattern: "scalability planning"
+      decomposition:
+        performance-engineer: "Analyze scalability requirements and bottlenecks"
+        sr-architect: "Design scalable architecture patterns"
+        monitoring-engineer: "Implement capacity monitoring and alerting"
+        devsecops-engineer: "Configure auto-scaling and infrastructure"
+
 context_priming: |
   You are a senior performance engineer with deep expertise in system optimization and scalability. Your mindset:
   - "What are the bottlenecks and how do I measure them?"

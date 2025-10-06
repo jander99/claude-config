@@ -80,6 +80,213 @@ proactive_triggers:
     - "Flutter"
 ```
 
+## Orchestration Features
+
+The toolkit includes advanced orchestration commands for generating master coordination files, validating agent relationships, and visualizing the agent ecosystem.
+
+### Generate Master CLAUDE.md
+
+Generate the master orchestration file that Claude Code uses for agent delegation decisions:
+
+```bash
+# Generate to default location (~/.claude/CLAUDE.md)
+make generate-claude-md
+
+# Generate to custom location
+python -m claude_config.cli generate-claude-md --output dist/CLAUDE.md
+
+# Skip validation (not recommended)
+python -m claude_config.cli generate-claude-md --no-validate
+
+# Preview without writing
+python -m claude_config.cli generate-claude-md --dry-run
+```
+
+**What it does:**
+- Loads all agent YAML configurations
+- Extracts coordination patterns and relationships
+- Validates the coordination graph for cycles and consistency
+- Generates optimized CLAUDE.md with delegation rules
+
+### Validate Coordination Patterns
+
+Perform comprehensive validation of agent coordination patterns:
+
+```bash
+# Validate all agents
+make validate-coordination
+
+# Validate specific agent
+python -m claude_config.cli validate-coordination --agent python-engineer
+
+# Attempt to fix common warnings
+python -m claude_config.cli validate-coordination --fix-warnings
+```
+
+**Validation checks:**
+- Circular dependency detection
+- Bidirectional coordination consistency
+- Unreachable agent detection
+- Trait validation
+- Entry point verification
+
+### Visualize Coordination Graph
+
+Generate visual representations of the agent coordination graph:
+
+```bash
+# Display Mermaid diagram in terminal
+make visualize-graph
+
+# Save Mermaid diagram to file
+python -m claude_config.cli visualize-graph --output coordination.md
+
+# Generate JSON representation
+python -m claude_config.cli visualize-graph --format json --output graph.json
+
+# Limit visualization size
+python -m claude_config.cli visualize-graph --max-nodes 20
+```
+
+**Output formats:**
+- **Mermaid**: Interactive diagrams (default)
+- **JSON**: Structured graph data
+- **DOT**: Graphviz format (planned)
+
+### Show Agent Coordination
+
+Display detailed coordination information for specific agents:
+
+```bash
+# Show coordination for python-engineer
+make show-coordination AGENT=python-engineer
+
+# Show coordination for qa-engineer
+make show-coordination AGENT=qa-engineer
+```
+
+**Displays:**
+- Outbound coordination (who this agent coordinates with)
+- Inbound coordination (who coordinates with this agent)
+- Coordination traits used
+- Custom coordination patterns
+- Proactive trigger patterns
+
+### Build with Orchestration
+
+Build agents and generate orchestration file in one command:
+
+```bash
+# Build all agents and generate CLAUDE.md
+make build-with-orchestration
+
+# Build agents separately then orchestration
+make build-agents
+make generate-claude-md
+```
+
+**Workflow integration:**
+1. Validates all agent configurations
+2. Builds agent markdown files
+3. Validates coordination patterns
+4. Generates optimized CLAUDE.md
+
+## CLI Reference
+
+### Core Commands
+
+```bash
+# Build agent configurations
+make build-agents
+
+# Install to ~/.claude/
+make install
+
+# Validate YAML configurations
+make validate
+
+# List available agents
+make list-agents
+```
+
+### Orchestration Commands
+
+```bash
+# Generate CLAUDE.md orchestration file
+make generate-claude-md
+
+# Validate coordination patterns
+make validate-coordination
+
+# Visualize coordination graph
+make visualize-graph
+
+# Show agent coordination details
+make show-coordination AGENT=agent-name
+
+# Build with orchestration
+make build-with-orchestration
+```
+
+### Advanced Options
+
+For advanced usage with custom options, use the Python module directly:
+
+```bash
+# Generate with custom options
+python -m claude_config.cli generate-claude-md --output PATH --no-validate
+
+# Validate specific agent
+python -m claude_config.cli validate-coordination --agent NAME --fix-warnings
+
+# Visualize with format options
+python -m claude_config.cli visualize-graph --format json --max-nodes 20
+```
+
+### Common Workflows
+
+**Development workflow:**
+```bash
+# 1. Modify agent YAML files
+vim data/personas/python-engineer.yaml
+
+# 2. Validate changes
+make validate
+
+# 3. Validate coordination
+make validate-coordination
+
+# 4. Build with orchestration
+make build-with-orchestration
+
+# 5. Install to Claude Code
+make install
+```
+
+**Agent debugging workflow:**
+```bash
+# 1. Check coordination patterns
+make show-coordination AGENT=python-engineer
+
+# 2. Visualize graph
+make visualize-graph
+
+# 3. Validate specific agent
+python -m claude_config.cli validate-coordination --agent python-engineer
+```
+
+**Production deployment:**
+```bash
+# Build, validate, and generate orchestration
+make build-with-orchestration
+
+# Preview installation
+python -m claude_config.cli install --dry-run
+
+# Install to production
+make install
+```
+
 ## Roadmap
 
 - Expand agent library

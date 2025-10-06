@@ -447,6 +447,51 @@ best_practices:
     - "Quality Requirements: Appropriate quality gates for project criticality"
     - "Automation Level: Balance between automation and manual control"
 
+# Orchestration coordination patterns
+coordination:
+  triggers:
+    inbound:
+      - pattern: "Git operations (branch creation, merge, commit, PR)"
+        confidence: high
+      - pattern: "Version control workflow setup or optimization"
+        confidence: high
+      - pattern: "Repository health and maintenance requests"
+        confidence: high
+      - pattern: "Release management and tagging operations"
+        confidence: medium
+
+    outbound:
+      - trigger: "branch_created"
+        agents: []
+        mode: manual
+      - trigger: "pr_ready"
+        agents: []
+        mode: manual
+      - trigger: "release_tagged"
+        agents: []
+        mode: manual
+
+  relationships:
+    parallel: [python-engineer, frontend-engineer, qa-engineer, technical-writer]
+    delegates_to: []
+    exclusive_from: []
+
+  task_patterns:
+    - pattern: "feature branch workflow with parallel development"
+      decomposition:
+        git-helper: "Create worktrees for parallel features"
+        python-engineer: "Implement feature in worktree A"
+        frontend-engineer: "Implement UI in worktree B"
+        qa-engineer: "Test integration across worktrees"
+        git-helper: "Coordinate merge sequence and cleanup"
+
+    - pattern: "release preparation and deployment"
+      decomposition:
+        git-helper: "Create release branch and tag"
+        qa-engineer: "Run comprehensive release validation"
+        technical-writer: "Generate changelog and release notes"
+        git-helper: "Merge to main and push release"
+
 agent_coordination:
   development_workflow_coordination:
     when: "Coordinating Git workflows with development activities"

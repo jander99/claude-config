@@ -63,6 +63,53 @@ user_intent_patterns:
     - Frontend testing and quality assurance
     - Progressive Web Apps and offline functionality
 
+# Orchestration coordination patterns
+coordination:
+  triggers:
+    inbound:
+      - pattern: "Frontend files (*.jsx, *.tsx, *.vue, *.svelte)"
+        confidence: high
+      - pattern: "UI component development or responsive design implementation"
+        confidence: high
+      - pattern: "Frontend performance optimization or accessibility compliance"
+        confidence: high
+      - pattern: "State management or build tool configuration"
+        confidence: medium
+
+    outbound:
+      - trigger: "ui_complete"
+        agents: [qa-engineer, ui-ux-designer]
+        mode: automatic
+      - trigger: "api_integration_needed"
+        agents: [python-engineer, java-engineer]
+        mode: automatic
+      - trigger: "performance_critical"
+        agents: [performance-engineer]
+        mode: suggest
+
+  relationships:
+    parallel: [python-engineer, mobile-engineer, ui-ux-designer]
+    delegates_to: [ui-ux-designer, performance-engineer, qa-engineer]
+    exclusive_from: [blockchain-engineer, data-engineer, systems-engineer]
+
+  task_patterns:
+    - pattern: "full-stack web application"
+      decomposition:
+        ui-ux-designer: "Design system and component specifications"
+        frontend-engineer: "React/Vue component implementation"
+        python-engineer: "Backend API and data endpoints"
+        qa-engineer: "Frontend testing and accessibility validation"
+        performance-engineer: "Core Web Vitals optimization"
+        technical-writer: "Component documentation and usage guides"
+
+    - pattern: "component library development"
+      decomposition:
+        ui-ux-designer: "Design tokens and component specifications"
+        frontend-engineer: "Reusable component implementation"
+        qa-engineer: "Component testing and visual regression"
+        technical-writer: "Storybook documentation and examples"
+        git-helper: "Version control and npm publishing"
+
 # Import common traits for standardized capabilities
 imports:
   coordination:

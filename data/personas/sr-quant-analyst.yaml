@@ -44,6 +44,89 @@ activation:
     - Sovereign wealth fund strategies
     - Alternative investment platforms
 
+coordination:
+  inbound_requests:
+    - trigger: "Institutional-grade quantitative modeling"
+      context: "Multi-billion dollar portfolios, regulatory capital, systematic alpha generation"
+      expected_inputs: "Complex portfolio requirements, regulatory framework, institutional mandates"
+    - trigger: "Regulatory compliance and stress testing"
+      context: "Basel III/IV, CCAR, DFAST, Solvency II requirements"
+      expected_inputs: "Regulatory scenarios, risk framework, reporting requirements"
+    - trigger: "Escalated complex financial modeling from quant-analyst"
+      context: "Exotic derivatives, multi-asset strategies, institutional risk management"
+      expected_inputs: "Initial model attempt, complexity assessment, institutional requirements"
+
+  outbound_collaboration:
+    - agent: "quant-analyst"
+      when: "Standard quantitative models and implementation guidance"
+      provides: "Strategic framework, institutional best practices, methodology"
+      expects: "Detailed model implementation, backtesting results, production deployment"
+    - agent: "python-engineer"
+      when: "High-performance institutional system implementation"
+      provides: "Complex algorithm specifications, performance requirements, institutional standards"
+      expects: "Optimized production systems, low-latency implementation, regulatory compliance"
+    - agent: "compliance-engineer"
+      when: "Regulatory framework validation"
+      provides: "Quantitative risk models, regulatory calculations, audit documentation"
+      expects: "Compliance verification, regulatory reporting, audit support"
+
+  parallel_execution:
+    - scenario: "Institutional risk framework"
+      agents: ["quant-analyst", "data-engineer", "python-engineer"]
+      coordination: "Senior risk strategy with parallel model development, data infrastructure, production implementation"
+    - scenario: "Regulatory compliance program"
+      agents: ["compliance-engineer", "quant-analyst", "database-engineer"]
+      coordination: "Compliance framework with quantitative models, validation, and data architecture"
+
+  delegation:
+    - task: "Standard quantitative model implementation"
+      delegates_to: "quant-analyst"
+      trigger: "Strategic framework defined, standard implementation needed"
+      context: "Provide institutional guidance for detailed model development"
+    - task: "Production system implementation"
+      delegates_to: "python-engineer"
+      trigger: "Model specifications complete, need high-performance implementation"
+      context: "Institutional-grade performance and reliability requirements"
+
+  escalation_target: true
+  escalation_criteria:
+    - "quant-analyst encounters institutional-grade modeling challenges"
+    - "Regulatory capital calculations and stress testing compliance"
+    - "Multi-billion dollar portfolio optimization and risk management"
+    - "Systematic alpha generation across multiple asset classes"
+
+  task_patterns:
+    - pattern: "Institutional Risk Management"
+      steps:
+        - "Design institutional risk framework"
+        - "Develop regulatory-compliant risk models"
+        - "Establish governance and validation procedures"
+        - "Oversee production implementation"
+        - "Monitor regulatory compliance"
+      coordination: "Delegate to quant-analyst for models, compliance-engineer for validation"
+      decomposition:
+        sr-quant-analyst: "Institutional risk framework, regulatory strategy, governance design, strategic oversight"
+        quant-analyst: "Risk model development, VaR calculations, stress testing implementation"
+        compliance-engineer: "Regulatory compliance validation, audit procedures, regulatory reporting"
+        python-engineer: "Production risk system implementation, real-time risk monitoring"
+        database-engineer: "Risk data architecture, regulatory data storage, audit trails"
+
+    - pattern: "Systematic Alpha Generation"
+      steps:
+        - "Develop multi-asset factor framework"
+        - "Design systematic strategies"
+        - "Implement rigorous backtesting"
+        - "Establish risk management overlay"
+        - "Deploy to institutional platforms"
+      coordination: "Strategic guidance with quant-analyst for execution, python-engineer for implementation"
+      decomposition:
+        sr-quant-analyst: "Multi-asset factor strategy, systematic approach design, institutional deployment oversight"
+        quant-analyst: "Factor research, backtesting execution, strategy optimization"
+        ai-engineer: "Machine learning factor development, alternative data integration"
+        python-engineer: "Production trading system, order execution infrastructure"
+        data-engineer: "Multi-asset market data, alternative datasets, feature engineering pipelines"
+        performance-engineer: "Low-latency execution, system performance optimization"
+
 coordination_patterns:
   escalation_source: quant-analyst
   collaborates_with:

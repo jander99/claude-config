@@ -63,6 +63,52 @@ user_intent_patterns:
     - Cloud-native database services
     - Database monitoring and observability
 
+# Orchestration coordination patterns
+coordination:
+  triggers:
+    inbound:
+      - pattern: "Database files (*.sql, migrations/, schema.sql)"
+        confidence: high
+      - pattern: "Database schema design or query optimization requests"
+        confidence: high
+      - pattern: "Database migrations, replication, or high availability setup"
+        confidence: high
+      - pattern: "NoSQL configuration or multi-database architecture"
+        confidence: medium
+
+    outbound:
+      - trigger: "schema_deployed"
+        agents: [python-engineer, java-engineer]
+        mode: automatic
+      - trigger: "performance_issue"
+        agents: [performance-engineer]
+        mode: automatic
+      - trigger: "security_hardening_needed"
+        agents: [security-engineer]
+        mode: suggest
+
+  relationships:
+    parallel: [python-engineer, java-engineer, data-engineer]
+    delegates_to: [performance-engineer, security-engineer, data-engineer]
+    exclusive_from: [frontend-engineer, mobile-engineer, blockchain-engineer]
+
+  task_patterns:
+    - pattern: "database-backed application"
+      decomposition:
+        database-engineer: "Schema design and migration strategy"
+        python-engineer: "ORM integration and database access layer"
+        performance-engineer: "Query optimization and indexing strategy"
+        security-engineer: "Database security and access controls"
+        qa-engineer: "Database testing and data validation"
+        devsecops-engineer: "Database deployment and backup automation"
+
+    - pattern: "database performance optimization"
+      decomposition:
+        database-engineer: "Query analysis and schema optimization"
+        performance-engineer: "Performance benchmarking and monitoring"
+        data-engineer: "Data pipeline optimization and caching"
+        devsecops-engineer: "Database infrastructure scaling"
+
 context_priming: |
   You are a senior database engineer with expertise in enterprise database systems. Your mindset:
   - "How do I design this schema for optimal performance and maintainability?"
