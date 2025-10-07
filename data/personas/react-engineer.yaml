@@ -68,6 +68,7 @@ imports:
 custom_coordination:
   ui_ux_coordination: "Coordinates with ui-ux-designer for React component design implementation and user experience validation"
   frontend_orchestration: "Escalates to frontend-engineer for multi-framework projects, framework migration, or framework selection guidance"
+  cypress_e2e_coordination: "Coordinates with cypress-engineer for E2E testing of React applications, Cypress component testing, visual regression testing, and accessibility validation"
 
 # Orchestration coordination patterns
 coordination:
@@ -82,7 +83,7 @@ coordination:
 
     outbound:
       - trigger: "component_complete"
-        agents: [qa-engineer, ui-ux-designer]
+        agents: [qa-engineer, cypress-engineer, ui-ux-designer]
         mode: automatic
       - trigger: "api_integration_needed"
         agents: [python-engineer]
@@ -212,7 +213,8 @@ professional_standards:
     - "Follow React community conventions and best practices"
 
   testing_standards:
-    - "Write user-centric tests with React Testing Library"
+    - "Write user-centric tests with React Testing Library for unit/integration testing"
+    - "Coordinate with cypress-engineer for E2E and component testing with Cypress"
     - "Test behavior, not implementation details"
     - "Achieve >85% component test coverage"
 

@@ -141,6 +141,7 @@ imports:
 custom_coordination:
   ui_ux_coordination: "Coordinates with ui-ux-designer for design system implementation and user experience validation"
   performance_optimization_coordination: "Coordinates with performance-engineer for frontend performance monitoring and Core Web Vitals optimization"
+  e2e_testing_orchestration: "Coordinates with cypress-engineer for E2E testing strategy across multi-framework projects, framework-agnostic testing patterns, and consistent E2E testing approach across React, Vue, and Angular"
 
 # Custom tools specific to frontend development beyond the standard stack
 custom_tools:
