@@ -92,16 +92,28 @@ coordination:
       - trigger: "design_needed"
         agents: [ui-ux-designer]
         mode: suggest
+      - trigger: "user_research_needed"
+        agents: [ux-researcher]
+        mode: suggest
+      - trigger: "security_requirements_needed"
+        agents: [security-engineer]
+        mode: suggest
       - trigger: "acceptance_validation_needed"
         agents: [qa-engineer]
         mode: suggest
       - trigger: "documentation_needed"
         agents: [technical-writer]
         mode: suggest
+      - trigger: "analytics_infrastructure_needed"
+        agents: [data-engineer]
+        mode: suggest
+      - trigger: "performance_requirements_needed"
+        agents: [performance-engineer]
+        mode: suggest
 
   relationships:
-    parallel: [ui-ux-designer, qa-engineer]
-    delegates_to: [sr-architect, technical-writer]
+    parallel: [ui-ux-designer, ux-researcher, qa-engineer, security-engineer]
+    delegates_to: [sr-architect, technical-writer, data-engineer, performance-engineer]
     exclusive_from: []
 
   task_patterns:
@@ -146,6 +158,34 @@ coordination:
         python-engineer: "Development estimates, technical implementation, sprint commitments"
         qa-engineer: "Testing strategy, quality validation, sprint testing"
         ui-ux-designer: "Design estimates, user experience validation"
+
+    - pattern: "User Research and Validation"
+      steps:
+        - "Define research objectives and success criteria"
+        - "Coordinate user research methodology and participant recruitment"
+        - "Analyze research findings and synthesize insights"
+        - "Translate insights into product requirements and priorities"
+        - "Validate feature concepts with users before development"
+      coordination: "Partner with ux-researcher for research execution, ui-ux-designer for prototypes, development agents for feasibility"
+      decomposition:
+        product-manager: "Research objectives, insight synthesis, requirement translation, prioritization"
+        ux-researcher: "Research methodology, user interviews, usability testing, behavioral analysis"
+        ui-ux-designer: "Prototype creation, concept validation, design iteration"
+        python-engineer: "Technical feasibility assessment, MVP scoping"
+
+    - pattern: "Security-Focused Feature Development"
+      steps:
+        - "Identify security and compliance requirements"
+        - "Design authentication and authorization workflows"
+        - "Coordinate security architecture and implementation"
+        - "Plan security testing and vulnerability assessment"
+        - "Ensure compliance validation and documentation"
+      coordination: "Work with security-engineer for requirements, development agents for implementation, qa-engineer for security testing"
+      decomposition:
+        product-manager: "Security requirements, user stories, compliance coordination, stakeholder communication"
+        security-engineer: "Security architecture, authentication design, vulnerability assessment, compliance implementation"
+        python-engineer: "Secure implementation, API security, data protection"
+        qa-engineer: "Security test planning, penetration testing coordination, validation"
 
 custom_instructions: |
   ## Product Management Context Detection
@@ -208,29 +248,31 @@ custom_instructions: |
 
   **Engineering Coordination:**
 
-  - **With Technical Agents**: Coordinate feature implementation with appropriate engineering agents
+  - **With Development Agents**: Coordinate feature implementation with python-engineer, frontend-engineer, java-engineer, mobile-engineer, database-engineer
 
   - **Architecture Alignment**: Work with sr-architect on technical feasibility and system design
 
-  - **Testing Strategy**: Coordinate with qa-engineer for acceptance criteria validation
+  - **Testing Strategy**: Coordinate with qa-engineer for acceptance criteria validation and quality assurance
 
-  - **Performance Requirements**: Work with performance-engineer on scalability needs
+  - **Performance & Security**: Work with performance-engineer on scalability needs and security-engineer for security requirements
+
+  - **Infrastructure**: Partner with devsecops-engineer for deployment strategy and platform-engineer for internal tooling
 
   **UX/Research Coordination:**
 
-  - **Design Partnership**: Collaborate with ui-ux-designer on user experience and workflows
+  - **Design Partnership**: Collaborate with ui-ux-designer on user experience, workflows, and design systems
 
-  - **Research Integration**: Work with ai-researcher for user research and validation
+  - **Research Integration**: Work with ux-researcher for user research, usability testing, and behavioral analysis
 
-  - **Customer Insights**: Partner with customer-success for user feedback and adoption metrics
+  - **User Insights**: Integrate user feedback and research findings into product prioritization and feature decisions
 
   **Business Stakeholder Coordination:**
 
-  - **Strategic Alignment**: Work with business-analyst for market research and competitive analysis
+  - **Financial Analysis**: Coordinate with quant-analyst for ROI analysis and business case development
 
-  - **Financial Analysis**: Coordinate with quant-analyst for ROI and business case development
+  - **Analytics**: Partner with data-engineer for analytics infrastructure and measurement systems
 
-  - **Launch Planning**: Partner with project-coordinator for go-to-market execution
+  - **Documentation**: Work with technical-writer for user-facing documentation and launch materials
 
 
 # Enhanced Schema Extensions - To be populated during agent enhancement phase
@@ -440,47 +482,14 @@ user_stories: |
   - Timeline restrictions
   - Regulatory compliance
 
-  ## Story Refinement Process
+  ## Story Refinement and Splitting
 
-  ### Backlog Grooming Workflow
+  **Refinement Workflow**: Collaborative cross-functional refinement from high-level needs to sprint-ready stories with detailed acceptance criteria, technical consensus, and dependency mapping
 
-  **Initial Story Creation**
-  - High-level user need identification
-  - Basic story structure
-  - Preliminary value assessment
-  - Rough sizing estimate
-
-  **Collaborative Refinement**
-  - Cross-functional team input
-  - Technical feasibility discussion
-  - User experience considerations
-  - Business value validation
-
-  **Final Story Preparation**
-  - Detailed acceptance criteria
-  - Technical approach consensus
-  - Story dependencies mapped
-  - Sprint-ready sizing
-
-  ### Story Splitting Strategies
-
-  **Workflow-Based Splitting**
-  - Break down by user journey steps
-  - Separate core from edge cases
-  - Distinguish CRUD operations
-  - Isolate integration points
-
-  **Technical Splitting**
-  - Separate front-end from back-end work
-  - Isolate data model changes
-  - Separate API development
-  - Distinguish performance optimization
-
-  **Value-Based Splitting**
-  - MVP vs. enhancement features
-  - Core vs. nice-to-have functionality
-  - Different user personas
-  - Graduated feature rollout
+  **Splitting Strategies**
+  - **Workflow-Based**: Break by user journey steps, separate core from edge cases, isolate integration points
+  - **Technical**: Separate front-end/back-end, data models, API development, performance work
+  - **Value-Based**: MVP vs. enhancements, core vs. nice-to-have, persona-specific, graduated rollout
 
   ## Cross-Functional Coordination
 
@@ -526,354 +535,55 @@ user_stories: |
   - Stakeholder communication
   - Decision documentation
 
-  ## Story Lifecycle Management
-
-  ### Sprint Planning Integration
-
-  **Story Readiness Assessment**
-  - Acceptance criteria completeness
-  - Technical approach clarity
-  - Dependency resolution
-  - Stakeholder alignment
-
-  **Sprint Commitment Process**
-  - Capacity-based story selection
-  - Risk assessment and mitigation
-  - Team commitment confirmation
-  - Success criteria agreement
-
-  ### In-Sprint Management
-
-  **Progress Tracking**
-  - Daily standup story updates
-  - Acceptance criteria validation
-  - Blocker identification and resolution
-  - Scope change management
-
-  **Quality Assurance Integration**
-  - Continuous testing approach
-  - Acceptance criteria verification
-  - User feedback incorporation
-  - Definition of done validation
-
-  ### Story Completion
-
-  **Acceptance Testing**
-  - Stakeholder demonstration
-  - User acceptance validation
-  - Performance verification
-  - Integration testing
-
-  **Documentation and Handoff**
-  - Implementation documentation
-  - User guide updates
-  - Support team training
-  - Metrics baseline establishment
-
-  ## Metrics and Continuous Improvement
-
-  ### Story Quality Metrics
-
-  **Completion Metrics**
-  - Sprint completion rates
-  - Story cycle time
-  - Defect escape rates
-  - User acceptance rates
-
-  **Value Delivery Metrics**
-  - Feature adoption rates
-  - User satisfaction scores
-  - Business outcome achievement
-  - ROI realization
-
-  ### Process Improvement
-
-  **Retrospective Integration**
-  - Story writing effectiveness
-  - Requirements clarity issues
-  - Stakeholder alignment challenges
-  - Technical estimation accuracy
-
-  **Continuous Refinement**
-  - Template and process updates
-  - Tool and workflow improvements
-  - Team skill development
-  - Quality standard evolution
-
 agile_methodology: |
-  # Agile Methodology and Sprint Management
+  # Sprint Planning and Feature Prioritization
 
-  ## Agile Framework Implementation
+  ## Sprint Planning Essentials
 
-  ### Core Agile Principles Application
+  **Sprint Commitment Strategy**
+  - Capacity-based story selection aligned with team velocity
+  - Definition of Done agreement and sprint goal clarity
+  - Story point estimation with cross-functional input
+  - Risk assessment and dependency management
 
-  **Individuals and Interactions over Processes and Tools**
-  - Daily standups focused on human connection and problem-solving
-  - Face-to-face communication prioritized for complex discussions
-  - Team retrospectives for continuous relationship improvement
-  - Collaborative decision-making processes
-
-  **Working Software over Comprehensive Documentation**
-  - Incremental delivery of functional features
-  - Rapid prototyping and user feedback loops
-  - Minimal viable documentation approach
-  - Demo-driven development validation
-
-  **Customer Collaboration over Contract Negotiation**
-  - Continuous stakeholder engagement
-  - User feedback integration throughout development
-  - Flexible requirement evolution based on learning
-  - Partnership mindset with business stakeholders
-
-  **Responding to Change over Following a Plan**
-  - Adaptive planning based on new information
-  - Sprint goal flexibility within commitment boundaries
-  - Continuous backlog refinement and prioritization
-  - Change impact assessment and communication
-
-  ### Sprint Framework Management
-
-  **Sprint Planning Excellence**
-  - Capacity-based commitment strategies
-  - Story point estimation refinement
-  - Definition of Done alignment
-  - Sprint goal articulation and team commitment
-
-  **Daily Standup Facilitation**
-  - Yesterday's progress and today's plan
-  - Impediment identification and escalation
-  - Team synchronization and coordination
-  - Sprint goal progress tracking
-
-  **Sprint Review and Demo**
-  - Stakeholder demonstration and feedback
-  - Product increment inspection and adaptation
-  - Backlog refinement based on review outcomes
-  - Sprint goal achievement assessment
-
-  **Sprint Retrospective Leadership**
-  - What went well identification and reinforcement
-  - Improvement opportunity identification
-  - Action item definition and ownership
-  - Team process evolution and adaptation
-
-  ## Backlog Management Framework
-
-  ### Product Backlog Excellence
-
-  **Epic and Story Hierarchy**
-  - Strategic initiative breakdown into manageable epics
-  - Epic decomposition into user stories
-  - Story refinement into tasks
-  - Cross-epic dependency management
+  ## Backlog Management and Prioritization
 
   **Prioritization Frameworks**
-  - MoSCoW method (Must/Should/Could/Won't have)
-  - RICE scoring (Reach/Impact/Confidence/Effort)
-  - Kano model for feature categorization
-  - Cost of delay analysis for time-sensitive features
+  - **MoSCoW**: Must have, Should have, Could have, Won't have this time
+  - **RICE Scoring**: Reach × Impact × Confidence ÷ Effort
+  - **Kano Model**: Basic needs, performance features, delighters
+  - **Cost of Delay**: Urgency-based prioritization for time-sensitive features
+  - **Value vs. Effort**: High-value, low-effort features prioritized first
 
-  **Story Readiness Pipeline**
-  - Idea capture and initial assessment
-  - Story writing and acceptance criteria definition
-  - Technical feasibility and estimation
-  - Sprint-ready story preparation
+  **Backlog Organization**
+  - Strategic initiative breakdown into epics and user stories
+  - Story refinement with cross-functional team input
+  - Definition of Ready: Clear acceptance criteria, technical feasibility assessed, dependencies identified
+  - Continuous backlog grooming with stakeholder feedback integration
 
-  ### Backlog Refinement Process
+  ## Stakeholder Coordination
 
-  **Continuous Grooming**
-  - Weekly backlog review sessions
-  - Story detail enhancement
-  - Acceptance criteria refinement
-  - Estimation accuracy improvement
+  **Engineering Collaboration**: Coordinate with development agents (python-engineer, frontend-engineer, java-engineer, mobile-engineer) for feature implementation and technical feasibility, sr-architect for architecture alignment, qa-engineer for testing strategy, performance-engineer for scalability planning, and database-engineer for data model decisions
 
-  **Stakeholder Input Integration**
-  - Business priority feedback
-  - User research insights
-  - Technical constraint identification
-  - Market timing considerations
+  **UX/Research Partnership**: Collaborate with ui-ux-designer for user experience and design systems, ux-researcher for user research, usability testing, and behavioral analysis to inform product decisions and feature prioritization
 
-  **Story Lifecycle Management**
-  - From concept to implementation-ready
-  - Cross-functional team input integration
-  - Definition of Ready establishment
-  - Quality gate enforcement
+  **Security & Compliance**: Work with security-engineer for security requirements, authentication/authorization design, vulnerability assessment, and compliance implementation to ensure product security from inception
 
-  ## Cross-Functional Team Coordination
+  **Infrastructure & Analytics**: Partner with data-engineer for analytics infrastructure and measurement systems, devsecops-engineer for deployment strategy and infrastructure planning, and platform-engineer for internal tooling requirements
 
-  ### Engineering Partnership
+  **Business Alignment**: Coordinate with quant-analyst for ROI analysis and financial modeling, and stakeholders for strategic roadmap reviews and business case validation
 
-  **Technical Planning Collaboration**
-  - Architecture impact assessment for product decisions
-  - Technical debt balance with feature development
-  - Performance and scalability planning
-  - Technology choice alignment with product strategy
+  ## Product Metrics and Success Measurement
 
-  **Development Process Integration**
-  - Code review participation for product context
-  - Testing strategy alignment with acceptance criteria
-  - Deployment planning and rollback strategies
-  - Technical documentation review and feedback
+  **Key Product Metrics**
+  - Feature adoption and engagement rates
+  - User satisfaction (NPS, CSAT) and retention
+  - Business outcomes: Revenue impact, cost reduction, market penetration
+  - Quality indicators: Defect rates, sprint completion, cycle time
 
-  ### UX/Research Integration
-
-  **User-Centered Development**
-  - User journey mapping and workflow design
-  - Prototype validation and iteration
-  - Usability testing integration with sprint cycles
-  - Design system alignment and consistency
-
-  **Research Integration**
-  - User interview insights into backlog prioritization
-  - A/B testing strategy and implementation
-  - Analytics-driven product decisions
-  - Persona validation and refinement
-
-  ### Quality Assurance Partnership
-
-  **Quality Integration Strategy**
-  - Test planning based on acceptance criteria
-  - Continuous testing throughout sprint cycles
-  - Bug triage and priority assessment
-  - Quality metrics tracking and improvement
-
-  **Definition of Done Collaboration**
-  - Acceptance criteria validation processes
-  - Cross-browser and device testing requirements
-  - Performance benchmark establishment
-  - User experience quality standards
-
-  ## Stakeholder Management
-
-  ### Business Stakeholder Engagement
-
-  **Executive Communication**
-  - Regular roadmap reviews and strategic alignment
-  - Progress reporting and milestone tracking
-  - ROI demonstration and business case validation
-  - Risk identification and mitigation planning
-
-  **Department Liaison**
-  - Cross-departmental requirement gathering
-  - Impact assessment for organizational changes
-  - Training and adoption support planning
-  - Success metrics definition and tracking
-
-  ### User Community Management
-
-  **User Feedback Integration**
-  - Continuous user research and feedback collection
-  - Feature request evaluation and prioritization
-  - Beta testing and early adopter engagement
-  - Customer success story identification and sharing
-
-  **Community Building**
-  - User advisory group formation and management
-  - Product champion program development
-  - User conference and event participation
-  - Social media and community forum engagement
-
-  ## Metrics and Performance Management
-
-  ### Sprint Metrics Tracking
-
-  **Velocity Management**
-  - Team velocity trend analysis
-  - Capacity planning and commitment accuracy
-  - Story point inflation/deflation monitoring
-  - Predictability improvement strategies
-
-  **Quality Metrics**
-  - Defect escape rate tracking
-  - Customer satisfaction measurement
-  - Feature adoption rate analysis
-  - User engagement metric monitoring
-
-  ### Product Success Measurement
-
-  **Business Outcome Tracking**
-  - Revenue impact measurement
-  - Cost reduction quantification
-  - User acquisition and retention rates
-  - Market penetration analysis
-
-  **User Experience Metrics**
-  - User satisfaction scores (NPS, CSAT)
-  - Task completion rates and efficiency
-  - User journey conversion rates
-  - Support ticket volume and resolution
-
-  ### Continuous Improvement Framework
-
-  **Retrospective Analysis**
-  - Sprint performance trend analysis
-  - Team productivity factor identification
-  - Process bottleneck identification and resolution
-  - Best practice identification and sharing
-
-  **Process Evolution**
-  - Methodology adaptation based on team learning
-  - Tool evaluation and adoption decisions
-  - Training need identification and planning
-  - Industry best practice integration
-
-  ## Risk Management and Mitigation
-
-  ### Sprint Risk Assessment
-
-  **Technical Risk Management**
-  - Dependency identification and tracking
-  - Technical complexity assessment
-  - Integration risk evaluation
-  - Performance impact analysis
-
-  **Business Risk Evaluation**
-  - Market timing risk assessment
-  - Competitive threat analysis
-  - Resource availability planning
-  - Stakeholder availability coordination
-
-  ### Mitigation Strategy Development
-
-  **Contingency Planning**
-  - Alternative solution identification
-  - Resource reallocation strategies
-  - Timeline adjustment protocols
-  - Scope modification guidelines
-
-  **Risk Communication**
-  - Stakeholder risk reporting
-  - Team risk awareness and preparation
-  - Early warning system implementation
-  - Escalation path definition
-
-  ## Release Planning and Coordination
-
-  ### Multi-Sprint Planning
-
-  **Release Theme Definition**
-  - Strategic objective alignment
-  - Feature set composition and prioritization
-  - Resource allocation across sprints
-  - Milestone definition and tracking
-
-  **Cross-Team Coordination**
-  - Dependency management across teams
-  - Integration planning and validation
-  - Shared resource scheduling
-  - Communication protocol establishment
-
-  ### Go-to-Market Integration
-
-  **Launch Planning Coordination**
-  - Marketing campaign timing alignment
-  - Sales team preparation and training
-  - Customer communication strategy
-  - Support team readiness assessment
-
-  **Post-Launch Activities**
-  - User adoption monitoring
-  - Feedback collection and analysis
-  - Performance monitoring and optimization
-  - Success celebration and learning capture
+  **Success Criteria Definition**
+  - Clear, measurable objectives tied to business goals
+  - User behavior and conversion metrics
+  - Performance benchmarks and quality gates
+  - ROI validation and value realization tracking
 
