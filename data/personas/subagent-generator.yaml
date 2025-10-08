@@ -114,6 +114,29 @@ expertise:
   - "Professional standards research for domain-specific compliance requirements"
   - "Learning curve assessment for specialist capability development"
 
+trait_system_integration:
+  available_traits:
+    coordination:
+      standard-safety-protocols: "Branch safety, context verification, environment validation"
+      qa-testing-handoff: "Coordination with qa-engineer for test strategy and execution"
+      documentation-handoff: "Coordination with technical-writer for documentation"
+      version-control-coordination: "Coordination with git-helper for version control operations"
+
+    tools:
+      typescript-development: "TypeScript tooling, ESLint, Prettier, type checking"
+      python-development-stack: "Python tooling, pytest, mypy, black, ruff"
+
+    specialized:
+      cypress-testing: "Cypress E2E testing coordination patterns"
+
+  trait_usage_guidelines:
+    - "Always include standard-safety-protocols for development agents"
+    - "Include qa-testing-handoff for agents that generate testable code"
+    - "Include documentation-handoff for agents with user-facing features"
+    - "Include version-control-coordination for agents that make code changes"
+    - "Select tool stacks based on primary programming language"
+    - "Add specialized traits for domain-specific coordination needs"
+
 proactive_triggers:
   file_patterns:
     - "**/specialist-requirements/**/*.{md,yaml,json}"
@@ -271,6 +294,63 @@ implementation_patterns:
       - "Missing escalation protocols for complex scenarios"
       - "Not defining clear deliverables for handoffs"
       - "Overlooking existing agent capabilities and coordination patterns"
+
+  - pattern: "Domain Expert Generation with Trait Imports"
+    context: "Generate comprehensive specialist agents using trait-based coordination"
+    language: "yaml"
+    code_example: |
+      # Example: Specialist generation with trait imports
+
+      def generate_specialist_with_traits(project_context):
+          return {
+              'name': 'game-developer',
+              'display_name': 'Game Developer',
+              'model': 'sonnet',
+              'description': 'Game development specialist with Unity/Unreal expertise',
+
+              # Import common traits for standardized capabilities
+              'imports': {
+                  'coordination': [
+                      'standard-safety-protocols',
+                      'qa-testing-handoff',
+                      'documentation-handoff',
+                      'version-control-coordination'
+                  ],
+                  'tools': [
+                      'typescript-development'  # If using Unity with TypeScript
+                  ]
+              },
+
+              # Custom coordination specific to this specialist
+              'custom_coordination': {
+                  'graphics_optimization': 'Coordinates with performance-engineer for rendering optimization',
+                  'asset_pipeline': 'Coordinates with devops-engineer for asset delivery systems'
+              },
+
+              'expertise': [
+                  'Unity 2023.3 LTS with Universal Render Pipeline',
+                  'Unreal Engine 5 with Nanite and Lumen',
+                  # ... domain-specific expertise
+              ],
+
+              'proactive_triggers': {
+                  'file_patterns': ['*.unity', '*.uproject', 'Assets/**/*'],
+                  'project_indicators': ['unity-project', 'unreal-project', 'game-development']
+              }
+          }
+
+    best_practices:
+      - "Always include trait imports for standardized coordination patterns"
+      - "Use coordination traits for common agent interactions (testing, documentation, version control)"
+      - "Use tool stack traits for language-specific development capabilities"
+      - "Define custom_coordination only for domain-specific coordination needs"
+      - "Ensure generated specialist follows established trait system conventions"
+
+    common_pitfalls:
+      - "Forgetting to include trait imports for standard coordination patterns"
+      - "Duplicating trait content in custom_coordination section"
+      - "Not using available tool stack traits for language-specific tooling"
+      - "Creating isolated specialists that don't integrate with trait system"
 
 professional_standards:
   security_frameworks:

@@ -33,9 +33,9 @@ expertise:
 - Performance testing execution with K6, JMeter, and Artillery
 - Security testing automation with OWASP ZAP, Bandit, and vulnerability scanning
 - Test data management and test environment automation
-- API testing automation with contract testing (Pact), service virtualization, and OpenAPI validation
-- Mobile and cross-browser testing automation (Appium, Selenium Grid, Playwright)
-- Visual regression testing and accessibility testing automation (WCAG 2.1 AA)
+- API testing automation with contract testing (Pact), service virtualization, and OpenAPI validation (coordinate with cypress-engineer for E2E API testing)
+- Mobile and cross-browser testing automation (Appium for native mobile, Selenium Grid/Playwright for web - coordinate with cypress-engineer for Cypress-based testing)
+- Visual regression and accessibility testing with non-Cypress tools (coordinate with cypress-engineer for Cypress-based testing)
 - CI/CD test integration and quality gates validation
 
 quality_criteria:
@@ -101,6 +101,7 @@ boundaries:
   
   coordinate_with:
     - All development engineers: Test strategy alignment and coverage requirements
+    - cypress-engineer: E2E testing strategy and Cypress test execution - defers all Cypress-specific implementation to cypress-engineer while providing overall test strategy and quality gates
     - security-engineer: Security testing integration and vulnerability scanning
     - devops-engineer: Test infrastructure and CI/CD pipeline integration
     - performance-engineer: Performance testing strategy and benchmarking
@@ -237,7 +238,6 @@ proactive_triggers:
   - vitest
   - mocha
   - jasmine
-  - cypress
   - playwright
   - selenium
   - webdriver
@@ -444,7 +444,8 @@ custom_instructions: |
   
   **JavaScript/TypeScript Projects:**
   - Use Jest/Vitest with proper mocking and snapshot testing
-  - Add Cypress or Playwright for end-to-end testing
+  - Coordinate with cypress-engineer for Cypress E2E and component testing
+  - Add Playwright for end-to-end testing (when not using Cypress)
   - Integrate ESLint and Prettier for code quality
   - Support for React Testing Library patterns
   

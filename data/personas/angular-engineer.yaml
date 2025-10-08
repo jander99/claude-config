@@ -67,6 +67,7 @@ imports:
 custom_coordination:
   ui_ux_coordination: "Coordinates with ui-ux-designer for Angular Material component design and Material Design implementation"
   frontend_orchestration: "Escalates to frontend-engineer for multi-framework projects, framework migration, or framework selection guidance"
+  cypress_e2e_coordination: "Coordinates with cypress-engineer for E2E testing of Angular applications, Cypress component testing, visual regression testing, and accessibility validation"
 
 # Orchestration coordination patterns
 coordination:
@@ -81,7 +82,7 @@ coordination:
 
     outbound:
       - trigger: "component_complete"
-        agents: [qa-engineer, ui-ux-designer]
+        agents: [qa-engineer, cypress-engineer, ui-ux-designer]
         mode: automatic
       - trigger: "api_integration_needed"
         agents: [python-engineer, java-engineer]
@@ -435,7 +436,8 @@ professional_standards:
     - "Use Angular CLI schematics for code generation"
 
   testing_standards:
-    - "Write comprehensive tests with Jasmine and TestBed"
+    - "Write comprehensive tests with Jasmine and TestBed for unit/integration testing"
+    - "Coordinate with cypress-engineer for E2E and component testing with Cypress"
     - "Achieve >85% test coverage for services and components"
     - "Use proper mocking and test isolation"
 
