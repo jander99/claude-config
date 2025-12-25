@@ -1,17 +1,99 @@
 # Claude Code Subagent Generator
 
-A powerful toolkit for generating and managing specialized Claude Code agent configurations through YAML-driven templating.
+An advanced YAML-to-Markdown templating system with hybrid trait architecture for generating Claude Code agent configurations.
 
 ## Overview
 
-Claude Code Subagent Generator is a lightweight, flexible system for creating and managing AI agent configurations. It transforms simple YAML definitions into comprehensive markdown-based agent specifications, enabling rapid development of specialized AI assistants.
+Claude Code Subagent Generator is a sophisticated templating system that transforms YAML agent definitions through Jinja2 templates into comprehensive markdown agent specifications (6,000-12,000 lines each). It enables a multi-agent ecosystem with intelligent task delegation across three performance tiers, using a hybrid trait system to eliminate duplication.
 
 ## Key Features
 
-- **YAML-Driven Agent Definitions**: Create agents using intuitive YAML format
-- **Jinja2 Template Engine**: Convert YAML to markdown agent configurations
-- **Extensive Agent Library**: 25+ pre-configured specialized agents
-- **Simple CLI Management**: Build, validate, and install agents with ease
+- **YAML-Driven Agent Definitions**: Define agents using intuitive YAML format with Pydantic validation
+- **Hybrid Trait System**: 10 reusable traits eliminate 72% duplication across agents
+- **Three-Tier Agent Architecture**: Cost-optimized model selection (Haiku/Sonnet/Opus)
+- **Jinja2 Template Engine**: Generate comprehensive 6,000-12,000 line agent configurations
+- **Extensive Agent Library**: 36 pre-configured specialized agents across development, research, and quality roles
+- **Advanced Coordination**: Cycle detection, consistency validation, and graph optimization
+- **Rich CLI**: Beautiful terminal output with progress indicators and validation reporting
+
+## Architecture
+
+### Core Components
+
+| Component | Location | Purpose |
+|-----------|----------|---------|
+| CLI | `src/claude_config/cli.py` | Rich CLI with Click framework |
+| Composer | `src/claude_config/composer.py` | Template engine with Pydantic models |
+| Validator | `src/claude_config/validator.py` | YAML and trait validation |
+| TraitProcessor | `src/claude_config/composer.py` | Loads and merges reusable trait content |
+| Coordination | `src/claude_config/coordination/` | Cycle detection, consistency, optimization |
+| Generator | `src/claude_config/generator/` | Master CLAUDE.md generation |
+
+### Agent Tiers
+
+| Tier | Model | Cost | Use Cases |
+|------|-------|------|-----------|
+| 1 | Haiku | Low | git-helper, technical-writer |
+| 2 | Sonnet | Medium | 30+ specialists (python-engineer, frontend-engineer, etc.) |
+| 3 | Opus | High | sr-architect, sr-ai-researcher, integration-architect |
+
+## Project Structure
+
+```
+claude-config/
+├── data/
+│   └── personas/           # 36 agent YAML definitions
+├── src/claude_config/
+│   ├── cli.py              # Rich CLI interface
+│   ├── composer.py         # Template engine + TraitProcessor
+│   ├── validator.py        # YAML validation
+│   ├── coordination/       # Cycle detection, consistency, optimization
+│   ├── generator/          # CLAUDE.md generator
+│   ├── templates/          # Jinja2 templates
+│   └── traits/             # 10 reusable trait modules
+├── tests/                  # Comprehensive test suite
+├── dist/                   # Generated output (gitignored)
+│   └── agents/             # Built agent markdown files
+├── Makefile                # Build commands
+└── pyproject.toml          # Project configuration
+```
+
+## Trait System
+
+The hybrid trait system provides reusable modules that agents can import, eliminating duplication across the agent library.
+
+### Trait Categories
+
+```
+src/claude_config/traits/
+├── coordination/           # Agent handoff patterns
+│   ├── standard-safety-protocols.md
+│   ├── qa-testing-handoff.md
+│   ├── documentation-handoff.md
+│   └── version-control-coordination.md
+├── tools/                  # Technology stack configurations
+│   ├── python-development-stack.md
+│   ├── javascript-frontend-stack.md
+│   └── docker-kubernetes-stack.md
+├── compliance/
+│   └── enterprise-compliance-frameworks.md
+├── security/
+│   └── security-audit-protocols.md
+└── performance/
+    └── performance-benchmarking-standards.md
+```
+
+### Using Traits in Agents
+
+```yaml
+# In data/personas/python-engineer.yaml
+imports:
+  coordination:
+    - standard-safety-protocols
+    - qa-testing-handoff
+  tools:
+    - python-development-stack
+```
 
 ## Quick Start
 
@@ -20,6 +102,17 @@ Claude Code Subagent Generator is a lightweight, flexible system for creating an
 - Python 3.8+
 - [uv](https://docs.astral.sh/uv/) or pip
 - Basic understanding of YAML
+
+### Dependencies
+
+The project uses these Python packages (automatically installed):
+
+- `click>=8.0.0` - CLI framework
+- `jinja2>=3.0.0` - Template engine
+- `pyyaml>=6.0` - YAML parsing
+- `pydantic>=2.0.0` - Data validation
+- `rich>=13.0.0` - Terminal formatting
+- `watchdog>=3.0.0` - File watching
 
 ### Installation
 
@@ -38,24 +131,37 @@ pip install -e .
 
 ```bash
 # Build all agent configurations
-claude-config build
+make build-agents
 
-# Install to Claude Code directory
-claude-config install
+# Build global CLAUDE.md orchestration file
+make build-claude
 
-# Validate configurations
-claude-config validate
+# Install to Claude Code directory (~/.claude/)
+make install
+
+# Validate YAML configurations and traits
+make validate
+
+# List available agents
+claude-config list-agents
 ```
 
-## Agent Creation Example
+## Agent YAML Schema
 
-Create a new agent in `data/personas/mobile-engineer.yaml`:
+Agents support the following fields:
 
 ```yaml
 name: mobile-engineer
 display_name: Mobile Engineer
-model: sonnet
-description: Expert mobile developer for cross-platform mobile applications
+model: sonnet  # haiku | sonnet | opus
+description: Expert mobile developer for cross-platform applications
+
+# Trait imports (reduces duplication)
+imports:
+  coordination:
+    - standard-safety-protocols
+  tools:
+    - javascript-frontend-stack
 
 context_priming: |
   You are a senior mobile engineer specializing in cross-platform development
@@ -63,21 +169,39 @@ context_priming: |
 responsibilities:
   - React Native and Flutter development
   - Native iOS and Android development
-  - Mobile performance optimization
 
 expertise:
   - "React Native with TypeScript"
   - "Flutter with Dart"
-  - "iOS with Swift"
-  - "Android with Kotlin"
 
+# Proactive activation triggers
 proactive_triggers:
-  file_patterns:
-    - "*.tsx"
-    - "*.dart"
-  project_indicators:
-    - "React Native"
-    - "Flutter"
+  file_patterns: ["*.tsx", "*.dart", "*.swift"]
+  project_indicators: ["React Native", "Flutter"]
+  dependency_patterns: ["react-native", "flutter"]
+  user_intent_keywords: ["mobile app", "iOS", "Android"]
+
+# Coordination patterns
+coordination:
+  triggers:
+    outbound:
+      - trigger: code_complete
+        agents: [qa-engineer]
+        mode: automatic
+  relationships:
+    parallel: [frontend-engineer]
+    delegates_to: [security-engineer]
+
+# Additional optional fields
+technology_stack:
+  primary_frameworks: []
+  essential_tools: []
+implementation_patterns: []
+professional_standards: []
+integration_guidelines: []
+performance_benchmarks: []
+troubleshooting_guides: []
+tool_configurations: []
 ```
 
 ## Orchestration Features
@@ -206,7 +330,7 @@ make install
 make validate
 
 # List available agents
-make list-agents
+claude-config list-agents
 ```
 
 ### Orchestration Commands
@@ -289,17 +413,20 @@ make install
 
 ## Roadmap
 
-- Expand agent library
-- Enhance template system
-- Improve CLI tooling
-- Add more advanced validation
+- [ ] MCP server integration for external tool access
+- [ ] Enhanced multi-agent workflow orchestration
+- [ ] Additional trait categories (testing, observability)
+- [ ] DOT/Graphviz visualization format
+- [ ] Agent capability gap analysis tooling
+- [ ] Automated trait extraction from existing agents
 
 ## Contributing
 
 1. Fork the repository
 2. Create your agent in `data/personas/`
-3. Validate with `claude-config validate`
-4. Submit a pull request
+3. Add trait imports for common patterns
+4. Validate with `make validate` and `make validate-coordination`
+5. Submit a pull request
 
 ## License
 
